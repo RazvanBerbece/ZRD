@@ -5,4 +5,16 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Classes\" />
+    <None Remove="Classes\Block\" />
+    <None Remove="Classes\Transaction\" />
+    <None Remove="Classes\Statics\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Classes\" />
+    <Folder Include="Classes\Block\" />
+    <Folder Include="Classes\Transaction\" />
+    <Folder Include="Classes\Statics\" />
+  </ItemGroup>
 </Project>
