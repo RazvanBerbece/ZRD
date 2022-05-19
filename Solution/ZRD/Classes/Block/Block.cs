@@ -12,18 +12,20 @@
 
 using System;
 using ZRD.Classes.Statics;
+using ZRD.Classes.Transaction;
+using System.Collections.Generic;
 
 namespace ZRD
 {
     public class Block
     {
-        public string data;
+        public List<Transaction> data;
         public string hash;
         public string previousHash;
         public DateTime timestamp;
         public int proofOfWork;
 
-        public Block(string data, string previousHash)
+        public Block(List<Transaction> data, string previousHash)
         {
             this.data = data;
             this.hash = "";
@@ -38,7 +40,7 @@ namespace ZRD
         public void SetHash()
         {
             string concatenatedBlockData =
-                this.data +
+                Statics.TransactionsToJSONString(this.data) +
                 this.previousHash +
                 this.timestamp.ToLongTimeString() +
                 this.proofOfWork.ToString();

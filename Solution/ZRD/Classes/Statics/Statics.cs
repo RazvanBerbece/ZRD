@@ -5,6 +5,7 @@
 using System.Text;
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Collections.Generic;
 
 namespace ZRD.Classes.Statics
 {
@@ -31,7 +32,7 @@ namespace ZRD.Classes.Statics
         /**
          * TODO: Could be built with template values ?
          */
-        public static string TransactionsToJSONString(Transaction.Transaction[] transactions)
+        public static string TransactionsToJSONString(List<Transaction.Transaction> transactions)
         {
             return JsonSerializer.Serialize(transactions);
         }
