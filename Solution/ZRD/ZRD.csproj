@@ -31,12 +31,18 @@
     <None Remove="Classes\Block.Test\obj\Debug\net5.0\Block.Tests.csproj.AssemblyReference.cache" />
     <None Remove="Classes\Block.Test\obj\Debug\net5.0\Block.Tests.GeneratedMSBuildEditorConfig.editorconfig" />
     <None Remove="Classes\Block.Test\obj\Debug\net5.0\Block.Tests.assets.cache" />
+    <None Remove="Tests\" />
+    <None Remove="Tests\BlockNS.UnitTests\" />
+    <None Remove="Tests\BlockNS.UnitTests\Block\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Classes\" />
-    <Folder Include="Classes\Transaction\" />
-    <Folder Include="Classes\Statics\" />
-    <Folder Include="Classes\Blockchain\" />
+    <Folder Include="src\" />
+    <Folder Include="src\Transaction\" />
+    <Folder Include="src\Statics\" />
+    <Folder Include="src\Blockchain\" />
+    <Folder Include="Tests\" />
+    <Folder Include="Tests\Block.UnitTests\" />
+    <Folder Include="Tests\Block.UnitTests\Block\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -50,12 +56,7 @@
     <Compile Remove="Classes\Block.Test\obj\Debug\net5.0\.NETCoreApp,Version=v5.0.AssemblyAttributes.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Classes\Block\Block\Block.csproj">
-      <IncludeInPackage>true</IncludeInPackage>
-    </None>
-    <None Include="Classes\Block\BlockProjectLib.sln">
-      <IncludeInPackage>true</IncludeInPackage>
-    </None>
+    <None Include="Tests\Block.UnitTests\BlockNS.UnitTests.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Classes\Block\BlockProject\Block.cs">

@@ -21,7 +21,7 @@ namespace BlockTestsNS
         [Test]
         public void Block_CanSetHash()
         {
-            Block block = new Block(this.transactions, "PreviousHash");
+            Block block = new Block(this.transactions, "randomValue123", 0);
             Assert.AreEqual("PreviousHash", "PreviousHash");
         }
 

@@ -18,19 +18,21 @@ namespace BlockchainNS
         public int difficulty;
 
         // Block Time is the estimated time it takes for a new block to be added to the chain after mining
-        public int blockTime = 10; // in seconds
+        public int blockTime; // in seconds
 
-        public Blockchain(LinkedList<Block> chain, int difficulty)
+        public Blockchain(LinkedList<Block> chain, int difficulty, int blockTime)
         {
             this.chain = chain;
             this.difficulty = difficulty;
+            this.blockTime = blockTime;
         }
 
-        public Blockchain(Block genesisBlock, LinkedList<Block> chain, int difficulty)
+        public Blockchain(Block genesisBlock, LinkedList<Block> chain, int difficulty, int blockTime)
         {
             this.genesisBlock = genesisBlock;
             this.chain = chain;
             this.difficulty = difficulty;
+            this.blockTime = blockTime;
         }
 
         public void AddBlock(Block block)
@@ -94,7 +96,7 @@ namespace BlockchainNS
             return true;
         }
 
-        public static Blockchain CreateBlockchain(int difficulty)
+        public static Blockchain CreateBlockchain(int difficulty, int blockTime)
         {
             // Init Genesis block
             List<Transaction> emptyList = new List<Transaction> { };
@@ -105,7 +107,7 @@ namespace BlockchainNS
             LinkedList<Block> genesisChain = new LinkedList<Block> { };
             genesisChain.AddFirst(genesisBlock);
 
-            return new Blockchain(genesisBlock, genesisChain, difficulty);
+            return new Blockchain(genesisBlock, genesisChain, difficulty, blockTime);
         }
 
     }
