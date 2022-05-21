@@ -26,6 +26,7 @@ namespace ZRD
 
             // Visualise blockchain
             blockchain.ViewChain();
+            Console.WriteLine($"Blockchain is {(blockchain.IsValid() ? "VALID" : "COMPROMISED")}\n");
 
         }
     }

@@ -23,6 +23,13 @@ namespace BlockchainNS
             this.difficulty = difficulty;
         }
 
+        public Blockchain(Block genesisBlock, LinkedList<Block> chain, int difficulty)
+        {
+            this.genesisBlock = genesisBlock;
+            this.chain = chain;
+            this.difficulty = difficulty;
+        }
+
         public void AddBlock(Block block)
         {
             block.Mine(difficulty: this.difficulty);
@@ -31,16 +38,43 @@ namespace BlockchainNS
 
         public void ViewChain()
         {
-            LinkedList<Block>.Enumerator enumerator = this.chain.GetEnumerator();
-            enumerator.MoveNext();
-            while (true)
+            foreach (Block block in this.chain)
             {
-                Console.WriteLine(enumerator.Current.ToJSONString());
-                if (!enumerator.MoveNext())
-                {
-                    break;
-                };
+                Console.WriteLine(block.ToJSONString());
             }
+        }
+
+        public bool IsValid()
+        {
+            Block previousBlock = new Block(null, null, -1);
+            foreach (Block block in this.chain)
+            {
+                if (block.index == 0) // if Genesis block
+                {
+                    previousBlock = this.genesisBlock;
+                    continue;
+                }
+
+                // Guard - Blocks are in right order
+                if (previousBlock.index + 1 != block.index)
+                {
+                    return false;
+                }
+
+                // Guard - Hash of the previous block is equal to current Block.previousHash
+                if (previousBlock.hash != block.previousHash)
+                {
+                    return false;        
+                }
+
+                // Guard - Changes made to current Block hash (ie: changes in transactions)
+                if (block.hash != block.CalculateHash())
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public static Blockchain CreateBlockchain(int difficulty)
@@ -54,8 +88,7 @@ namespace BlockchainNS
             LinkedList<Block> genesisChain = new LinkedList<Block> { };
             genesisChain.AddFirst(genesisBlock);
 
-
-            return new Blockchain(genesisChain, difficulty);
+            return new Blockchain(genesisBlock, genesisChain, difficulty);
         }
 
     }
