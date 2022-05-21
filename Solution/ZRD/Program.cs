@@ -16,16 +16,11 @@ namespace ZRD
 
             // Create block with generated transactions
             Block testBlock = new Block(testBlockTransactions, "PreviousHash");
-            testBlock.SetHash();
+            testBlock.hash = testBlock.CalculateHash();
 
             // Standard Output
-            Console.WriteLine(String.Format("Built testBlock with hash: {0}\n", testBlock.hash));
-            Console.WriteLine("Transactions under testBlock: \n");
-            foreach (Transaction transaction in testBlockTransactions)
-            {
-                Console.WriteLine(String.Format("From: {0}\nTo: {1}\n", transaction.Sender, transaction.Receiver));
-                Console.WriteLine(String.Format("Transaction {0} with hash {1}\n", transaction.id, transaction.hash));
-            }
+            testBlock.Mine(2);
+            Console.WriteLine(testBlock.hash);
         }
     }
 }

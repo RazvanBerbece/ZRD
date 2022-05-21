@@ -38,7 +38,7 @@ namespace BlockNS
         /*
          * Calculates the hash value of the current Block instance
          */
-        public void SetHash()
+        public string CalculateHash()
         {
             string concatenatedBlockData =
                 Statics.TransactionsToJSONString(this.data) +
@@ -46,7 +46,7 @@ namespace BlockNS
                 this.proofOfWork.ToString() +
                 this.timestamp.ToLongTimeString();
 
-            this.hash = Statics.CreateHashSHA256(concatenatedBlockData);
+            return Statics.CreateHashSHA256(concatenatedBlockData);
         }
 
         /**
@@ -60,15 +60,19 @@ namespace BlockNS
         {
             // We will use regular expressions to validate that the resulted hash matches the leading zeros rule
             // 'Work' starts on a block with PoW=0 and then calculates hashes with incrementing PoW values (1, 2, 3...)
-            Regex hashExpression = new Regex("^(0){${difficulty}}.*", RegexOptions.Compiled);
+            string regexHashPattern = String.Format(@"^(0){{0}}.*", difficulty);
+            Regex hashExpression = new Regex(regexHashPattern, RegexOptions.Compiled);
             MatchCollection hashMatches = hashExpression.Matches(this.hash);
 
             // While the hash doesn't match (expression doesn't match), keep generating hashes with incremented PoW values
             while (hashMatches.Count == 0)
             {
                 this.proofOfWork++;
-                this.SetHash();
+                this.hash = this.CalculateHash();
+                Console.WriteLine(this.hash);
             }
+
+            return;
         }
 
     }
