@@ -11,8 +11,12 @@
  */
 
 using System;
+using StaticsNS;
+using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
 
-namespace ZRD.Classes.Transaction
+namespace TransactionNS
 {
     public class Transaction
     {
@@ -35,7 +39,27 @@ namespace ZRD.Classes.Transaction
 
             // Calculate hash value of transaction
             string concatenatedData = this.Sender + this.Receiver + this.Amount.ToString() + id;
-            this.hash = Statics.Statics.CreateHashSHA256(concatenatedData);
+            this.hash = Statics.CreateHashSHA256(concatenatedData);
+        }
+
+        public static List<Transaction> GenerateRandomTransactions(int numberOfTransactions)
+        {
+            Random randomTransactionAmountEngine = new Random();
+            List<Transaction> transactions = new List<Transaction> { };
+            for (int i = 0; i < numberOfTransactions; ++i)
+            {
+
+                RSACryptoServiceProvider rsaSender = new RSACryptoServiceProvider(1024);
+                RSACryptoServiceProvider rsaReceiver = new RSACryptoServiceProvider(1024);
+
+                transactions.Add(new Transaction(
+                    rsaSender.ToXmlString(false),
+                    rsaReceiver.ToXmlString(false),
+                    randomTransactionAmountEngine.Next(1, 999999))
+                );
+            }
+            return transactions; 
         }
     }
+
 }

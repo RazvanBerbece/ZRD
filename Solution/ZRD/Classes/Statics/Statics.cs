@@ -6,8 +6,9 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Collections.Generic;
+using TransactionNS;
 
-namespace ZRD.Classes.Statics
+namespace StaticsNS
 {
     public class Statics
     {
@@ -20,7 +21,7 @@ namespace ZRD.Classes.Statics
                 byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(data));
 
                 // Convert byte array to string
-                StringBuilder builder = new StringBuilder();
+                StringBuilder builder = new();
                 for (int i = 0; i < bytes.Length; ++i)
                 {
                     builder.Append(bytes[i].ToString("x2"));
@@ -32,9 +33,10 @@ namespace ZRD.Classes.Statics
         /**
          * TODO: Could be built with template values ?
          */
-        public static string TransactionsToJSONString(List<Transaction.Transaction> transactions)
+        public static string TransactionsToJSONString(List<Transaction> transactions)
         {
             return JsonSerializer.Serialize(transactions);
         }
+
     }
 }
