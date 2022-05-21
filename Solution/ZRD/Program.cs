@@ -15,7 +15,7 @@ namespace ZRD
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
             // Create Blockchain instance
-            int difficulty = 4;
+            int difficulty = 1;
             Blockchain blockchain = Blockchain.CreateBlockchain(difficulty);
 
             // Add new blocks to chain

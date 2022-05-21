@@ -87,6 +87,8 @@ namespace BlockchainNS
                 {
                     return false;
                 }
+
+                previousBlock = block;
             }
 
             return true;
