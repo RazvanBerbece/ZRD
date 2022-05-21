@@ -55,12 +55,13 @@ namespace BlockNS
          * 
          * Params:
          * difficulty = the difficulty of mining a new block 
+         * 
          */
         public void Mine(int difficulty)
         {
             // We will use regular expressions to validate that the resulted hash matches the leading zeros rule
             // 'Work' starts on a block with PoW=0 and then calculates hashes with incrementing PoW values (1, 2, 3...)
-            string regexHashPattern = String.Format(@"^(0){{0}}.*", difficulty);
+            string regexHashPattern = $"^(0){{{difficulty}}}.*";
             Regex hashExpression = new Regex(regexHashPattern, RegexOptions.Compiled);
             MatchCollection hashMatches = hashExpression.Matches(this.hash);
 
@@ -69,7 +70,7 @@ namespace BlockNS
             {
                 this.proofOfWork++;
                 this.hash = this.CalculateHash();
-                Console.WriteLine(this.hash);
+                hashMatches = hashExpression.Matches(this.hash);
             }
 
             return;

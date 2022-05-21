@@ -19,8 +19,8 @@ namespace ZRD
             testBlock.hash = testBlock.CalculateHash();
 
             // Standard Output
-            testBlock.Mine(2);
-            Console.WriteLine(testBlock.hash);
+            testBlock.Mine(difficulty: 5);
+            Console.WriteLine($"Calculated hash {testBlock.hash} with PoW={testBlock.proofOfWork}\n");
         }
     }
 }
