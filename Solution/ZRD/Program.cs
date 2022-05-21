@@ -15,18 +15,31 @@ namespace ZRD
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
             // Create Blockchain instance
-            int difficulty = 1;
+            int difficulty = 4;
             Blockchain blockchain = Blockchain.CreateBlockchain(difficulty);
 
-            // Add new block to chain
+            // Add new blocks to chain
             List<Transaction> testBlockTransactions = new List<Transaction> { };
+
             testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5);
-            Block testBlock = new Block(testBlockTransactions, blockchain.chain.Last.Value.hash, blockchain.chain.Last.Value.index + 1);
-            blockchain.AddBlock(testBlock);
+            Block testBlock1 = new Block(testBlockTransactions, blockchain.chain.Last.Value.hash, blockchain.chain.Last.Value.index + 1);
+            blockchain.AddBlock(testBlock1);
+
+            testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5);
+            Block testBlock2 = new Block(testBlockTransactions, blockchain.chain.Last.Value.hash, blockchain.chain.Last.Value.index + 1);
+            blockchain.AddBlock(testBlock2);
+
+            testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5);
+            Block testBlock3 = new Block(testBlockTransactions, blockchain.chain.Last.Value.hash, blockchain.chain.Last.Value.index + 1);
+            blockchain.AddBlock(testBlock3);
 
             // Visualise blockchain
             blockchain.ViewChain();
-            Console.WriteLine($"Blockchain is {(blockchain.IsValid() ? "VALID" : "COMPROMISED")}\n");
+            Console.WriteLine($"\nBlockchain is {(blockchain.IsValid() ? "VALID" : "COMPROMISED")}\n");
+
+            // Mutate Block -> Blockchain is compromised
+            // blockchain.chain.Last.Value.data[0].Amount += 150;
+            // Console.WriteLine($"\nBlockchain is {(blockchain.IsValid() ? "VALID" : "COMPROMISED")}\n");
 
         }
     }

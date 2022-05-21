@@ -17,6 +17,9 @@ namespace BlockchainNS
         public LinkedList<Block> chain;
         public int difficulty;
 
+        // Block Time is the estimated time it takes for a new block to be added to the chain after mining
+        public int blockTime = 10; // in seconds
+
         public Blockchain(LinkedList<Block> chain, int difficulty)
         {
             this.chain = chain;
@@ -34,6 +37,18 @@ namespace BlockchainNS
         {
             block.Mine(difficulty: this.difficulty);
             this.chain.AddAfter(this.chain.Last, block);
+
+            // Adjust the difficulty if the new block takes more time than the block time
+            if ((DateTime.Now - block.timestamp).Seconds > this.blockTime)
+            {
+                this.difficulty -= 1;
+                Console.WriteLine($"Adjusted difficulty to {this.difficulty}\n");
+            }
+            else
+            {
+                this.difficulty += 1;
+                Console.WriteLine($"Adjusted difficulty to {this.difficulty}\n");
+            }
         }
 
         public void ViewChain()

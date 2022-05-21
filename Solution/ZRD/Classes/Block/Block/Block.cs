@@ -34,7 +34,9 @@ namespace BlockNS
             this.previousHash = previousHash;
             this.hash = "";
             this.proofOfWork = 0;
+
             this.timestamp = new DateTime();
+            this.timestamp = DateTime.Now;
         }
 
         /*
@@ -42,6 +44,7 @@ namespace BlockNS
          */
         public string CalculateHash()
         {
+
             string concatenatedBlockData =
                 this.index.ToString() +
                 Statics.TransactionsToJSONString(this.data) +
