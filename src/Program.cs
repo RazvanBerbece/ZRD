@@ -9,7 +9,7 @@ namespace ZRD
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Overview(string[] args)
         {
             Console.WriteLine("Running ZRD blockchain.\n");
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
