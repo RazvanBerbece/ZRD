@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using TransactionNS;
+using BlockchainNS;
+using System.Linq;
 
 namespace ZRD
 {
@@ -12,15 +14,19 @@ namespace ZRD
             Console.WriteLine("Running ZRD blockchain.\n");
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
-            List<Transaction> testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5);
+            // Create Blockchain instance
+            int difficulty = 1;
+            Blockchain blockchain = Blockchain.CreateBlockchain(difficulty);
 
-            // Create block with generated transactions
-            Block testBlock = new Block(testBlockTransactions, "PreviousHash");
-            testBlock.hash = testBlock.CalculateHash();
+            // Add new block to chain
+            List<Transaction> testBlockTransactions = new List<Transaction> { };
+            testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5);
+            Block testBlock = new Block(testBlockTransactions, blockchain.chain.Last.Value.hash, blockchain.chain.Last.Value.index + 1);
+            blockchain.AddBlock(testBlock);
 
-            // Standard Output
-            testBlock.Mine(difficulty: 5);
-            Console.WriteLine($"Calculated hash {testBlock.hash} with PoW={testBlock.proofOfWork}\n");
+            // Visualise blockchain
+            blockchain.ViewChain();
+
         }
     }
 }

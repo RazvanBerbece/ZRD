@@ -6,7 +6,7 @@
  *  hash            = block hash value (concatenating all fields apart from hash)
  *  previousHash    = previous Block hash value
  *  timestamp       = timestamp when Block was created
- *  proofOfWork     = we use the Proof of Work (PoW) consensus - the amount of effort taken to derive the current Block hash
+ *  proofOfWork     = we use the Proof of Work (PoW) consensus - the amount of effort (iterations) taken to derive a valid hash for the current Block
  *  
  */
 
@@ -20,14 +20,16 @@ namespace BlockNS
 {
     public class Block
     {
+        public int index;
         public List<Transaction> data;
         public string hash;
         public string previousHash;
         public int proofOfWork;
         public DateTime timestamp;
 
-        public Block(List<Transaction> data, string previousHash)
+        public Block(List<Transaction> data, string previousHash, int index)
         {
+            this.index = index;
             this.data = data;
             this.previousHash = previousHash;
             this.hash = "";
@@ -41,6 +43,7 @@ namespace BlockNS
         public string CalculateHash()
         {
             string concatenatedBlockData =
+                this.index.ToString() +
                 Statics.TransactionsToJSONString(this.data) +
                 this.previousHash +
                 this.proofOfWork.ToString() +
@@ -74,6 +77,14 @@ namespace BlockNS
             }
 
             return;
+        }
+
+        public string ToJSONString()
+        {
+            string output =
+                $"{{\n\tIndex: {this.index},\n\tTimestamp: {this.timestamp.ToLongTimeString()},\n\tCurrent Hash: \"{this.hash}\",\n\tPrevious Hash: \"{this.previousHash}\",\n\tPoW: {this.proofOfWork}\n}},";
+
+            return output;
         }
 
     }
