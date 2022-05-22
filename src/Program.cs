@@ -22,6 +22,7 @@ namespace ZRD
             // Create Blockchain instance
             Blockchain blockchain = Blockchain.CreateBlockchain(
                 firstMint: new Transaction(NETWORK_WALLET.GetPublicKeyStringBase64(), "AntonioPublicKey", 1000000),
+                blockchainWallet: NETWORK_WALLET,
                 difficulty: 2,
                 blockTime: 5,
                 reward: 420

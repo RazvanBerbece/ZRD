@@ -3,6 +3,7 @@ using NUnit.Framework;
 using WalletNS;
 using System.Security.Cryptography;
 using TransactionNS;
+using System;
 
 namespace WalletTestsNS
 {
@@ -72,19 +73,43 @@ namespace WalletTestsNS
                         this.walletA.GetPublicKeyStringBase64(),
                         1000000
                         ),
+                    blockchainWallet: this.NETWORK_WALLET,
                     difficulty: 2,
                     blockTime: 5,
                     reward: 420
                 );
 
+            if (amount <= 0)
+            {
+                try
+                {
+                    // Send currency
+                    this.walletA.SendCurrency(amount, this.walletB.GetPublicKeyStringBase64(), blockchain);
+                    Assert.Fail("Wallet should not be able to send negative or 0 amounts of currency");
+                }
+                catch (Exception )
+                {
+                    Assert.Pass();
+                }
+            }
+
+            // Guard - Wallet cannot send currency with empty string for receiver key
+            try
+            {
+                this.walletA.SendCurrency(amount, "", blockchain);
+                Assert.Fail("Wallet cannot send currency with empty string for receiver key");
+            }
+            catch (Exception) {}
+
             // Send currency
             this.walletA.SendCurrency(amount, this.walletB.GetPublicKeyStringBase64(), blockchain);
+            blockchain.MineUnconfirmedTransactions(walletA.GetPublicKeyStringBase64());
 
             // Get untransferred currency (balance)
             int secondaryWalletBalance = blockchain.GetBalance(this.walletB.GetPublicKeyStringBase64());
 
             // Guard - WalletB received currency
-            Assert.AreEqual(secondaryWalletBalance, amount);
+            Assert.AreEqual(amount, secondaryWalletBalance);
 
         }
 
