@@ -96,12 +96,12 @@ namespace BlockchainNS
             return true;
         }
 
-        public static Blockchain CreateBlockchain(int difficulty, int blockTime)
+        public static Blockchain CreateBlockchain(Transaction firstMint, int difficulty, int blockTime)
         {
             // Init Genesis block
-            List<Transaction> emptyList = new List<Transaction> { };
-            Block genesisBlock = new Block(emptyList, "", 0);
-            genesisBlock.Mine(difficulty);
+            List<Transaction> genesisList = new List<Transaction> { };
+            genesisList.Add(firstMint);
+            Block genesisBlock = new Block(genesisList, "", 0);
 
             // Init returned chain & add Genesis block to it
             LinkedList<Block> genesisChain = new LinkedList<Block> { };

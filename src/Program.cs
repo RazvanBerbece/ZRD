@@ -9,13 +9,14 @@ namespace ZRD
 {
     class Program
     {
-        static void Overview(string[] args)
+        static void Main(string[] args)
         {
             Console.WriteLine("Running ZRD blockchain.\n");
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
             // Create Blockchain instance
             Blockchain blockchain = Blockchain.CreateBlockchain(
+                firstMint: new Transaction("AntonioPublicKey", "AntonioPublicKey", 1000000),
                 difficulty: 2,
                 blockTime: 5
             );
