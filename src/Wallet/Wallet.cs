@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
+using BlockchainNS;
 
 namespace WalletNS
 {
@@ -44,6 +45,11 @@ namespace WalletNS
         public RSAParameters GetKeyPairParams()
         {
             return this.keyPair;
+        }
+
+        public void SendCurrency(int amount, string receiverPublicKey, Blockchain blockchain)
+        {
+            throw new NotImplementedException();
         }
 
     }

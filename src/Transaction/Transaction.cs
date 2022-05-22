@@ -16,7 +16,6 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using WalletNS;
 using System.Text;
-using System.ComponentModel;
 
 namespace TransactionNS
 {
