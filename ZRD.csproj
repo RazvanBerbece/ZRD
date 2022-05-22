@@ -19,6 +19,9 @@
     <None Remove="tests\Wallet.UnitTests\Wallet\" />
     <None Remove="tests\Block.UnitTests\" />
     <None Remove="tests\Block.UnitTests\Block\" />
+    <None Remove="src\Merkle-Tree\" />
+    <None Remove="tests\MerkleTree.UnitTests\" />
+    <None Remove="tests\MerkleTree.UnitTests\Merkle-Tree\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="tests\Transaction.UnitTests\" />
@@ -28,5 +31,8 @@
     <Folder Include="tests\Wallet.UnitTests\Wallet\" />
     <Folder Include="tests\Block.UnitTests\" />
     <Folder Include="tests\Block.UnitTests\Block\" />
+    <Folder Include="src\Merkle-Tree\" />
+    <Folder Include="tests\MerkleTree.UnitTests\" />
+    <Folder Include="tests\MerkleTree.UnitTests\Merkle-Tree\" />
   </ItemGroup>
 </Project>
