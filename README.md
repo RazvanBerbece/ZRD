@@ -1,6 +1,5 @@
 # ZRD
-Local blockchain network built in C# .NET Core.
-Built to support the ZRD cryptocurrency and allows transactions between user wallets.
+Local blockchain network built in C#. Supports the ZR420 cryptocurrency and wallet-based user transactions.
 
 Uses .net5.0 and nUnit for testing.
 
@@ -11,7 +10,7 @@ Uses .net5.0 and nUnit for testing.
 
 [**IN PROGRESS**] Genesis Block
 
-[**BACKLOG**] Minting
+[**IN PROGRESS**] Minting
 
 [**IN PROGRESS**] Mining
 

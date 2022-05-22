@@ -18,7 +18,8 @@ namespace ZRD
             Blockchain blockchain = Blockchain.CreateBlockchain(
                 firstMint: new Transaction("AntonioPublicKey", "AntonioPublicKey", 1000000),
                 difficulty: 2,
-                blockTime: 5
+                blockTime: 5,
+                reward: 420
             );
 
             // Add new blocks to chain

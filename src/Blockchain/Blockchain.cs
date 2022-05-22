@@ -17,22 +17,28 @@ namespace BlockchainNS
         public LinkedList<Block> chain;
         public int difficulty;
 
+        public int reward; // Reward amount offered to miner that solves the computational problem
+
+        public List<Transaction> unconfirmedTransactions;
+
         // Block Time is the estimated time it takes for a new block to be added to the chain after mining
         public int blockTime; // in seconds
 
-        public Blockchain(LinkedList<Block> chain, int difficulty, int blockTime)
+        public Blockchain(LinkedList<Block> chain, int difficulty, int blockTime, int reward)
         {
             this.chain = chain;
             this.difficulty = difficulty;
             this.blockTime = blockTime;
+            this.reward = reward;
         }
 
-        public Blockchain(Block genesisBlock, LinkedList<Block> chain, int difficulty, int blockTime)
+        public Blockchain(Block genesisBlock, LinkedList<Block> chain, int difficulty, int blockTime, int reward)
         {
             this.genesisBlock = genesisBlock;
             this.chain = chain;
             this.difficulty = difficulty;
             this.blockTime = blockTime;
+            this.reward = reward;
         }
 
         public void AddBlock(Block block)
@@ -96,7 +102,45 @@ namespace BlockchainNS
             return true;
         }
 
-        public static Blockchain CreateBlockchain(Transaction firstMint, int difficulty, int blockTime)
+        public void AddTransaction(Transaction transaction)
+        {
+            foreach (Transaction unconfirmedTransaction in this.unconfirmedTransactions)
+            {
+                if (unconfirmedTransaction.hash == transaction.hash) // duplicate unconfirmed transaction on chain
+                {
+                    return;
+                }
+            }
+            this.unconfirmedTransactions.Add(transaction);
+        }
+
+        /**
+         * Get current balance (untransferred currency) for a given publicKey (user identifier on the blockchain)
+         */
+        public int GetBalance(string publicKey)
+        {
+            int balance = 0;
+
+            foreach (Block block in this.chain)
+            {
+                foreach (Transaction transaction in block.data)
+                {
+                    if (transaction.Sender == publicKey)
+                    {
+                        balance -= transaction.Amount;
+                    }
+                    else if (transaction.Receiver == publicKey)
+                    {
+                        balance += transaction.Amount;
+                    }
+                    
+                }
+            }
+
+            return balance;
+        }
+
+        public static Blockchain CreateBlockchain(Transaction firstMint, int difficulty, int blockTime, int reward)
         {
             // Init Genesis block
             List<Transaction> genesisList = new List<Transaction> { };
@@ -107,7 +151,7 @@ namespace BlockchainNS
             LinkedList<Block> genesisChain = new LinkedList<Block> { };
             genesisChain.AddFirst(genesisBlock);
 
-            return new Blockchain(genesisBlock, genesisChain, difficulty, blockTime);
+            return new Blockchain(genesisBlock, genesisChain, difficulty, blockTime, reward);
         }
 
     }
