@@ -30,6 +30,16 @@ namespace TransactionNS
 
         public Transaction(string senderPublicKey, string receiverPublicKey, int amount)
         {
+            if (amount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Transaction amount cannot be negative or zero");
+            }
+
+            if (senderPublicKey.Length == 0 || receiverPublicKey.Length == 0)
+            {
+                throw new ArgumentException("Sender/Receiver RSA keys cannot be empty");
+            }
+
             this.Sender = senderPublicKey;
             this.Receiver = receiverPublicKey;
             this.Amount = amount;
@@ -44,20 +54,28 @@ namespace TransactionNS
 
         public static List<Transaction> GenerateRandomTransactions(int numberOfTransactions)
         {
+
+            // Throw ArgumentOutOfRangeException if asked to generate a list of 0 or less Transactions
+            if (numberOfTransactions <= 0)
+            {
+                throw new ArgumentOutOfRangeException("numberOfTransactions cannot be negative or zero");
+            }
+
             Random randomTransactionAmountEngine = new Random();
             List<Transaction> transactions = new List<Transaction> { };
-            for (int i = 0; i < numberOfTransactions; ++i)
+            for (int i = 0; i < numberOfTransactions; i++)
             {
-
+                // Generate key pairs to simulate party identifiers
                 RSACryptoServiceProvider rsaSender = new RSACryptoServiceProvider(1024);
                 RSACryptoServiceProvider rsaReceiver = new RSACryptoServiceProvider(1024);
 
                 transactions.Add(new Transaction(
                     rsaSender.ToXmlString(false),
                     rsaReceiver.ToXmlString(false),
-                    randomTransactionAmountEngine.Next(1, 999999))
+                    randomTransactionAmountEngine.Next(1, int.MaxValue))
                 );
             }
+
             return transactions; 
         }
     }
