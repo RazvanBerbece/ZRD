@@ -16,6 +16,7 @@ namespace ZRD
 
             // Create wallet
             Wallet NETWORK_WALLET = new Wallet(keySize: 1024);
+
             Console.WriteLine($"Wallet with publicKey:{NETWORK_WALLET.publicKey}\nand privateKey:{NETWORK_WALLET.GetPrivateKeyStringBase64()}");
 
             // Create Blockchain instance

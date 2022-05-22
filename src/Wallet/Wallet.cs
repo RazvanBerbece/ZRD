@@ -45,5 +45,6 @@ namespace WalletNS
         {
             return this.keyPair;
         }
+
     }
 }

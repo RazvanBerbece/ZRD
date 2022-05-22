@@ -54,7 +54,6 @@ namespace BlockNS
          */
         public string CalculateHash()
         {
-
             string concatenatedBlockData =
                 this.index.ToString() +
                 Statics.TransactionsToJSONString(this.data) +

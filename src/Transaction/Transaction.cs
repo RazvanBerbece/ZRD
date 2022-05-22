@@ -49,7 +49,7 @@ namespace TransactionNS
             this.Amount = amount;
 
             this.signature = null; // unsigned at the moment of instantiation
-
+          
             // Generate random version 4 UUID for transaction
             this.id = Guid.NewGuid().ToString();
 

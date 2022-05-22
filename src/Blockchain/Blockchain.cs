@@ -104,6 +104,7 @@ namespace BlockchainNS
         {
             foreach (Transaction unconfirmedTransaction in this.unconfirmedTransactions)
             {
+
                 if (unconfirmedTransaction.hash == transaction.hash) // transaction is already unconfirmed on chain
                 {
                     return;
