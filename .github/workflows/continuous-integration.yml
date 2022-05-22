@@ -19,7 +19,9 @@ jobs:
       - uses: actions/setup-dotnet@v2
         with:
             dotnet-version: '5.0.x'
-      - run: dotnet build ZRD
+      - run: 
+          ls
+          dotnet build ZRD
 
       - name: Run 'dotnet test'
         id: dotnet-test
