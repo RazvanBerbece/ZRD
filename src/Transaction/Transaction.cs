@@ -59,7 +59,7 @@ namespace TransactionNS
         }
 
         /// <summary>
-        /// Signs the transaction against a wallet.
+        /// Signs the transaction against a wallet using SHA256 signature.
         /// Verifies that that the publicKey of the wallet matches the transaction sender's publicKey.
         /// </summary>
         /// <param name="wallet">Wallet used to sign the transaction</param>
@@ -69,15 +69,32 @@ namespace TransactionNS
             {
                 throw new ArgumentNullException("Cannot sign transaction with null Wallet object");
             }
-            if (wallet.publicKey == this.Sender)
+
+            if (wallet.GetPublicKeyStringBase64() == this.Sender)
             {
                 // Create a UnicodeEncoder to convert between byte array and string.
                 ASCIIEncoding ByteConverter = new ASCIIEncoding();
 
                 byte[] originalData = ByteConverter.GetBytes(this.hash);
-                byte[] signedData;
 
-                
+                // Create instance of RSACryptoServiceProvider using the
+                // key from RSAParameters
+                try
+                {
+                    RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+                    rsa.ImportParameters(wallet.GetKeyPairParams());
+                    Console.WriteLine("Imported key pair\n");
+
+                    byte[] signature = rsa.SignData(originalData, SHA256.Create());
+                    Console.WriteLine("Signed using key pair\n");
+
+                    this.signature = Convert.ToBase64String(signature);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error occured in SignTransaction(): {e.Message}\n");
+                    return;
+                }
             }
         }
 

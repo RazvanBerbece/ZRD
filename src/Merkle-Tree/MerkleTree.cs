@@ -45,7 +45,7 @@ namespace MerkleTreeNS
         {
 
             if (transactionNodes.Count == 0) return null;
-            if (transactionNodes.Count == 1) return transactionNodes[1];
+            if (transactionNodes.Count == 1) return transactionNodes[0];
 
             List<MerkleNode> nodeList = new List<MerkleNode> { };
             int transactionNodesSize = transactionNodes.Count;

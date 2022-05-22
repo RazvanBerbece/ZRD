@@ -2,6 +2,7 @@
 using TransactionNS;
 using System.Collections.Generic;
 using System;
+using WalletNS;
 
 namespace TransactionTestsNS
 {
@@ -132,6 +133,24 @@ namespace TransactionTestsNS
                 }
             }
 
+        }
+
+        [TestCase(1024)]
+        [TestCase(2048)]
+        [TestCase(4096)]
+        public void Transaction_CanBeSigned(int signatureSize)
+        {
+            // Setup test wallet
+            Wallet wallet = new Wallet(signatureSize);
+
+            // Setup transaction to be signed
+            Transaction transaction = new Transaction(wallet.GetPublicKeyStringBase64(), "receiverPublicKey", 9999);
+
+            // Sign transaction
+            transaction.SignTransaction(wallet);
+
+            // Verify that transaction was signed
+            Assert.NotNull(transaction.signature);
         }
 
     }

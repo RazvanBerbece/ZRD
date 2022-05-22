@@ -12,6 +12,8 @@ namespace WalletNS
         public byte[] publicKey;
         private byte[] privateKey;
 
+        private RSAParameters keyPair;
+
         /// <summary>
         /// Constructor for a <c>Wallet</c> object.
         /// </summary>
@@ -21,6 +23,7 @@ namespace WalletNS
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(keySize);
             this.publicKey = rsa.ExportSubjectPublicKeyInfo();
             this.privateKey = rsa.ExportPkcs8PrivateKey();
+            this.keyPair = rsa.ExportParameters(true);
         }
 
         public string GetPrivateKeyStringBase64()
@@ -36,6 +39,11 @@ namespace WalletNS
         public string GetPublicKeyStringBase64()
         {
             return Convert.ToBase64String(this.publicKey);
+        }
+
+        public RSAParameters GetKeyPairParams()
+        {
+            return this.keyPair;
         }
     }
 }

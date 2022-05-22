@@ -16,11 +16,11 @@ namespace ZRD
 
             // Create wallet
             Wallet NETWORK_WALLET = new Wallet(keySize: 1024);
-            Console.WriteLine($"Wallet with publicKey:{NETWORK_WALLET.publicKey}\nand privateKey:{NETWORK_WALLET.GetPrivateKey()}");
+            Console.WriteLine($"Wallet with publicKey:{NETWORK_WALLET.publicKey}\nand privateKey:{NETWORK_WALLET.GetPrivateKeyStringBase64()}");
 
             // Create Blockchain instance
             Blockchain blockchain = Blockchain.CreateBlockchain(
-                firstMint: new Transaction(NETWORK_WALLET.publicKey, "AntonioPublicKey", 1000000),
+                firstMint: new Transaction(NETWORK_WALLET.GetPublicKeyStringBase64(), "AntonioPublicKey", 1000000),
                 difficulty: 2,
                 blockTime: 5,
                 reward: 420

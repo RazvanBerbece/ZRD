@@ -4,6 +4,7 @@ using BlockNS;
 using TransactionNS;
 using System.Text.RegularExpressions;
 using WalletNS;
+using System.Security.Cryptography;
 
 namespace WalletTestsNS
 {
@@ -42,10 +43,17 @@ namespace WalletTestsNS
         }
 
         [Test]
-        public void External_CanConvertPublicKeyTo_Base64String()
+        public void Wallet_CanConvertPublicKeyTo_Base64String()
         {
             string publicKey = this.wallet.GetPublicKeyStringBase64();
             Assert.IsNotEmpty(publicKey);
+        }
+
+        [Test]
+        public void External_PrivateMemberAccess_KeyPairParam()
+        {
+            Assert.IsNotNull(this.wallet.GetKeyPairParams(), "GetKeyPairParams() should not return null");
+            Assert.IsInstanceOf(typeof(RSAParameters), this.wallet.GetKeyPairParams());
         }
 
     }
