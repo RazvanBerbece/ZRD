@@ -1,0 +1,30 @@
+name: continuous-integration
+
+on:
+  pull_request:
+    branches: [ '**' ]
+
+  workflow_dispatch:
+
+jobs:
+
+  test:
+
+    name: Test Codebase
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v2
+        with:
+            dotnet-version: '5.0.x'
+
+      - name: Run 'dotnet build'
+        id: dotnet-build
+        run: |
+          dotnet build 
+
+      - name: Run 'dotnet test'
+        id: dotnet-test
+        run: dotnet test 
