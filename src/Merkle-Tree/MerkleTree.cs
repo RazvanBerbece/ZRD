@@ -9,10 +9,10 @@ namespace MerkleTreeNS
     public class MerkleTree
     {
 
-        public int size;
-        public MerkleTree root;
+        public double size;
+        public MerkleNode root;
 
-        public MerkleTree(MerkleTree root, int size)
+        public MerkleTree(MerkleNode root, double size)
         {
             this.size = size;
             this.root = root;
@@ -20,7 +20,18 @@ namespace MerkleTreeNS
 
         static public MerkleTree CreateMerkleTree(List<Transaction> transactions)
         {
-            throw new NotImplementedException();
+            double size = Math.Ceiling(Math.Log2(transactions.Count)) + 1;
+
+            // Create list of MerkleNodes from list of transactions
+            List<MerkleNode> nodes = new List<MerkleNode> { };
+            foreach (Transaction transaction in transactions)
+            {
+                nodes.Add(new MerkleNode(Statics.CreateHashSHA256FromTransaction(transaction), null, null));
+            }
+
+            MerkleNode root = MakeMerkleTreeFromTransactionList(nodes);
+
+            return new MerkleTree(root, size);
         }
 
         /// <summary>
@@ -60,7 +71,8 @@ namespace MerkleTreeNS
                 nodeList.Add(newNode);
             }
 
-            return MerkleTree.MakeMerkleTreeFromTransactionList(nodeList);
+            return MakeMerkleTreeFromTransactionList(nodeList);
         }
+
     }
 }

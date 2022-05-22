@@ -30,6 +30,18 @@ namespace StaticsNS
             }
         }
 
+        public static string CreateHashSHA256FromTransaction(Transaction transaction)
+        {
+            string dataString =
+                transaction.id +
+                transaction.hash +
+                transaction.Sender +
+                transaction.Receiver +
+                transaction.Amount.ToString();
+
+            return CreateHashSHA256(dataString);
+        }
+
         /**
          * TODO: Could be built with template values ?
          */
