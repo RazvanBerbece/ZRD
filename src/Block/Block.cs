@@ -15,17 +15,23 @@ using StaticsNS;
 using TransactionNS;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using MerkleTreeNS;
+using MerkleTreeNS.MerkleNodeNS;
 
 namespace BlockNS
 {
     public class Block
     {
+
         public int index;
         public List<Transaction> data;
         public string hash;
         public string previousHash;
         public int proofOfWork;
         public DateTime timestamp;
+
+        public MerkleTree tree;
+        public MerkleNode root;
 
         public Block(List<Transaction> data, string previousHash, int index)
         {
@@ -37,6 +43,10 @@ namespace BlockNS
 
             this.timestamp = new DateTime();
             this.timestamp = DateTime.Now;
+
+            // Process the Merkle tree & root for the given transactions under current Block
+            this.tree = MerkleTree.CreateMerkleTree(this.data);
+            this.root = this.tree.root;
         }
 
         /*
@@ -44,7 +54,6 @@ namespace BlockNS
          */
         public string CalculateHash()
         {
-
             string concatenatedBlockData =
                 this.index.ToString() +
                 Statics.TransactionsToJSONString(this.data) +

@@ -24,7 +24,7 @@ jobs:
         id: dotnet-build
         run: |
           dotnet build 
-
+          
       - name: Run 'dotnet test'
         id: dotnet-test
-        run: dotnet test 
+        run: dotnet test  
