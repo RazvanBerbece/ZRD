@@ -3,6 +3,7 @@ using TransactionNS;
 using System.Collections.Generic;
 using System;
 using WalletNS;
+using System.ComponentModel;
 
 namespace TransactionTestsNS
 {
@@ -113,7 +114,7 @@ namespace TransactionTestsNS
                     this.watch.Start();
                     list = Transaction.GenerateRandomTransactions(numberOfTransactions);
                     this.watch.Stop();
-                  
+
                     Console.WriteLine($"GenerateRandomTransactions({numberOfTransactions}) finished after {this.watch.ElapsedMilliseconds}ms\n");
 
                     // Guard - List length
@@ -152,6 +153,60 @@ namespace TransactionTestsNS
 
             // Verify that transaction was signed
             Assert.NotNull(transaction.signature);
+        }
+
+        [TestCase("senderPublicKey", "receiverPublicKey", 2000, true)]
+        // [TestCase("", "", , false)] <- TODO: BUILD THIS TEST CASE TO FORCE IsValid() TO RETURN FALSE
+        [TestCase("senderPublicKey", "", 2000, false)]
+        [TestCase("", "receiverPublicKey", 2000, false)]
+        [TestCase("", "receiverPublicKey", -2000, false)]
+        [TestCase("senderPublicKey", "receiverPublicKey", 0, false)]
+        [TestCase("", "", -1, false)]
+        public void Transaction_CanValidate(string senderKey, string receiverKey, int amount, bool expectedValidation)
+        {
+            try
+            {
+                // Transaction to be asserted by case
+                Transaction transaction = new Transaction(senderKey, receiverKey, amount);
+
+                switch (expectedValidation)
+                {
+                    case true:
+                        Assert.IsTrue(transaction.IsValid());
+                        break;
+                    case false:
+                        Assert.IsFalse(transaction.IsValid());
+                        break;
+                }
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                WarningException warning = new WarningException(
+                    $"Transaction constructor threw {e.GetType()} to instantiate properly: {e.Message}\n" +
+                    $"This is expected considering the TestCase params and it should pass as it is the correct behaviour when constructing a Transaction.\n"
+                    );
+                Console.Write(warning.ToString());
+                Assert.Pass();
+            }
+            catch (ArgumentException e)
+            {
+                WarningException warning = new WarningException(
+                    $"Transaction constructor threw {e.GetType()} to instantiate properly: {e.Message}\n" +
+                    $"This is expected considering the TestCase params and it should pass as it is the correct behaviour when constructing a Transaction.\n"
+                    );
+                Console.Write(warning.ToString());
+                Assert.Pass();
+            }
+            catch (NotImplementedException e)
+            {
+                WarningException warning = new WarningException(
+                    $"Transaction code threw {e.GetType()}: {e.Message}\n" +
+                    $"This is expected considering the TestCase params and it should pass as it is the correct behaviour when constructing a Transaction.\n"
+                    );
+                Console.Write(warning.ToString());
+                Assert.Fail();
+            }
+
         }
 
     }

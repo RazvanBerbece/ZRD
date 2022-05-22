@@ -94,6 +94,11 @@ namespace TransactionNS
             }
         }
 
+        public bool IsValid()
+        {
+            throw new NotImplementedException();
+        }
+
         public static List<Transaction> GenerateRandomTransactions(int numberOfTransactions)
         {
 
