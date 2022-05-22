@@ -1,15 +1,14 @@
-﻿/**
- * Class that defines the properties and methods of a generic blockchain
- * Supports the genesis block, a configurable difficulty, TTM (time-to-mine), adding blocks, etc.
- */
-
-using System;
+﻿using System;
 using BlockNS;
 using System.Collections.Generic;
 using TransactionNS;
 
 namespace BlockchainNS
 {
+    /// <summary>
+    /// Class that defines the properties and methods of a generic blockchain.
+    /// Supports the genesis block, a configurable difficulty, TTM (time-to-mine), adding blocks, etc.
+    /// </summary>
     public class Blockchain
     {
 
@@ -17,21 +16,20 @@ namespace BlockchainNS
         public LinkedList<Block> chain;
         public int difficulty;
 
-        public int reward; // Reward amount offered to miner that solves the computational problem
+        public int reward;
 
-        public List<Transaction> unconfirmedTransactions;
+        public List<Transaction> unconfirmedTransactions; // pool of transactions to be confirmed
 
-        // Block Time is the estimated time it takes for a new block to be added to the chain after mining
-        public int blockTime; // in seconds
+        public int blockTime;
 
-        public Blockchain(LinkedList<Block> chain, int difficulty, int blockTime, int reward)
-        {
-            this.chain = chain;
-            this.difficulty = difficulty;
-            this.blockTime = blockTime;
-            this.reward = reward;
-        }
-
+        /// <summary>
+        /// Constructor for a <c>Blockchain</c> object.
+        /// </summary>
+        /// <param name="genesisBlock">Starting block.</param>
+        /// <param name="chain">Initial chain. Usually, it only contains the Genesis block.</param>
+        /// <param name="difficulty">Amount of effort required to solve the computational problem.</param>
+        /// <param name="blockTime">Estimated time (in seconds) it takes for a new block to be added to the chain after mining.</param>
+        /// <param name="reward">Reward amount offered to miner that solves the computational problem.</param>
         public Blockchain(Block genesisBlock, LinkedList<Block> chain, int difficulty, int blockTime, int reward)
         {
             this.genesisBlock = genesisBlock;

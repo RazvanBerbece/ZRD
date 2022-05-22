@@ -14,9 +14,15 @@
   <ItemGroup>
     <None Remove="tests\Transaction.UnitTests\" />
     <None Remove="tests\Transaction.UnitTests\Transaction\" />
+    <None Remove="src\Wallet\" />
+    <None Remove="tests\Wallet.UnitTests\" />
+    <None Remove="tests\Wallet.UnitTests\Wallet\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="tests\Transaction.UnitTests\" />
     <Folder Include="tests\Transaction.UnitTests\Transaction\" />
+    <Folder Include="src\Wallet\" />
+    <Folder Include="tests\Wallet.UnitTests\" />
+    <Folder Include="tests\Wallet.UnitTests\Wallet\" />
   </ItemGroup>
 </Project>

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using TransactionNS;
 using BlockchainNS;
-using System.Linq;
+using WalletNS;
 
 namespace ZRD
 {
@@ -14,9 +14,13 @@ namespace ZRD
             Console.WriteLine("Running ZRD blockchain.\n");
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
+            // Create wallet
+            Wallet NETWORK_WALLET = new Wallet(keySize: 1024);
+            Console.WriteLine($"Wallet with publicKey:{NETWORK_WALLET.publicKey}\nand privateKey:{NETWORK_WALLET.GetPrivateKey()}");
+
             // Create Blockchain instance
             Blockchain blockchain = Blockchain.CreateBlockchain(
-                firstMint: new Transaction("AntonioPublicKey", "AntonioPublicKey", 1000000),
+                firstMint: new Transaction(NETWORK_WALLET.publicKey, "AntonioPublicKey", 1000000),
                 difficulty: 2,
                 blockTime: 5,
                 reward: 420
@@ -44,6 +48,10 @@ namespace ZRD
             // Mutate Block -> Blockchain is compromised
             // blockchain.chain.Last.Value.data[0].Amount += 150;
             // Console.WriteLine($"\nBlockchain is {(blockchain.IsValid() ? "VALID" : "COMPROMISED")}\n");
+
+            // Look for balance for AntonioPublicKey
+            int balance = blockchain.GetBalance("AntonioPublicKey");
+            Console.WriteLine($"Amount for key AntonioPublicKey : {balance}");
 
         }
     }
