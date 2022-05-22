@@ -24,14 +24,28 @@ namespace WalletTestsNS
         public void Wallet_CanConstruct()
         {
             Assert.IsNotEmpty(this.wallet.publicKey);
-            Assert.IsNotEmpty(this.wallet.GetPrivateKey());
+            Assert.IsNotEmpty(this.wallet.GetPrivateKeyStringBase64());
         }
 
         [Test]
-        public void External_PrivateMemberAccess()
+        public void External_PrivateMemberAccess_BytesArray()
         {
-            string privateKey = this.wallet.GetPrivateKey();
+            byte[] privateKey = this.wallet.GetPrivateKeyBytesArray();
             Assert.IsNotEmpty(privateKey);
+        }
+
+        [Test]
+        public void External_PrivateMemberAccess_Base64()
+        {
+            string privateKey = this.wallet.GetPrivateKeyStringBase64();
+            Assert.IsNotEmpty(privateKey);
+        }
+
+        [Test]
+        public void External_CanConvertPublicKeyTo_Base64String()
+        {
+            string publicKey = this.wallet.GetPublicKeyStringBase64();
+            Assert.IsNotEmpty(publicKey);
         }
 
     }

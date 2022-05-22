@@ -9,8 +9,8 @@ namespace WalletNS
     public class Wallet
     {
 
-        public string publicKey;
-        private string privateKey;
+        public byte[] publicKey;
+        private byte[] privateKey;
 
         /// <summary>
         /// Constructor for a <c>Wallet</c> object.
@@ -19,13 +19,23 @@ namespace WalletNS
         public Wallet(int keySize)
         {
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(keySize);
-            this.publicKey = Convert.ToBase64String(rsa.ExportSubjectPublicKeyInfo());
-            this.privateKey = Convert.ToBase64String(rsa.ExportPkcs8PrivateKey());
+            this.publicKey = rsa.ExportSubjectPublicKeyInfo();
+            this.privateKey = rsa.ExportPkcs8PrivateKey();
         }
 
-        public string GetPrivateKey()
+        public string GetPrivateKeyStringBase64()
+        {
+            return Convert.ToBase64String(this.privateKey);
+        }
+
+        public byte[] GetPrivateKeyBytesArray()
         {
             return this.privateKey;
+        }
+
+        public string GetPublicKeyStringBase64()
+        {
+            return Convert.ToBase64String(this.publicKey);
         }
     }
 }
