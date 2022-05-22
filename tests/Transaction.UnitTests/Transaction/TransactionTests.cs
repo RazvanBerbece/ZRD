@@ -11,11 +11,13 @@ namespace TransactionTestsNS
 
         // Generic values which are Setup for every test
         private List<Transaction> list;
+        private System.Diagnostics.Stopwatch watch;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             this.list = new List<Transaction> { };
+            this.watch = new System.Diagnostics.Stopwatch();
         }
 
         [TearDown]
@@ -75,7 +77,7 @@ namespace TransactionTestsNS
         [TestCase(3)]
         [TestCase(5)]
         [TestCase(7)]
-        [TestCase(999)]
+        [TestCase(99)]
         public void Static_Can_GenerateRandomTransactions(int numberOfTransactions)
         {
 
@@ -100,8 +102,17 @@ namespace TransactionTestsNS
             {
                 try
                 {
-                    // Generate 
+                    // Generate & time
+                    // It seems the function is slow for bigger numberOfTransactions
+                    //
+                    // Example runs :
+                    // numberOfTransactions = 5 => 1026ms = 1.026s
+                    // numberOfTransactions = 7 => 1548ms = 1.548s
+                    // numberOfTransactions = 99 => 20584ms = 20.584s
+                    this.watch.Start();
                     list = Transaction.GenerateRandomTransactions(numberOfTransactions);
+                    this.watch.Stop();
+                    Console.WriteLine($"\nGenerateRandomTransactions({numberOfTransactions}) finished after {this.watch.ElapsedMilliseconds}ms\n");
 
                     // Guard - List length
                     Assert.That(list.Count == numberOfTransactions);

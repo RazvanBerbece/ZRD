@@ -23,12 +23,12 @@ namespace BlockTestsNS
 
             // Setup a generic block
             this.genericBlock = new Block(
-                Transaction.GenerateRandomTransactions(numberOfTransactions: 25),
+                this.randomTransactions,
                 "previousHash",
                 1
             );
             this.genericBlock.CalculateHash();
-            
+
         }
 
         [Test]
