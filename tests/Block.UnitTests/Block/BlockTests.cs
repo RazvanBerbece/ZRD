@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using BlockNS;
 using TransactionNS;
+using System.Text.RegularExpressions;
 
 namespace BlockTestsNS
 {
@@ -14,7 +15,7 @@ namespace BlockTestsNS
         private List<Transaction> emptyList;
         private Block genericBlock;
 
-        [OneTimeSetUp]
+        [SetUp]
         public void Setup()
         {
             this.randomTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 10);
@@ -26,6 +27,7 @@ namespace BlockTestsNS
                 "previousHash",
                 1
             );
+            this.genericBlock.CalculateHash();
             
         }
 
@@ -43,10 +45,22 @@ namespace BlockTestsNS
             Assert.IsNotEmpty(blockEmptyTransactions.hash);
         }
 
-        [Test]
-        public void Block_CanBeMined()
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        public void Block_CanBeMined(int difficulty)
         {
+            // Mine new block
+            this.genericBlock.Mine(difficulty);
 
+            // Setup expected regex patern
+            string regexHashPattern = $"^(0){{{difficulty}}}.*";
+            Regex hashExpression = new Regex(regexHashPattern, RegexOptions.Compiled);
+            MatchCollection hashMatches = hashExpression.Matches(this.genericBlock.hash);
+
+            Assert.Greater(hashMatches.Count, 0);
         }
 
         [Test]
