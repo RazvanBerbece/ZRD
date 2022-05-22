@@ -83,11 +83,8 @@ namespace TransactionNS
                 {
                     RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
                     rsa.ImportParameters(wallet.GetKeyPairParams());
-                    Console.WriteLine("Imported key pair\n");
 
                     byte[] signature = rsa.SignData(originalData, SHA256.Create());
-                    Console.WriteLine("Signed using key pair\n");
-
                     this.signature = Convert.ToBase64String(signature);
                 }
                 catch (Exception e)

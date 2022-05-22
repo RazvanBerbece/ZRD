@@ -113,7 +113,7 @@ namespace TransactionTestsNS
                     this.watch.Start();
                     list = Transaction.GenerateRandomTransactions(numberOfTransactions);
                     this.watch.Stop();
-                    Console.WriteLine($"\nGenerateRandomTransactions({numberOfTransactions}) finished after {this.watch.ElapsedMilliseconds}ms\n");
+                    Console.WriteLine($"GenerateRandomTransactions({numberOfTransactions}) finished after {this.watch.ElapsedMilliseconds}ms\n");
 
                     // Guard - List length
                     Assert.That(list.Count == numberOfTransactions);
