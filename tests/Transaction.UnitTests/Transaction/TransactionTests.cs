@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using BlockchainNS;
+using NUnit.Framework;
 using TransactionNS;
 using System.Collections.Generic;
 using System;
@@ -15,11 +16,18 @@ namespace TransactionTestsNS
         private List<Transaction> list;
         private System.Diagnostics.Stopwatch watch;
 
+        private Wallet NETWORK_WALLET; // used for rewards, first mint, etc.
+        private Wallet walletA; // main wallet
+        private Wallet walletB; // secondary wallet
+
         [OneTimeSetUp]
-        public void Setup()
+        public void OneTimeSetup()
         {
             this.list = new List<Transaction> { };
             this.watch = new System.Diagnostics.Stopwatch();
+            this.NETWORK_WALLET = new Wallet(1024);
+            this.walletA = new Wallet(1024);
+            this.walletB = new Wallet(1024);
         }
 
         [TearDown]
@@ -166,16 +174,29 @@ namespace TransactionTestsNS
         {
             try
             {
+                // Setup blockchain
+                Blockchain blockchain = Blockchain.CreateBlockchain(
+                        firstMint: new Transaction(
+                            this.NETWORK_WALLET.GetPublicKeyStringBase64(),
+                            this.walletA.GetPublicKeyStringBase64(),
+                            1000000
+                            ),
+                        blockchainWallet: this.NETWORK_WALLET,
+                        difficulty: 2,
+                        blockTime: 5,
+                        reward: 420
+                    );
+
                 // Transaction to be asserted by case
                 Transaction transaction = new Transaction(senderKey, receiverKey, amount);
 
                 switch (expectedValidation)
                 {
                     case true:
-                        Assert.IsTrue(transaction.IsValid());
+                        Assert.IsTrue(transaction.IsValid(blockchain));
                         break;
                     case false:
-                        Assert.IsFalse(transaction.IsValid());
+                        Assert.IsFalse(transaction.IsValid(blockchain));
                         break;
                 }
             }

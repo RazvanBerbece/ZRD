@@ -10,6 +10,7 @@
  *  
  */
 
+using BlockchainNS;
 using System;
 using StaticsNS;
 using System.Collections.Generic;
@@ -83,7 +84,7 @@ namespace TransactionNS
                     RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
                     rsa.ImportParameters(wallet.GetKeyPairParams());
 
-                    byte[] signature = rsa.SignData(originalData, SHA256.Create());
+                    byte[] signature = rsa.SignData(originalData, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
                     this.signature = Convert.ToBase64String(signature);
                 }
                 catch (Exception e)
@@ -94,9 +95,37 @@ namespace TransactionNS
             }
         }
 
-        public bool IsValid()
+        public bool IsValid(Blockchain chain)
         {
-            throw new NotImplementedException();
+            // Because Transactions can't have wrong field values (empty strings, negative values, 0s) by design,
+            // here we only have to test that:
+            //      - the hash matches (between re-calculated hash using current field values and instance hash)
+            //      - the signature is verified with the sender public key
+            //      - sender's balance is higher than amount sent
+            //
+
+            if (this.Amount > chain.GetBalance(this.Sender))
+            {
+                return false;
+            }
+
+            // Calculate hash value of current transaction
+            string concatenatedData = this.Sender + this.Receiver + this.Amount.ToString() + id;
+            string calculatedHash = Statics.CreateHashSHA256(concatenatedData);
+            if (this.hash != calculatedHash)
+            {
+                return false;
+            }
+
+            // Get bytes arrays for hash and signature
+            byte[] bytesHash = Convert.FromBase64String(this.hash);
+            byte[] signatureHash = Convert.FromBase64String(this.signature);
+            if (!Statics.SignatureIsValid(bytesHash, signatureHash, this.Sender))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public static List<Transaction> GenerateRandomTransactions(int numberOfTransactions)
@@ -125,6 +154,7 @@ namespace TransactionNS
 
             return transactions; 
         }
+
     }
 
 }

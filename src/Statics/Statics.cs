@@ -7,6 +7,10 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Collections.Generic;
 using TransactionNS;
+using System;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Crypto.Parameters;
 
 namespace StaticsNS
 {
@@ -40,6 +44,33 @@ namespace StaticsNS
                 transaction.Amount.ToString();
 
             return CreateHashSHA256(dataString);
+        }
+
+        public static bool SignatureIsValid(byte[] data, byte[] signature, string publicKeyBase64String)
+        {
+
+            using (var sha256 = SHA256.Create())
+            {
+                // Get RSA params from base64 encoded public key
+
+                // Get bytes array of publicKeyBase64String
+                byte[] publicKeyBytes = Convert.FromBase64String(publicKeyBase64String);
+
+                // Use BouncyCastle 3rd party lib to create a RsaKeyParameters (c# std) from asymmetricKeyParameter (BouncyCastle)
+                AsymmetricKeyParameter asymmetricKeyParameter = PublicKeyFactory.CreateKey(publicKeyBytes);
+                RsaKeyParameters rsaKeyParameters = (RsaKeyParameters)asymmetricKeyParameter;
+
+                RSAParameters rsaParameters = new()
+                {
+                    Modulus = rsaKeyParameters.Modulus.ToByteArrayUnsigned(),
+                    Exponent = rsaKeyParameters.Exponent.ToByteArrayUnsigned()
+                };
+
+                RSACryptoServiceProvider rsa = new();
+                rsa.ImportParameters(rsaParameters);
+
+                return rsa.VerifyData(data, signature, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+            }
         }
 
         /**
