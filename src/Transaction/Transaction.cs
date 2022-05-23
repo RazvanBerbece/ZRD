@@ -62,7 +62,7 @@ namespace TransactionNS
         /// Signs the transaction against a wallet using SHA256 signature.
         /// Verifies that that the publicKey of the wallet matches the transaction sender's publicKey.
         /// </summary>
-        /// <param name="wallet">Wallet used to sign the transaction</param>
+        /// <param name="wallet">Wallet used to sign the transaction.</param>
         public void SignTransaction(Wallet wallet)
         {
             if (wallet == null)

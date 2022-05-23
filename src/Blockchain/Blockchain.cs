@@ -19,7 +19,7 @@ namespace BlockchainNS
 
         public int reward;
 
-        public List<Transaction> unconfirmedTransactions; // pool of transactions to be confirmed
+        public List<Transaction> unconfirmedTransactions; // pool of transactions to be confirmed & mined into a new Block
 
         public int blockTime;
 
@@ -30,10 +30,10 @@ namespace BlockchainNS
         /// </summary>
         /// <param name="genesisBlock">Starting block.</param>
         /// <param name="chain">Initial chain. Usually, it only contains the Genesis block.</param>
-        /// <param name="blockchainWallet">The network wallet that issues new coins</param>
+        /// <param name="blockchainWallet">The network wallet that issues new coins.</param>
         /// <param name="difficulty">Amount of effort required to solve the computational problem.</param>
-        /// <param name="blockTime">Estimated time (in seconds) it takes for a new block to be added to the chain after mining.</param>
-        /// <param name="reward">Reward amount offered to miner that solves the computational problem.</param>
+        /// <param name="blockTime">Estimated time (in seconds) it takes for a new block to be mined. Used to dynamically change the blockchain difficulty.</param>
+        /// <param name="reward">Reward amount offered to miner that solves the computational problem and mines a new block with the unconfirmed transactions.</param>
         public Blockchain(Block genesisBlock, LinkedList<Block> chain, Wallet blockchainWallet, int difficulty, int blockTime, int reward)
         {
             this.genesisBlock = genesisBlock;
@@ -148,7 +148,7 @@ namespace BlockchainNS
         /// This kickstarts the mining process - creating & mining a block with valid unconfirmed transactions and adding it to the chain.
         /// Also rewards the miner with the set blockchain reward for mining new blocks.
         /// </summary>
-        /// <param name="rewardeePublicKey">Address to send block mine reward to</param>
+        /// <param name="minerPublicKey">Address to send successful block mine reward to.</param>
         public void MineUnconfirmedTransactions(string minerPublicKey) 
         {
 

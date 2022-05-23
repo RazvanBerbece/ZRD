@@ -37,10 +37,10 @@ namespace MerkleTreeNS
         /// <summary>
         /// This function takes in a list of MerkleNodes
         /// and organises it in a tree (list data structure for internal representation)
-        /// by pushing MerkleNodes with parents and calculated value to a new list and returning it
+        /// by pushing MerkleNodes with parents and calculated value to a new list and returning it.
         /// </summary>
         /// <param name="transactionNodes">List of tree nodes organised so far. Starts initialised with MerkleNodes with no parents.</param>
-        /// <returns>MerkleNode which can be used as root of the MerkleTree</returns>
+        /// <returns>MerkleNode which can be used as root of the MerkleTree.</returns>
         static public MerkleNode MakeMerkleTreeFromTransactionList(List<MerkleNode> transactionNodes)
         {
 
