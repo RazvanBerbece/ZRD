@@ -30,6 +30,7 @@ namespace BlockchainNS
         /// </summary>
         /// <param name="genesisBlock">Starting block.</param>
         /// <param name="chain">Initial chain. Usually, it only contains the Genesis block.</param>
+        /// <param name="blockchainWallet">The network wallet that issues new coins</param>
         /// <param name="difficulty">Amount of effort required to solve the computational problem.</param>
         /// <param name="blockTime">Estimated time (in seconds) it takes for a new block to be added to the chain after mining.</param>
         /// <param name="reward">Reward amount offered to miner that solves the computational problem.</param>
@@ -53,12 +54,12 @@ namespace BlockchainNS
             if ((DateTime.Now - block.timestamp).Seconds > this.blockTime)
             {
                 this.difficulty -= 1;
-                Console.WriteLine($"Adjusted difficulty to {this.difficulty}\n");
+                // Console.WriteLine($"Adjusted difficulty to {this.difficulty}\n");
             }
             else
             {
                 this.difficulty += 1;
-                Console.WriteLine($"Adjusted difficulty to {this.difficulty}\n");
+                // Console.WriteLine($"Adjusted difficulty to {this.difficulty}\n");
             }
         }
 
