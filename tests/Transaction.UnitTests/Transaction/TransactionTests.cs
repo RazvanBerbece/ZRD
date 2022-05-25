@@ -1,8 +1,10 @@
-﻿using NUnit.Framework;
+﻿using BlockchainNS;
+using NUnit.Framework;
 using TransactionNS;
 using System.Collections.Generic;
 using System;
 using WalletNS;
+using System.ComponentModel;
 
 namespace TransactionTestsNS
 {
@@ -14,11 +16,18 @@ namespace TransactionTestsNS
         private List<Transaction> list;
         private System.Diagnostics.Stopwatch watch;
 
+        private Wallet NETWORK_WALLET; // used for rewards, first mint, etc.
+        private Wallet walletA; // main wallet
+        private Wallet walletB; // secondary wallet
+
         [OneTimeSetUp]
-        public void Setup()
+        public void OneTimeSetup()
         {
             this.list = new List<Transaction> { };
             this.watch = new System.Diagnostics.Stopwatch();
+            this.NETWORK_WALLET = new Wallet(1024);
+            this.walletA = new Wallet(1024);
+            this.walletB = new Wallet(1024);
         }
 
         [TearDown]
@@ -113,7 +122,7 @@ namespace TransactionTestsNS
                     this.watch.Start();
                     list = Transaction.GenerateRandomTransactions(numberOfTransactions);
                     this.watch.Stop();
-                  
+
                     Console.WriteLine($"GenerateRandomTransactions({numberOfTransactions}) finished after {this.watch.ElapsedMilliseconds}ms\n");
 
                     // Guard - List length
@@ -152,6 +161,78 @@ namespace TransactionTestsNS
 
             // Verify that transaction was signed
             Assert.NotNull(transaction.signature);
+        }
+
+        [TestCase("senderPublicKey", "receiverPublicKey", 2000, true)]
+        [TestCase("placeholder", "placeholder", 2000, false)]
+        [TestCase("senderPublicKey", "", 2000, false)]
+        [TestCase("", "receiverPublicKey", 2000, false)]
+        [TestCase("", "receiverPublicKey", -2000, false)]
+        [TestCase("senderPublicKey", "receiverPublicKey", 0, false)]
+        [TestCase("", "", -1, false)]
+        public void Transaction_CanValidate(string senderKey, string receiverKey, int amount, bool expectedValidation)
+        {
+            try
+            {
+                // Setup blockchain
+                Blockchain blockchain = Blockchain.CreateBlockchain(
+                        firstMint: new Transaction(
+                            this.NETWORK_WALLET.GetPublicKeyStringBase64(),
+                            this.walletA.GetPublicKeyStringBase64(),
+                            1000000
+                            ),
+                        blockchainWallet: this.NETWORK_WALLET,
+                        difficulty: 2,
+                        blockTime: 5,
+                        reward: 420
+                    );
+
+                // Transaction instatiation to be caught  
+                Transaction transactionThrow = new Transaction(senderKey, receiverKey, amount);
+
+                // Actual transaction to validate with correct format public keys
+                Transaction transactionToValidate = new Transaction(this.walletA.GetPublicKeyStringBase64(), this.walletB.GetPublicKeyStringBase64(), amount);
+
+                switch (expectedValidation)
+                {
+                    case true:
+                        Assert.IsTrue(transactionToValidate.IsValid(blockchain));
+                        break;
+                    case false:
+                        // At this point in code the transaction will be meddled with and the test case will assert that the validation fails
+                        transactionToValidate.Amount += 1000;
+                        Assert.IsFalse(transactionToValidate.IsValid(blockchain));
+                        break;
+                }
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                WarningException warning = new WarningException(
+                    $"Transaction constructor threw {e.GetType()} to instantiate properly: {e.Message}\n" +
+                    $"This is expected considering the TestCase params and it should pass as it is the correct behaviour when constructing a Transaction.\n"
+                    );
+                Console.Write(warning.ToString());
+                Assert.Pass();
+            }
+            catch (ArgumentException e)
+            {
+                WarningException warning = new WarningException(
+                    $"Transaction constructor threw {e.GetType()} to instantiate properly: {e.Message}\n" +
+                    $"This is expected considering the TestCase params and it should pass as it is the correct behaviour when constructing a Transaction.\n"
+                    );
+                Console.Write(warning.ToString());
+                Assert.Pass();
+            }
+            catch (NotImplementedException e)
+            {
+                WarningException warning = new WarningException(
+                    $"Transaction code threw {e.GetType()}: {e.Message}\n" +
+                    $"This is expected considering the TestCase params and it should pass as it is the correct behaviour when constructing a Transaction.\n"
+                    );
+                Console.Write(warning.ToString());
+                Assert.Fail();
+            }
+
         }
 
     }

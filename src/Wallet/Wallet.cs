@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
+using BlockchainNS;
+using TransactionNS;
 
 namespace WalletNS
 {
@@ -44,6 +46,24 @@ namespace WalletNS
         public RSAParameters GetKeyPairParams()
         {
             return this.keyPair;
+        }
+
+        public void SendCurrency(int amount, string receiverPublicKey, Blockchain blockchain)
+        {
+
+            if (amount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("Wallet cannot send negative or 0 currency amounts");
+            }
+
+            if (receiverPublicKey == "")
+            {
+                throw new ArgumentException("receiverPublicKey cannot be the empty string");
+            }
+
+            Transaction transaction = new Transaction(this.GetPublicKeyStringBase64(), receiverPublicKey, amount);
+            transaction.SignTransaction(this);
+            blockchain.AddTransaction(transaction);
         }
 
     }

@@ -2,6 +2,7 @@
 using BlockNS;
 using System.Collections.Generic;
 using TransactionNS;
+using WalletNS;
 
 namespace BlockchainNS
 {
@@ -18,25 +19,30 @@ namespace BlockchainNS
 
         public int reward;
 
-        public List<Transaction> unconfirmedTransactions; // pool of transactions to be confirmed
+        public List<Transaction> unconfirmedTransactions; // pool of transactions to be confirmed & mined into a new Block
 
         public int blockTime;
+
+        Wallet blockchainWallet;
 
         /// <summary>
         /// Constructor for a <c>Blockchain</c> object.
         /// </summary>
         /// <param name="genesisBlock">Starting block.</param>
         /// <param name="chain">Initial chain. Usually, it only contains the Genesis block.</param>
+        /// <param name="blockchainWallet">The network wallet that issues new coins.</param>
         /// <param name="difficulty">Amount of effort required to solve the computational problem.</param>
-        /// <param name="blockTime">Estimated time (in seconds) it takes for a new block to be added to the chain after mining.</param>
-        /// <param name="reward">Reward amount offered to miner that solves the computational problem.</param>
-        public Blockchain(Block genesisBlock, LinkedList<Block> chain, int difficulty, int blockTime, int reward)
+        /// <param name="blockTime">Estimated time (in seconds) it takes for a new block to be mined. Used to dynamically change the blockchain difficulty.</param>
+        /// <param name="reward">Reward amount offered to miner that solves the computational problem and mines a new block with the unconfirmed transactions.</param>
+        public Blockchain(Block genesisBlock, LinkedList<Block> chain, Wallet blockchainWallet, int difficulty, int blockTime, int reward)
         {
             this.genesisBlock = genesisBlock;
             this.chain = chain;
             this.difficulty = difficulty;
             this.blockTime = blockTime;
             this.reward = reward;
+            this.unconfirmedTransactions = new List<Transaction> { };
+            this.blockchainWallet = blockchainWallet;
         }
 
         public void AddBlock(Block block)
@@ -48,12 +54,12 @@ namespace BlockchainNS
             if ((DateTime.Now - block.timestamp).Seconds > this.blockTime)
             {
                 this.difficulty -= 1;
-                Console.WriteLine($"Adjusted difficulty to {this.difficulty}\n");
+                // Console.WriteLine($"Adjusted difficulty to {this.difficulty}\n");
             }
             else
             {
                 this.difficulty += 1;
-                Console.WriteLine($"Adjusted difficulty to {this.difficulty}\n");
+                // Console.WriteLine($"Adjusted difficulty to {this.difficulty}\n");
             }
         }
 
@@ -67,7 +73,8 @@ namespace BlockchainNS
 
         public bool IsValid()
         {
-            Block previousBlock = new Block(null, null, -1);
+            Block previousBlock = this.chain.First.Value;
+
             foreach (Block block in this.chain)
             {
                 if (block.index == 0) // if Genesis block
@@ -104,7 +111,6 @@ namespace BlockchainNS
         {
             foreach (Transaction unconfirmedTransaction in this.unconfirmedTransactions)
             {
-
                 if (unconfirmedTransaction.hash == transaction.hash) // transaction is already unconfirmed on chain
                 {
                     return;
@@ -139,7 +145,37 @@ namespace BlockchainNS
             return balance;
         }
 
-        public static Blockchain CreateBlockchain(Transaction firstMint, int difficulty, int blockTime, int reward)
+        /// <summary>
+        /// This kickstarts the mining process - creating & mining a block with valid unconfirmed transactions and adding it to the chain.
+        /// Also rewards the miner with the set blockchain reward for mining new blocks.
+        /// </summary>
+        /// <param name="minerPublicKey">Address to send successful block mine reward to.</param>
+        public void MineUnconfirmedTransactions(string minerPublicKey) 
+        {
+
+            Transaction rewardTransaction = new Transaction(
+                this.blockchainWallet.GetPublicKeyStringBase64(),
+                minerPublicKey,
+                this.reward
+                );
+            rewardTransaction.SignTransaction(this.blockchainWallet);
+            this.AddTransaction(rewardTransaction);
+
+            List<Transaction> transactionsCopy = new List<Transaction> { };
+            transactionsCopy.AddRange(this.unconfirmedTransactions);
+
+            this.AddBlock(
+                new Block(
+                    transactionsCopy,
+                    chain.Last.Value.hash,
+                    chain.Last.Value.index + 1
+                    )
+                );
+
+            this.unconfirmedTransactions.Clear();
+        }
+
+        public static Blockchain CreateBlockchain(Transaction firstMint, Wallet blockchainWallet, int difficulty, int blockTime, int reward)
         {
             // Init Genesis block
             List<Transaction> genesisList = new List<Transaction> { };
@@ -150,7 +186,7 @@ namespace BlockchainNS
             LinkedList<Block> genesisChain = new LinkedList<Block> { };
             genesisChain.AddFirst(genesisBlock);
 
-            return new Blockchain(genesisBlock, genesisChain, difficulty, blockTime, reward);
+            return new Blockchain(genesisBlock, genesisChain, blockchainWallet, difficulty, blockTime, reward);
         }
 
     }
