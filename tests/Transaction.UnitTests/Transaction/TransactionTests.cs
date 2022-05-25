@@ -87,7 +87,7 @@ namespace TransactionTestsNS
         [TestCase(3)]
         [TestCase(5)]
         [TestCase(7)]
-        // [TestCase(99)]
+        [TestCase(99)]
         public void Static_Can_GenerateRandomTransactions(int numberOfTransactions)
         {
 
