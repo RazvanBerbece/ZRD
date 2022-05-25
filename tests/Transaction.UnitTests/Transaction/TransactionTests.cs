@@ -87,7 +87,7 @@ namespace TransactionTestsNS
         [TestCase(3)]
         [TestCase(5)]
         [TestCase(7)]
-        [TestCase(99)]
+        // [TestCase(99)]
         public void Static_Can_GenerateRandomTransactions(int numberOfTransactions)
         {
 
@@ -164,7 +164,7 @@ namespace TransactionTestsNS
         }
 
         [TestCase("senderPublicKey", "receiverPublicKey", 2000, true)]
-        // [TestCase("", "", , false)] <- TODO: BUILD THIS TEST CASE TO FORCE IsValid() TO RETURN FALSE
+        [TestCase("placeholder", "placeholder", 2000, false)]
         [TestCase("senderPublicKey", "", 2000, false)]
         [TestCase("", "receiverPublicKey", 2000, false)]
         [TestCase("", "receiverPublicKey", -2000, false)]
@@ -187,16 +187,21 @@ namespace TransactionTestsNS
                         reward: 420
                     );
 
-                // Transaction to be asserted by case
-                Transaction transaction = new Transaction(senderKey, receiverKey, amount);
+                // Transaction instatiation to be caught  
+                Transaction transactionThrow = new Transaction(senderKey, receiverKey, amount);
+
+                // Actual transaction to validate with correct format public keys
+                Transaction transactionToValidate = new Transaction(this.walletA.GetPublicKeyStringBase64(), this.walletB.GetPublicKeyStringBase64(), amount);
 
                 switch (expectedValidation)
                 {
                     case true:
-                        Assert.IsTrue(transaction.IsValid(blockchain));
+                        Assert.IsTrue(transactionToValidate.IsValid(blockchain));
                         break;
                     case false:
-                        Assert.IsFalse(transaction.IsValid(blockchain));
+                        // At this point in code the transaction will be meddled with and the test case will assert that the validation fails
+                        transactionToValidate.Amount += 1000;
+                        Assert.IsFalse(transactionToValidate.IsValid(blockchain));
                         break;
                 }
             }

@@ -73,7 +73,8 @@ namespace BlockchainNS
 
         public bool IsValid()
         {
-            Block previousBlock = new Block(null, null, -1);
+            Block previousBlock = this.chain.First.Value;
+
             foreach (Block block in this.chain)
             {
                 if (block.index == 0) // if Genesis block
