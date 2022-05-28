@@ -399,3 +399,4 @@ FodyWeavers.xsd
 
 # Custom Ignores
 .DS_Store
+.idea/
