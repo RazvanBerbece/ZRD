@@ -25,6 +25,7 @@ To see the CI workflow file, visit [continuous-integration.yml](.github/workflow
 
 ## CD
 Releases are automatically created on push events to the ```main``` branch.
+
 Pipeline work in progress.
 
 To see the CD workflow file, visit [continuous-deployment.yml](.github/workflows/continuous-deployment.yml)

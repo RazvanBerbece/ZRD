@@ -14,15 +14,16 @@ namespace ZRD
             Console.WriteLine("Running ZRD blockchain.\n");
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
-            // Create wallet
-            Wallet NETWORK_WALLET = new Wallet(keySize: 1024);
+            // Create network wallet & first user wallet
+            Wallet networkWallet = new Wallet(keySize: 1024);
+            Wallet antonioWallet = new Wallet(keySize: 1024);
 
-            Console.WriteLine($"Wallet with publicKey:{NETWORK_WALLET.GetPublicKeyStringBase64()}\nand privateKey:{NETWORK_WALLET.GetPrivateKeyStringBase64()}");
+            Console.WriteLine($"Antonio's Wallet with publicKey: {antonioWallet.GetPublicKeyStringBase64()}\n");
 
             // Create Blockchain instance
             Blockchain blockchain = Blockchain.CreateBlockchain(
-                firstMint: new Transaction(NETWORK_WALLET.GetPublicKeyStringBase64(), "AntonioPublicKey", 1000000),
-                blockchainWallet: NETWORK_WALLET,
+                firstMint: new Transaction(networkWallet.GetPublicKeyStringBase64(), antonioWallet.GetPublicKeyStringBase64(), 1000000),
+                blockchainWallet: networkWallet,
                 difficulty: 2,
                 blockTime: 5,
                 reward: 420
@@ -52,8 +53,8 @@ namespace ZRD
             // Console.WriteLine($"\nBlockchain is {(blockchain.IsValid() ? "VALID" : "COMPROMISED")}\n");
 
             // Look for balance for AntonioPublicKey
-            int balance = blockchain.GetBalance("AntonioPublicKey");
-            Console.WriteLine($"Amount for key AntonioPublicKey : {balance}");
+            int balance = blockchain.GetBalance(antonioWallet.GetPublicKeyStringBase64());
+            Console.WriteLine($"Amount for key {antonioWallet.GetPublicKeyStringBase64()} : {balance}");
 
         }
     }
