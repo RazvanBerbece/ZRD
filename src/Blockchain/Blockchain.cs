@@ -181,7 +181,8 @@ namespace BlockchainNS
             List<Transaction> genesisList = new List<Transaction> { };
             genesisList.Add(firstMint);
             Block genesisBlock = new Block(genesisList, "", 0);
-
+            genesisBlock.Mine(difficulty);
+            
             // Init returned chain & add Genesis block to it
             LinkedList<Block> genesisChain = new LinkedList<Block> { };
             genesisChain.AddFirst(genesisBlock);

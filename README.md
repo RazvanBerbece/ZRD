@@ -18,12 +18,16 @@ Uses .net5.0 and nUnit for testing.
 
 # CI/CD
 ## CI
-Continuous integration is implemented using GitHub Actions and runs 'dotnet test' to run the test harnesses on all Pull Request events.
+Continuous integration is implemented using GitHub Actions and runs ```dotnet build``` and ```dotnet test``` in a dotnet environment.
+This runs the test harness on all Pull Request events.
+
 To see the CI workflow file, visit [continuous-integration.yml](.github/workflows/continuous-integration.yml)
 
 ## CD
 Releases are automatically created on push events to the ```main``` branch.
+
 Pipeline work in progress.
+
 To see the CD workflow file, visit [continuous-deployment.yml](.github/workflows/continuous-deployment.yml)
 
 # Resources
