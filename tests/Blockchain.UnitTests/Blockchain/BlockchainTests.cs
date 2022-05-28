@@ -117,23 +117,115 @@ namespace BlockchainTestsNS
                 blockTime: 10,
                 reward: 10
             );
+
+            int balance;
+            switch (publicKey)
+            {
+                case "":
+                    balance = this.chain.GetBalance(publicKey);
+                    Assert.That(balance, Is.EqualTo(-1));
+                    break;
+                case "nonExistingKey":
+                    balance = this.chain.GetBalance(publicKey);
+                    Assert.That(balance, Is.EqualTo(0));
+                    break;
+                case "atRuntimePublicKey":
+                    publicKey = this.testWallet.GetPublicKeyStringBase64();
+                    balance = this.chain.GetBalance(publicKey);
+                    Assert.That(balance, Is.EqualTo(firstAmount));
+                    break;
+            }
+
+        }
+
+        [TestCase(1, TestName = "Test case #1, Testing on non-compromised blockchain of size 1")]
+        [TestCase(2, TestName = "Test case #2, Testing on compromised blockchain of size 1")]
+        [TestCase(3, TestName = "Test case #3, Testing on non-compromised blockchain of size >1")]
+        [TestCase(4, TestName = "Test case #4, Testing on compromised blockchain of size >1")]
+        public void Blockchain_CanValidate(int blockchainStatus)
+        {
             
-            if (publicKey == "")
+            // Setup test Blockchain
+            int firstAmount = 1000000;
+            this.chain = Blockchain.CreateBlockchain(
+                firstMint: new Transaction(
+                    this.networkWallet.GetPublicKeyStringBase64(),
+                    this.testWallet.GetPublicKeyStringBase64(),
+                    firstAmount
+                ),
+                blockchainWallet: this.networkWallet,
+                difficulty: 2,
+                blockTime: 10,
+                reward: 10
+            );
+
+            List<Transaction> randomTransactions;
+
+            switch (blockchainStatus)
             {
-                int balance = this.chain.GetBalance(publicKey);
-                Assert.That(balance, Is.EqualTo(-1));
+                case 1:
+                    // Test case #1, Testing on non-compromised blockchain of size 1
+                    Assert.That(this.chain.IsValid(), Is.True);
+                    break;
+                case 2:
+                    // Test case #2, Testing on compromised blockchain of size 1
+                    this.chain.chain.First.Value.data[0].Amount -= 100; // mutate first coin release transaction
+                    Assert.That(this.chain.IsValid(), Is.False);
+                    break;
+                case 3:
+                    // Test case #3, Testing on non-compromised blockchain of size >1
+                    // Add block 1 with random transactions
+                    randomTransactions = Transaction.GenerateRandomTransactions(10);
+                    Block randomBlockUncompromised1 = new Block(
+                        randomTransactions,
+                        this.chain.chain.Last.Value.hash,
+                        this.chain.chain.Last.Value.index + 1
+                    );
+                    randomBlockUncompromised1.hash = randomBlockUncompromised1.CalculateHash();
+                    this.chain.AddBlock(randomBlockUncompromised1);
+                    
+                    // Add block 2 with random transactions
+                    randomTransactions = Transaction.GenerateRandomTransactions(10);
+                    Block randomBlockUncompromised2 = new Block(
+                        randomTransactions,
+                        this.chain.chain.Last.Value.hash,
+                        this.chain.chain.Last.Value.index + 1
+                    );
+                    randomBlockUncompromised2.hash = randomBlockUncompromised2.CalculateHash();
+                    this.chain.AddBlock(randomBlockUncompromised2);
+                    
+                    Assert.That(this.chain.IsValid(), Is.True);
+                    break;
+                case 4:
+                    // Test case #4, Testing on compromised blockchain of size >1
+                    Random rnd = new Random();
+                    // Add block 1 with random transactions
+                    randomTransactions = Transaction.GenerateRandomTransactions(10);
+                    Block randomBlockCUncompromised1 = new Block(
+                        randomTransactions,
+                        this.chain.chain.Last.Value.hash,
+                        this.chain.chain.Last.Value.index + 1
+                    );
+                    randomBlockCUncompromised1.hash = randomBlockCUncompromised1.CalculateHash();
+                    this.chain.AddBlock(randomBlockCUncompromised1);
+                    
+                    // Add block 2 with random transactions AND mutate transaction post-hashing
+                    randomTransactions = Transaction.GenerateRandomTransactions(10);
+                    Block randomBlockCompromised1 = new Block(
+                        randomTransactions,
+                        this.chain.chain.Last.Value.hash,
+                        this.chain.chain.Last.Value.index + 1
+                    );
+                    randomBlockCompromised1.hash = randomBlockCompromised1.CalculateHash();
+                    this.chain.AddBlock(randomBlockCompromised1);
+                    
+                    // Mutate
+                    this.chain.chain.Last.Value.data[rnd.Next(1, 11)].Amount += -100;
+                    
+                    Assert.That(this.chain.IsValid(), Is.False);
+                    break;
             }
-            else if (publicKey == "nonExistingKey")
-            {
-                int balance = this.chain.GetBalance(publicKey);
-                Assert.That(balance, Is.EqualTo(0));
-            }
-            else
-            {
-                publicKey = this.testWallet.GetPublicKeyStringBase64();
-                int balance = this.chain.GetBalance(publicKey);
-                Assert.That(balance, Is.EqualTo(firstAmount));
-            }
+
         }
 
     }

@@ -85,6 +85,19 @@ namespace BlockchainNS
             {
                 if (block.index == 0) // if Genesis block
                 {
+                    // Still validate for Genesis block
+                    // Guard - Genesis block hash matches
+                    if (this.genesisBlock.hash != block.CalculateHash())
+                    {
+                        return false;
+                    }
+                    
+                    // Guard - Previous hash is ""
+                    if (block.previousHash != "")
+                    {
+                        return false;
+                    }
+                    
                     previousBlock = this.genesisBlock;
                     continue;
                 }
