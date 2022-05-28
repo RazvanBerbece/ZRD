@@ -1,4 +1,4 @@
-﻿using BlockchainNS;
+using BlockchainNS;
 using NUnit.Framework;
 using TransactionNS;
 using System.Collections.Generic;
