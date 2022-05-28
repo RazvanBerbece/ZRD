@@ -130,6 +130,12 @@ namespace BlockchainNS
          */
         public int GetBalance(string publicKey)
         {
+
+            if (string.IsNullOrEmpty(publicKey))
+            {
+                return -1;
+            }
+            
             int balance = 0;
 
             foreach (Block block in this.chain)

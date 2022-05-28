@@ -52,8 +52,8 @@ namespace BlockchainTestsNS
             }
         }
 
-        [TestCase(true)]
-        [TestCase(false)]
+        [TestCase(true, TestName = "Test case #1, Using Block object instance")]
+        [TestCase(false, TestName = "Test case #2, Using null for Block object instance")]
         public void Blockchain_CanAddBlock(bool testWithNullBlock)
         {
             
@@ -94,6 +94,45 @@ namespace BlockchainTestsNS
                 {
                     Assert.Pass();
                 }
+            }
+        }
+
+        [TestCase("")]
+        [TestCase(null)]
+        [TestCase("atRuntimePublicKey")]
+        [TestCase("nonExistingKey")]
+        public void Blockchain_GetsBalance(string publicKey)
+        {
+            
+            // Setup test Blockchain
+            int firstAmount = 1000000;
+            this.chain = Blockchain.CreateBlockchain(
+                firstMint: new Transaction(
+                    this.networkWallet.GetPublicKeyStringBase64(),
+                    this.testWallet.GetPublicKeyStringBase64(),
+                    firstAmount
+                ),
+                blockchainWallet: this.networkWallet,
+                difficulty: 2,
+                blockTime: 10,
+                reward: 10
+            );
+            
+            if (publicKey == "")
+            {
+                int balance = this.chain.GetBalance(publicKey);
+                Assert.That(balance, Is.EqualTo(-1));
+            }
+            else if (publicKey == "nonExistingKey")
+            {
+                int balance = this.chain.GetBalance(publicKey);
+                Assert.That(balance, Is.EqualTo(0));
+            }
+            else
+            {
+                publicKey = this.testWallet.GetPublicKeyStringBase64();
+                int balance = this.chain.GetBalance(publicKey);
+                Assert.That(balance, Is.EqualTo(firstAmount));
             }
         }
 
