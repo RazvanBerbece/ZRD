@@ -12,14 +12,14 @@ namespace WalletTestsNS
     {
 
         // Generic values which are Setup for every test
-        private Wallet NETWORK_WALLET; // used for rewards, first mint, etc.
+        private Wallet networkWallet; // used for rewards, first mint, etc.
         private Wallet walletA; // main wallet
         private Wallet walletB; // secondary wallet
 
         [OneTimeSetUp]
         public void Setup()
         {
-            this.NETWORK_WALLET = new Wallet(1024);
+            this.networkWallet = new Wallet(1024);
             this.walletA = new Wallet(1024);
             this.walletB = new Wallet(1024);
         }
@@ -69,11 +69,11 @@ namespace WalletTestsNS
             // Setup blockchain
             Blockchain blockchain = Blockchain.CreateBlockchain(
                     firstMint: new Transaction(
-                        this.NETWORK_WALLET.GetPublicKeyStringBase64(),
+                        this.networkWallet.GetPublicKeyStringBase64(),
                         this.walletA.GetPublicKeyStringBase64(),
                         1000000
                         ),
-                    blockchainWallet: this.NETWORK_WALLET,
+                    blockchainWallet: this.networkWallet,
                     difficulty: 2,
                     blockTime: 5,
                     reward: 420

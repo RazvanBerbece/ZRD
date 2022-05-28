@@ -18,10 +18,11 @@ Uses .net5.0 and nUnit for testing.
 
 # CI/CD
 ## CI
-Pipeline work in progress
+Continuous integration is implemented using GitHub Actions and runs 'dotnet test' to run the test harnesses on all Pull Request events.
 
 ## CD
-Pipeline work in progress
+Releases are automatically created on push events to the ```main``` branch.
+Pipeline work in progress.
 
 # Resources
 1. https://www.freecodecamp.org/news/build-a-blockchain-in-golang-from-scratch/
