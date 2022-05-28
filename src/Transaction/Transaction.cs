@@ -72,10 +72,8 @@ namespace TransactionNS
 
             if (wallet.GetPublicKeyStringBase64() == this.Sender)
             {
-                // Create a UnicodeEncoder to convert between byte array and string.
-                ASCIIEncoding ByteConverter = new ASCIIEncoding();
-
-                byte[] originalData = ByteConverter.GetBytes(this.hash);
+                
+                byte[] originalData = Convert.FromBase64String(this.hash);
 
                 // Create instance of RSACryptoServiceProvider using the
                 // key from RSAParameters

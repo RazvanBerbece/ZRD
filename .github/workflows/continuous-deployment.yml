@@ -1,0 +1,34 @@
+name: continuous-deployment
+
+on:
+  push:
+    branches: [ 'main' ]
+
+  workflow_dispatch:
+
+jobs:
+
+  Release:
+
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v2
+      
+      # Create an automatically bumped, indexed tag and push it to the branch
+      - name: Bump Version and Push Tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+
+      # Create a GH Release using the output of the tag_version step
+      - name: Create a GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
+    

@@ -1,4 +1,4 @@
-﻿using BlockchainNS;
+using BlockchainNS;
 using NUnit.Framework;
 using TransactionNS;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace TransactionTestsNS
         private List<Transaction> list;
         private System.Diagnostics.Stopwatch watch;
 
-        private Wallet NETWORK_WALLET; // used for rewards, first mint, etc.
+        private Wallet networkWallet; // used for rewards, first mint, etc.
         private Wallet walletA; // main wallet
         private Wallet walletB; // secondary wallet
 
@@ -25,15 +25,9 @@ namespace TransactionTestsNS
         {
             this.list = new List<Transaction> { };
             this.watch = new System.Diagnostics.Stopwatch();
-            this.NETWORK_WALLET = new Wallet(1024);
+            this.networkWallet = new Wallet(1024);
             this.walletA = new Wallet(1024);
             this.walletB = new Wallet(1024);
-        }
-
-        [TearDown]
-        public void Teardown()
-        {
-            this.list.Clear();
         }
 
         [TestCase("senderKey", "receiverKey", int.MinValue)]
@@ -49,7 +43,7 @@ namespace TransactionTestsNS
             {
                 try
                 {
-                    Transaction transaction = new Transaction(senderKey, receiverKey, amount);
+                    Transaction _ = new Transaction(senderKey, receiverKey, amount);
                     Assert.Fail("Transaction constructor should throw ArgumentException for empty keys");
                 }
                 catch (Exception e)
@@ -66,7 +60,7 @@ namespace TransactionTestsNS
             {
                 try
                 {
-                    Transaction transaction = new Transaction(senderKey, receiverKey, amount);
+                    Transaction _ = new Transaction(senderKey, receiverKey, amount);
                     Assert.Fail("Transaction constructor should throw ArgumentOutOfRangeException for equal or smaller than 0 transaction amounts");
                 }
                 catch (Exception e)
@@ -177,22 +171,23 @@ namespace TransactionTestsNS
                 // Setup blockchain
                 Blockchain blockchain = Blockchain.CreateBlockchain(
                         firstMint: new Transaction(
-                            this.NETWORK_WALLET.GetPublicKeyStringBase64(),
+                            this.networkWallet.GetPublicKeyStringBase64(),
                             this.walletA.GetPublicKeyStringBase64(),
                             1000000
                             ),
-                        blockchainWallet: this.NETWORK_WALLET,
+                        blockchainWallet: this.networkWallet,
                         difficulty: 2,
                         blockTime: 5,
                         reward: 420
                     );
 
                 // Transaction instatiation to be caught  
-                Transaction transactionThrow = new Transaction(senderKey, receiverKey, amount);
+                Transaction _ = new Transaction(senderKey, receiverKey, amount);
 
                 // Actual transaction to validate with correct format public keys
                 Transaction transactionToValidate = new Transaction(this.walletA.GetPublicKeyStringBase64(), this.walletB.GetPublicKeyStringBase64(), amount);
-
+                transactionToValidate.SignTransaction(this.walletA);
+                
                 switch (expectedValidation)
                 {
                     case true:
@@ -208,7 +203,7 @@ namespace TransactionTestsNS
             catch (ArgumentOutOfRangeException e)
             {
                 WarningException warning = new WarningException(
-                    $"Transaction constructor threw {e.GetType()} to instantiate properly: {e.Message}\n" +
+                    $"Transaction constructor threw {e.GetType()} and failed to instantiate properly: {e.Message}\n" +
                     $"This is expected considering the TestCase params and it should pass as it is the correct behaviour when constructing a Transaction.\n"
                     );
                 Console.Write(warning.ToString());
@@ -217,7 +212,7 @@ namespace TransactionTestsNS
             catch (ArgumentException e)
             {
                 WarningException warning = new WarningException(
-                    $"Transaction constructor threw {e.GetType()} to instantiate properly: {e.Message}\n" +
+                    $"Transaction constructor threw {e.GetType()} and failed to instantiate properly: {e.Message}\n" +
                     $"This is expected considering the TestCase params and it should pass as it is the correct behaviour when constructing a Transaction.\n"
                     );
                 Console.Write(warning.ToString());

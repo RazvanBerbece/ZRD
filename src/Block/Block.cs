@@ -10,6 +10,7 @@
  *  
  */
 
+using BlockchainNS;
 using System;
 using StaticsNS;
 using TransactionNS;
@@ -49,9 +50,11 @@ namespace BlockNS
             this.root = this.tree.root;
         }
 
-        /*
-         * Calculates the hash value of the current Block instance
-         */
+        /// <summary>
+        /// Calculates the hash value of the current Block instance using the index, data, previous hash, PoW, timestamp.
+        /// TODO: Add Merkle hash support in hash calculation ?
+        /// </summary>
+        /// <returns>Hash value of Block instance</returns>
         public string CalculateHash()
         {
             string concatenatedBlockData =
@@ -63,15 +66,12 @@ namespace BlockNS
 
             return Statics.CreateHashSHA256(concatenatedBlockData);
         }
-
-        /**
-         * Mines a new block on the blockchain
-         * ie. solves the computational problem of generating a hash that matches the difficulty (difficulty = 3, 3 leading zeroes)
-         * 
-         * Params:
-         * difficulty = the difficulty of mining a new block 
-         * 
-         */
+        
+        /// <summary>
+        /// Mines a new block on the blockchain.
+        /// ie. solves the computational problem of generating a hash that matches the difficulty (difficulty = 3, 3 leading zeroes)
+        /// </summary>
+        /// <param name="difficulty">Mining difficulty (number of zeroes needed for a valid hash)</param>>
         public void Mine(int difficulty)
         {
             // We will use regular expressions to validate that the resulted hash matches the leading zeros rule
@@ -91,12 +91,34 @@ namespace BlockNS
             return;
         }
 
+        /// <summary>
+        /// Converts a Block instance to a JSON formatted string representation
+        /// </summary>
+        /// <returns>JSON-Formatted String representation of current Block instance</returns>
         public string ToJSONString()
         {
             string output =
                 $"{{\n\tIndex: {this.index},\n\tTimestamp: {this.timestamp.ToLongTimeString()},\n\tCurrent Hash: \"{this.hash}\",\n\tPrevious Hash: \"{this.previousHash}\",\n\tPoW: {this.proofOfWork}\n}},";
 
             return output;
+        }
+
+        /// <summary>
+        /// Returns true if all transactions in a block are valid
+        /// </summary>
+        /// <param name="chain">Blockchain to validate transactions against</param>
+        /// <returns>Boolean on the overall transaction valid status</returns>
+        public bool HasAllValidTransactions(Blockchain chain)
+        {
+            foreach (Transaction transaction in this.data) 
+            {
+                if (!transaction.IsValid(chain))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
     }
