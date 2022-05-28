@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  test:
+  Test:
 
     name: Test Codebase
     runs-on: ubuntu-latest
