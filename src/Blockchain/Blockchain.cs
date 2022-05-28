@@ -47,6 +47,12 @@ namespace BlockchainNS
 
         public void AddBlock(Block block)
         {
+
+            if (block == null)
+            {
+                throw new ArgumentNullException("Error in Blockchain.AddBlock(): Block argument cannot be null");
+            }
+
             block.Mine(difficulty: this.difficulty);
             this.chain.AddAfter(this.chain.Last, block);
 
@@ -177,6 +183,17 @@ namespace BlockchainNS
 
         public static Blockchain CreateBlockchain(Transaction firstMint, Wallet blockchainWallet, int difficulty, int blockTime, int reward)
         {
+            
+            // Argument sanitising
+            if (firstMint == null || blockchainWallet == null)
+            {
+                return null;
+            }
+            if (difficulty < 0 || blockTime <= 0 || reward < 0)
+            {
+                return null;
+            }
+
             // Init Genesis block
             List<Transaction> genesisList = new List<Transaction> { };
             genesisList.Add(firstMint);
