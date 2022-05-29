@@ -28,7 +28,7 @@ namespace BlockchainTestsNS
         [TestCase(1, -10, 1000, false)]
         [TestCase(1, 10, -1000, false)]
         [TestCase(1, 10, 1000, true)]
-        public void Static_CanCreateBlockchain(int difficulty, int blockTime, int reward, bool expectedOutputResult)
+        public void Static_CanCreateBlockchain_Correctly(int difficulty, int blockTime, int reward, bool expectedOutputResult)
         {
             this.chain = Blockchain.CreateBlockchain(
                 firstMint: new Transaction(
@@ -233,7 +233,7 @@ namespace BlockchainTestsNS
             TestName = "Test case #2, Testing by passing uncompromised Transaction to AddTransaction")]
         [TestCase("compromisedTransaction", 
             TestName = "Test case #3, Testing by passing compromised Transaction to AddTransaction")]
-        public void Blockchain_CanAddTransaction(string transactionStatus)
+        public void Blockchain_CanAddTransaction_Correctly(string transactionStatus)
         {
             
             // Setup test Blockchain
@@ -289,6 +289,76 @@ namespace BlockchainTestsNS
                     this.chain.AddTransaction(compromisedTransaction);
                     
                     Assert.That(this.chain.unconfirmedTransactions.Count , Is.EqualTo(0));
+                    break;
+            }
+        }
+
+        [TestCase("", TestName = "Test case #1, Testing by passing empty string to MineUnconfirmedTransactions")]
+        [TestCase(null, TestName = "Test case #2, Testing by passing null reference to MineUnconfirmedTransactions")]
+        [TestCase("atRuntimeMinerPublicKey", TestName = "Test case #3, Testing by passing public key to MineUnconfirmedTransactions")]
+        public void Blockchain_MinesUnconfirmedTransactions_Correctly(string minerPublicKey)
+        {
+            // Setup test Blockchain
+            int firstAmount = 1000000;
+            this.chain = Blockchain.CreateBlockchain(
+                firstMint: new Transaction(
+                    this.networkWallet.GetPublicKeyStringBase64(),
+                    this.testWallet.GetPublicKeyStringBase64(),
+                    firstAmount
+                ),
+                blockchainWallet: this.networkWallet,
+                difficulty: 2,
+                blockTime: 10,
+                reward: 10
+            );
+            
+            // Add unconfirmed transactions to Blockchain
+            List<Transaction> transactions = Transaction.GenerateRandomTransactions(10);
+            int transactionsToAdd = 10;
+            for (int i = 0; i < transactionsToAdd + 1; i++)
+            {
+                transactions.Add(new Transaction(
+                        this.testWallet.GetPublicKeyStringBase64(),
+                        this.networkWallet.GetPublicKeyStringBase64(),
+                        100 * i + 1
+                    )
+                );
+                transactions[i].SignTransaction(this.testWallet);
+                this.chain.AddTransaction(transactions[i]);
+            }
+
+            switch (minerPublicKey)
+            {
+                case "":
+                    try
+                    {
+                        this.chain.MineUnconfirmedTransactions(minerPublicKey);
+                        Assert.Fail("Blockchain should not mine transactions with empty string public key miner");
+                    }
+                    catch (Exception)
+                    {
+                        Assert.Pass();
+                    }
+                    break;
+                case null:
+                    try
+                    {
+                        this.chain.MineUnconfirmedTransactions(null);
+                        Assert.Fail("Blockchain should not mine transactions with null public key miner");
+                    }
+                    catch (Exception)
+                    {
+                        Assert.Pass();
+                    }
+                    break;
+                case "atRuntimeMinerPublicKey":
+                    minerPublicKey = this.testWallet.GetPublicKeyStringBase64(); // get wallet key at runtime
+                    this.chain.MineUnconfirmedTransactions(minerPublicKey);
+                    
+                    Assert.That(this.chain.unconfirmedTransactions.Count, Is.EqualTo(0));
+                    Assert.That(this.chain.chain.Count, Is.EqualTo(2)); // 2 block; 1 Genesis 1 for transactions
+                    Assert.That(this.chain.IsValid(), Is.True);
+                        
                     break;
             }
         }
