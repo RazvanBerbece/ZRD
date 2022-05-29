@@ -38,3 +38,6 @@ To see the CD workflow file, visit [continuous-deployment.yml](.github/workflows
 5. https://javascript.plainenglish.io/lets-create-a-cryptocurrency-for-fun-using-javascript-42894b50e44c
 6. https://mycoralhealth.medium.com/code-your-own-blockchain-in-less-than-200-lines-of-go-e296282bcffc
 7. https://dev.to/freakcdev297/build-a-p2p-network-and-release-your-cryptocurrency-clf
+8. https://www.c-sharpcorner.com/article/blockchain-basics-building-a-blockchain-in-net-core/
+9. https://www.c-sharpcorner.com/article/blockchain-basic-node/
+10. https://www.c-sharpcorner.com/article/building-a-blockchain-in-net-core-p2p-network/
