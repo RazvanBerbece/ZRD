@@ -128,9 +128,14 @@ namespace BlockchainNS
 
         public void AddTransaction(Transaction transaction)
         {
+            if (!transaction.IsValid(this))
+            {
+                return;
+            }
+            
             foreach (Transaction unconfirmedTransaction in this.unconfirmedTransactions)
             {
-                if (unconfirmedTransaction.hash == transaction.hash || !unconfirmedTransaction.IsValid(this)) // transaction is already unconfirmed on chain
+                if (unconfirmedTransaction.hash == transaction.hash || !unconfirmedTransaction.IsValid(this)) // transaction is already unconfirmed on chain or not valid
                 {
                     return;
                 }

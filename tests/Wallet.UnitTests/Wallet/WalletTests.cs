@@ -71,7 +71,7 @@ namespace WalletTestsNS
                     firstMint: new Transaction(
                         this.networkWallet.GetPublicKeyStringBase64(),
                         this.walletA.GetPublicKeyStringBase64(),
-                        1000000
+                        int.MaxValue
                         ),
                     blockchainWallet: this.networkWallet,
                     difficulty: 2,

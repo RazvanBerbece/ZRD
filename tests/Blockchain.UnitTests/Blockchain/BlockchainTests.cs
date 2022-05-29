@@ -225,7 +225,72 @@ namespace BlockchainTestsNS
                     Assert.That(this.chain.IsValid(), Is.False);
                     break;
             }
+        }
 
+        [TestCase("nullTransaction", 
+            TestName = "Test case #1, Testing by passing null reference to AddTransaction")]
+        [TestCase("uncompromisedTransaction", 
+            TestName = "Test case #2, Testing by passing uncompromised Transaction to AddTransaction")]
+        [TestCase("compromisedTransaction", 
+            TestName = "Test case #3, Testing by passing compromised Transaction to AddTransaction")]
+        public void Blockchain_CanAddTransaction(string transactionStatus)
+        {
+            
+            // Setup test Blockchain
+            int firstAmount = 1000000;
+            this.chain = Blockchain.CreateBlockchain(
+                firstMint: new Transaction(
+                    this.networkWallet.GetPublicKeyStringBase64(),
+                    this.testWallet.GetPublicKeyStringBase64(),
+                    firstAmount
+                ),
+                blockchainWallet: this.networkWallet,
+                difficulty: 2,
+                blockTime: 10,
+                reward: 10
+            );
+            
+            switch (transactionStatus)
+            {
+                case "nullTransaction":
+                    try
+                    {
+                        this.chain.AddTransaction(null);
+                        Assert.Fail("Blockchain should not add null Transaction references to unconfirmedTransactions");
+                    }
+                    catch (Exception)
+                    {
+                        Assert.Pass();
+                    }
+                    break;
+                case "uncompromisedTransaction":
+                    
+                    Transaction transaction = new Transaction(
+                        this.testWallet.GetPublicKeyStringBase64(),
+                        this.networkWallet.GetPublicKeyStringBase64(),
+                        2000
+                    );
+                    transaction.SignTransaction(this.testWallet);
+                    
+                    this.chain.AddTransaction(transaction);
+                    
+                    Assert.That(this.chain.unconfirmedTransactions.Count , Is.EqualTo(1));
+                    break;
+                case "compromisedTransaction":
+                    
+                    Transaction compromisedTransaction = new Transaction(
+                        this.testWallet.GetPublicKeyStringBase64(),
+                        this.networkWallet.GetPublicKeyStringBase64(),
+                        2000
+                    );
+                    compromisedTransaction.Amount += -100;
+                    compromisedTransaction.SignTransaction(this.testWallet);
+                    
+                    this.chain.AddTransaction(compromisedTransaction);
+                    
+                    Assert.That(this.chain.unconfirmedTransactions.Count , Is.EqualTo(0));
+                    break;
+            }
         }
 
     }
