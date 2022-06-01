@@ -1,8 +1,11 @@
 ﻿using System;
 using BlockNS;
 using System.Collections.Generic;
+using System.Text.Encodings.Web;
 using TransactionNS;
 using WalletNS;
+using System.Text.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace BlockchainNS
 {
@@ -13,17 +16,17 @@ namespace BlockchainNS
     public class Blockchain
     {
 
-        public Block genesisBlock ;
-        public LinkedList<Block> chain;
-        public int difficulty;
+        public Block genesisBlock { get; set; }
+        public LinkedList<Block> chain { get; set; }
+        public int difficulty { get; set; }
 
-        public int reward;
+        public int reward { get; set; }
 
-        public List<Transaction> unconfirmedTransactions; // pool of transactions to be confirmed & mined into a new Block
+        public List<Transaction> unconfirmedTransactions { get; set; } // pool of transactions to be confirmed & mined into a new Block
 
-        public int blockTime;
+        public int blockTime { get; set; }
 
-        Wallet blockchainWallet;
+        Wallet blockchainWallet { get; set; }
 
         /// <summary>
         /// Constructor for a <c>Blockchain</c> object.
@@ -75,6 +78,28 @@ namespace BlockchainNS
             {
                 Console.WriteLine(block.ToJsonString());
             }
+        }
+
+        public string ToJsonString()
+        {
+            string jsonStringBlock = JsonSerializer.Serialize(
+                this,
+                options: new JsonSerializerOptions()
+                {
+                    WriteIndented = true,
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
+                }
+            );
+            return jsonStringBlock;
+        }
+        
+        /// <summary>
+        /// Saves the JSON representation of the blockchain instance to a file passed as a parameter
+        /// </summary>
+        /// <param name="jsonBlockchainString">JSON string of Blockchain instance</param>
+        public void SaveJsonToFile(string jsonBlockchainString)
+        {
+            System.IO.File.WriteAllText(@"ZRD.json", jsonBlockchainString);
         }
 
         public bool IsValid()
@@ -203,18 +228,6 @@ namespace BlockchainNS
                 );
 
             this.unconfirmedTransactions.Clear();
-        }
-        
-        /// <summary>
-        /// Saves a JSON formatted string representation of the Blockchain into a file passed as argument.
-        /// </summary>
-        /// <param name="filepath">Location where the Blockchain data should be stored</param>
-        /// <returns>Status code (1 if successful, 0 if not)</returns>>
-        /// <exception cref="NotImplementedException"></exception>
-        public int SaveJSONToFile(string filepath)
-        {
-            throw new NotImplementedException();
-            
         }
 
         public static Blockchain CreateBlockchain(Transaction firstMint, Wallet blockchainWallet, int difficulty, int blockTime, int reward)

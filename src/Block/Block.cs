@@ -100,12 +100,6 @@ namespace BlockNS
         /// <returns>JSON-Formatted String representation of current Block instance</returns>
         public string ToJsonString()
         {
-            /*
-            string output =
-                $"{{\n\tIndex: {this.index},\n\tTimestamp: {this.timestamp.ToLongTimeString()},\n\tCurrent Hash: \"{this.hash}\",\n\tPrevious Hash: \"{this.previousHash}\",\n\tPoW: {this.proofOfWork}\n}},";
-
-            return output;
-            */
             string jsonStringBlock = JsonSerializer.Serialize(
                 this,
                 options: new JsonSerializerOptions()

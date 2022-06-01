@@ -45,7 +45,9 @@ namespace ZRD
             blockchain.AddBlock(testBlock3);
 
             // Visualise blockchain
-            blockchain.ViewChain();
+            // blockchain.ViewChain();
+            Console.WriteLine(blockchain.ToJsonString());
+            blockchain.SaveJsonToFile(blockchain.ToJsonString());
             Console.WriteLine($"\nBlockchain is {(blockchain.IsValid() ? "VALID" : "COMPROMISED")}\n");
 
             // Mutate Block -> Blockchain is compromised
