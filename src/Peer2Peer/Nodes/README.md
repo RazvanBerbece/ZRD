@@ -1,47 +1,47 @@
-# ZRD
-Local blockchain network built in C# and dotnet. 
-Supports the ZR420 cryptocurrency and user wallets for transactions (send, receive).
+# Node Intro for the ZRD Blockchain
 
-Uses .net6.0 and nUnit for testing.
+Every device that wishes to participate in the ZRD network must run a client that follows the ZRD protocol. Each node continuously demands that the other nodes follow the same rules.
 
-# Progress
-[**IN PROGRESS**] Models (Block, Transaction, Blockchain, Merkel Tree)
+Since full nodes store the entire database of ZRD420 transactions, they can check whether a recently added transaction has already taken place in the past. They block any previously spent transactions in order to prevent **double spending**.
 
-[**IN PROGRESS**] Storage Considerations & Solution
+**Full nodes are, therefore, essential for maintaining the honesty of the entire network**.
 
-[**IN REVIEW**] Nodes (Full Node, Lightweight Node, Miner Node)
+# Node Categories
 
-[**COMPLETED**] Genesis Block
+1. Full Node
+2. Lightweight Node
+3. Miner Node
 
-[**COMPLETED**] Minting - this is not applicable as ZRD will use the PoW consensus mechanism
+# Node Specifications
+## 1 Full Node
+Full nodes store unconfirmed transactions in their memory pool, or mempool, and check whether transactions are valid according to Bitcoin’s consensus rules.
+They also spread their blockchain status across the P2P network.
 
-[**COMPLETED**] Mining
+A full node should :
+- Have a local copy of the entire blockchain stored
+    - Blockchain instance -> genesis block, list, difficulty, unconfirmed transactions etc.
+- Connect to peers and share the blockchain status (the saved data from above)
+- Go through the unconfirmed transactions and validate them
 
-[**COMPLETED**] Process Transactions (send, receive, rewards, etc.)
+A full node should NOT :
+- Have a wallet other than the blockchain wallet configured
+- Make transactions (sending, receiving coin)
 
-# CI/CD
-## CI
-Continuous integration is implemented using GitHub Actions and runs ```dotnet build``` and ```dotnet test``` in a dotnet environment.
-This runs the test harness on all Pull Request events.
+## 2 Lightweight Node
+A lightweight node functioning as a wallet sends a new transaction through full nodes, which spread the information across the network.
 
-To see the CI workflow file, visit [continuous-integration.yml](.github/workflows/continuous-integration.yml)
+It contains only a partial list of a blockchain operation, which usually includes just the block headers, instead of its entire transaction history.
 
-## CD
-Releases are automatically created on push events to the ```main``` branch.
+A lightweight node should :
+- Have a lightweight copy of the blockchain (headers)
+- Have a wallet configured
+- Be able to make transactions (send, receive coin)
 
-Pipeline work in progress.
+## 3 Miner Node
+Mining nodes confirm transactions by including them in blocks (mining unconfirmed transactions).
 
-To see the CD workflow file, visit [continuous-deployment.yml](.github/workflows/continuous-deployment.yml)
+Miners take transactions from the mempool to confirm them. They do so by including transactions into blocks through the process of mining. Miners are rewarded for their work with mining rewards and transaction fees, while full nodes act as assistants to keep the Bitcoin network decentralized and honest.
 
-# Resources
-1. https://www.freecodecamp.org/news/build-a-blockchain-in-golang-from-scratch/
-2. https://levelup.gitconnected.com/learn-blockchain-by-building-it-f2f8ccc54892
-3. https://enlear.academy/merkle-tree-the-root-of-bitcoin-5a9062394fbf
-4. https://medium.com/nerd-for-tech/smart-contract-with-golang-d208c92848a9
-5. https://javascript.plainenglish.io/lets-create-a-cryptocurrency-for-fun-using-javascript-42894b50e44c
-6. https://mycoralhealth.medium.com/code-your-own-blockchain-in-less-than-200-lines-of-go-e296282bcffc
-7. https://dev.to/freakcdev297/build-a-p2p-network-and-release-your-cryptocurrency-clf
-8. https://www.c-sharpcorner.com/article/blockchain-basics-building-a-blockchain-in-net-core/
-9. https://www.c-sharpcorner.com/article/blockchain-basic-node/
-10. https://www.c-sharpcorner.com/article/building-a-blockchain-in-net-core-p2p-network/
-11. https://blog.bitstamp.net/post/what-are-blockchain-nodes/
+A miner node should :
+- Have a full copy of the blockchain
+- Solve the cryptographic puzzle based on the blockchain difficulty
