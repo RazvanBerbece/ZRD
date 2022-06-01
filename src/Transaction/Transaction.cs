@@ -54,7 +54,7 @@ namespace TransactionNS
             this.id = Guid.NewGuid().ToString();
 
             // Calculate hash value of transaction
-            string concatenatedData = this.Sender + this.Receiver + this.Amount.ToString() + id;
+            string concatenatedData = id + Sender + Receiver + Amount.ToString();
             this.hash = Statics.CreateHashSHA256(concatenatedData);
         }
 
@@ -108,7 +108,7 @@ namespace TransactionNS
             }
 
             // Calculate hash value of current transaction
-            string concatenatedData = this.Sender + this.Receiver + this.Amount.ToString() + id;
+            string concatenatedData = id + this.Sender + this.Receiver + this.Amount.ToString();
             string calculatedHash = Statics.CreateHashSHA256(concatenatedData);
             if (this.hash != calculatedHash)
             {

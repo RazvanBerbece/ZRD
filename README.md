@@ -1,20 +1,23 @@
 # ZRD
-Local blockchain network built in C#. Supports the ZR420 cryptocurrency and wallet-based user transactions.
+Local blockchain network built in C# and dotnet. 
+Supports the ZR420 cryptocurrency and user wallets for transactions (send, receive).
 
-Uses .net5.0 and nUnit for testing.
+Uses .net6.0 and nUnit for testing.
 
 # Progress
 [**IN PROGRESS**] Models (Block, Transaction, Blockchain, Merkel Tree)
 
-[**IN REVIEW**] Storage Considerations & Solution 
+[**IN PROGRESS**] Storage Considerations & Solution
 
-[**IN PROGRESS**] Genesis Block
+[**IN REVIEW**] Nodes (Full Node, Lightweight Node, Miner Node)
 
-[**IN PROGRESS**] Minting
+[Completed] Genesis Block
 
-[**IN PROGRESS**] Mining
+[Completed] Minting - this is not applicable as ZRD will use the PoW consensus mechanism
 
-[**IN PROGRESS**] Process Transactions (send, receive, rewards, etc.)
+[Completed] Mining
+
+[Completed] Process Transactions (send, receive, rewards, etc.)
 
 # CI/CD
 ## CI
@@ -38,3 +41,6 @@ To see the CD workflow file, visit [continuous-deployment.yml](.github/workflows
 5. https://javascript.plainenglish.io/lets-create-a-cryptocurrency-for-fun-using-javascript-42894b50e44c
 6. https://mycoralhealth.medium.com/code-your-own-blockchain-in-less-than-200-lines-of-go-e296282bcffc
 7. https://dev.to/freakcdev297/build-a-p2p-network-and-release-your-cryptocurrency-clf
+8. https://www.c-sharpcorner.com/article/blockchain-basics-building-a-blockchain-in-net-core/
+9. https://www.c-sharpcorner.com/article/blockchain-basic-node/
+10. https://www.c-sharpcorner.com/article/building-a-blockchain-in-net-core-p2p-network/

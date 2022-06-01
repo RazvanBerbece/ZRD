@@ -43,7 +43,6 @@ namespace BlockTestsNS
             genericUnvalidatedBlock.CalculateHash();
             
             // Setup testing Blockchain
-            // Setup blockchain
             chain = Blockchain.CreateBlockchain(
                 firstMint: new Transaction(
                     this.networkWallet.GetPublicKeyStringBase64(),

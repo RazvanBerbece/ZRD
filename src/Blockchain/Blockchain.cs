@@ -47,6 +47,12 @@ namespace BlockchainNS
 
         public void AddBlock(Block block)
         {
+
+            if (block == null)
+            {
+                throw new ArgumentNullException("Error in Blockchain.AddBlock(): Block argument cannot be null");
+            }
+
             block.Mine(difficulty: this.difficulty);
             this.chain.AddAfter(this.chain.Last, block);
 
@@ -79,6 +85,19 @@ namespace BlockchainNS
             {
                 if (block.index == 0) // if Genesis block
                 {
+                    // Still validate for Genesis block
+                    // Guard - Genesis block hash matches
+                    if (this.genesisBlock.hash != block.CalculateHash())
+                    {
+                        return false;
+                    }
+                    
+                    // Guard - Previous hash is ""
+                    if (block.previousHash != "")
+                    {
+                        return false;
+                    }
+                    
                     previousBlock = this.genesisBlock;
                     continue;
                 }
@@ -109,9 +128,14 @@ namespace BlockchainNS
 
         public void AddTransaction(Transaction transaction)
         {
+            if (!transaction.IsValid(this))
+            {
+                return;
+            }
+            
             foreach (Transaction unconfirmedTransaction in this.unconfirmedTransactions)
             {
-                if (unconfirmedTransaction.hash == transaction.hash || !unconfirmedTransaction.IsValid(this)) // transaction is already unconfirmed on chain
+                if (unconfirmedTransaction.hash == transaction.hash || !unconfirmedTransaction.IsValid(this)) // transaction is already unconfirmed on chain or not valid
                 {
                     return;
                 }
@@ -124,6 +148,12 @@ namespace BlockchainNS
          */
         public int GetBalance(string publicKey)
         {
+
+            if (string.IsNullOrEmpty(publicKey))
+            {
+                return -1;
+            }
+            
             int balance = 0;
 
             foreach (Block block in this.chain)
@@ -177,6 +207,17 @@ namespace BlockchainNS
 
         public static Blockchain CreateBlockchain(Transaction firstMint, Wallet blockchainWallet, int difficulty, int blockTime, int reward)
         {
+            
+            // Argument sanitising
+            if (firstMint == null || blockchainWallet == null)
+            {
+                return null;
+            }
+            if (difficulty < 0 || blockTime <= 0 || reward < 0)
+            {
+                return null;
+            }
+
             // Init Genesis block
             List<Transaction> genesisList = new List<Transaction> { };
             genesisList.Add(firstMint);
