@@ -25,6 +25,11 @@
     <None Remove="tests\MerkleTree.UnitTests\Merkle-Tree\" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="src\Peer2Peer\Client" />
+    <Folder Include="src\Peer2Peer\Nodes\FullNode" />
+    <Folder Include="src\Peer2Peer\Nodes\LightweightNode" />
+    <Folder Include="src\Peer2Peer\Nodes\MinerNode" />
+    <Folder Include="src\Peer2Peer\Server" />
     <Folder Include="tests\Transaction.UnitTests\" />
     <Folder Include="tests\Transaction.UnitTests\Transaction\" />
     <Folder Include="src\Wallet\" />

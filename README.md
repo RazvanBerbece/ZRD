@@ -11,13 +11,13 @@ Uses .net6.0 and nUnit for testing.
 
 [**IN REVIEW**] Nodes (Full Node, Lightweight Node, Miner Node)
 
-[Completed] Genesis Block
+[**COMPLETED**] Genesis Block
 
-[Completed] Minting - this is not applicable as ZRD will use the PoW consensus mechanism
+[**COMPLETED**] Minting - this is not applicable as ZRD will use the PoW consensus mechanism
 
-[Completed] Mining
+[**COMPLETED**] Mining
 
-[Completed] Process Transactions (send, receive, rewards, etc.)
+[**COMPLETED**] Process Transactions (send, receive, rewards, etc.)
 
 # CI/CD
 ## CI
@@ -44,3 +44,4 @@ To see the CD workflow file, visit [continuous-deployment.yml](.github/workflows
 8. https://www.c-sharpcorner.com/article/blockchain-basics-building-a-blockchain-in-net-core/
 9. https://www.c-sharpcorner.com/article/blockchain-basic-node/
 10. https://www.c-sharpcorner.com/article/building-a-blockchain-in-net-core-p2p-network/
+11. https://blog.bitstamp.net/post/what-are-blockchain-nodes/
