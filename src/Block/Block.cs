@@ -15,21 +15,24 @@ using System;
 using StaticsNS;
 using TransactionNS;
 using System.Collections.Generic;
+using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using MerkleTreeNS;
 using MerkleTreeNS.MerkleNodeNS;
+using System.Text.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace BlockNS
 {
     public class Block
     {
 
-        public int index;
-        public List<Transaction> data;
-        public string hash;
-        public string previousHash;
-        public int proofOfWork;
-        public DateTime timestamp;
+        public int index { get; set; }
+        public List<Transaction> data { get; set; }
+        public string hash { get; set; }
+        public string previousHash { get; set; }
+        public int proofOfWork { get; set; }
+        public DateTime timestamp { get; set; }
 
         public MerkleTree tree;
         public MerkleNode root;
@@ -95,12 +98,23 @@ namespace BlockNS
         /// Converts a Block instance to a JSON formatted string representation
         /// </summary>
         /// <returns>JSON-Formatted String representation of current Block instance</returns>
-        public string ToJSONString()
+        public string ToJsonString()
         {
+            /*
             string output =
                 $"{{\n\tIndex: {this.index},\n\tTimestamp: {this.timestamp.ToLongTimeString()},\n\tCurrent Hash: \"{this.hash}\",\n\tPrevious Hash: \"{this.previousHash}\",\n\tPoW: {this.proofOfWork}\n}},";
 
             return output;
+            */
+            string jsonStringBlock = JsonSerializer.Serialize(
+                this,
+                options: new JsonSerializerOptions()
+                {
+                    WriteIndented = true,
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
+                }
+                );
+            return jsonStringBlock;
         }
 
         /// <summary>

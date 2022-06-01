@@ -1,8 +1,10 @@
-﻿using BlockchainNS;
+﻿using System;
+using BlockchainNS;
 using BlockNS;
 using NUnit.Framework;
 using TransactionNS;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
 using WalletNS;
 
@@ -18,6 +20,7 @@ namespace BlockTestsNS
         private List<Transaction> emptyList;
         private Block genericUnvalidatedBlock;
         private Block genericValidatedBlock;
+        private Block genericBlockToJsonSerialize;
         private Blockchain chain;
         
         private Wallet networkWallet; // used for rewards, first mint, etc.
@@ -41,6 +44,25 @@ namespace BlockTestsNS
                 1
             );
             genericUnvalidatedBlock.CalculateHash();
+            
+            // Setup generic block to JSON serialize
+            // Force keys, ids and timestamps to be the same across multiple test runs
+            // so that the hashes remain the same
+            List<Transaction> transactionsToSerialize = new List<Transaction>() { };
+            transactionsToSerialize.Add(
+                new Transaction(
+                    "publicKey123",
+                    "publicKey456",
+                    1000,
+                    id: "id123"
+                    )
+                );
+            this.genericBlockToJsonSerialize = new Block(
+                transactionsToSerialize,
+                "previousHash",
+                99
+                );
+            genericBlockToJsonSerialize.timestamp = DateTime.Parse("2022-06-01T17:49:36.823434+01:00");
             
             // Setup testing Blockchain
             chain = Blockchain.CreateBlockchain(
@@ -108,14 +130,13 @@ namespace BlockTestsNS
         }
 
         [Test]
-        public void Block_Converts_ToJSONString()
+        public void Block_Converts_ToJsonString()
         {
-            string genericUnvalidatedBlockJSONString = this.genericUnvalidatedBlock.ToJSONString();
+            string genericBlockJsonSerializerJsonString = this.genericBlockToJsonSerialize.ToJsonString();
 
-            string expectedOutput =
-                $"{{\n\tIndex: {this.genericUnvalidatedBlock.index},\n\tTimestamp: {this.genericUnvalidatedBlock.timestamp.ToLongTimeString()},\n\tCurrent Hash: \"{this.genericUnvalidatedBlock.hash}\",\n\tPrevious Hash: \"{this.genericUnvalidatedBlock.previousHash}\",\n\tPoW: {this.genericUnvalidatedBlock.proofOfWork}\n}},";
-
-            Assert.AreEqual(genericUnvalidatedBlockJSONString, expectedOutput);
+            string expectedOutput = File.ReadAllText("../../../tests/Block.UnitTests/Block/ExpectedJsonString.txt");
+            
+            Assert.AreEqual(expectedOutput, genericBlockJsonSerializerJsonString);
         }
 
         [TestCase(true)]

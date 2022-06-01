@@ -75,7 +75,7 @@ namespace StaticsNS
 
         /**
          * TODO: Could be built with template values ?
-         */
+         */ 
         public static string TransactionsToJSONString(List<Transaction> transactions)
         {
             return JsonSerializer.Serialize(transactions);

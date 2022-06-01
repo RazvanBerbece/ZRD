@@ -27,12 +27,12 @@ namespace TransactionNS
         public string Receiver { get; set; }
         public int Amount { get; set; }
 
-        public string id = "";
-        public string hash = "";
+        public string id { get; set; }
+        public string hash { get; set; }
 
-        public string signature;
+        public string signature { get; set; }
 
-        public Transaction(string senderPublicKey, string receiverPublicKey, int amount)
+        public Transaction(string senderPublicKey, string receiverPublicKey, int amount, string id = null)
         {
             if (amount <= 0)
             {
@@ -50,8 +50,8 @@ namespace TransactionNS
 
             this.signature = null; // unsigned at the moment of instantiation
           
-            // Generate random version 4 UUID for transaction
-            this.id = Guid.NewGuid().ToString();
+            // Generate random version 4 UUID for transaction if id arg is null
+            this.id = id ?? Guid.NewGuid().ToString();
 
             // Calculate hash value of transaction
             string concatenatedData = id + Sender + Receiver + Amount.ToString();
@@ -142,11 +142,15 @@ namespace TransactionNS
                 // Generate key pairs to simulate party identifiers
                 RSACryptoServiceProvider rsaSender = new RSACryptoServiceProvider(1024);
                 RSACryptoServiceProvider rsaReceiver = new RSACryptoServiceProvider(1024);
+                
+                // Get sender & receiver public keys as base64
+                string senderPublicKey = Convert.ToBase64String(rsaSender.ExportSubjectPublicKeyInfo());
+                string receiverPublicKey = Convert.ToBase64String(rsaReceiver.ExportSubjectPublicKeyInfo());
 
                 transactions.Add(new Transaction(
-                    rsaSender.ToXmlString(false),
-                    rsaReceiver.ToXmlString(false),
-                    randomTransactionAmountEngine.Next(1, int.MaxValue))
+                    senderPublicKey,
+                    receiverPublicKey,
+                    randomTransactionAmountEngine.Next(1, 15000))
                 );
             }
 

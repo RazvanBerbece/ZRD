@@ -13,7 +13,7 @@ namespace BlockchainNS
     public class Blockchain
     {
 
-        public Block genesisBlock;
+        public Block genesisBlock ;
         public LinkedList<Block> chain;
         public int difficulty;
 
@@ -73,7 +73,7 @@ namespace BlockchainNS
         {
             foreach (Block block in this.chain)
             {
-                Console.WriteLine(block.ToJSONString());
+                Console.WriteLine(block.ToJsonString());
             }
         }
 
@@ -203,6 +203,18 @@ namespace BlockchainNS
                 );
 
             this.unconfirmedTransactions.Clear();
+        }
+        
+        /// <summary>
+        /// Saves a JSON formatted string representation of the Blockchain into a file passed as argument.
+        /// </summary>
+        /// <param name="filepath">Location where the Blockchain data should be stored</param>
+        /// <returns>Status code (1 if successful, 0 if not)</returns>>
+        /// <exception cref="NotImplementedException"></exception>
+        public int SaveJSONToFile(string filepath)
+        {
+            throw new NotImplementedException();
+            
         }
 
         public static Blockchain CreateBlockchain(Transaction firstMint, Wallet blockchainWallet, int difficulty, int blockTime, int reward)
