@@ -47,7 +47,6 @@ namespace ZRD
             // Visualise blockchain
             // blockchain.ViewChain();
             Console.WriteLine(blockchain.ToJsonString());
-            blockchain.SaveJsonToFile(blockchain.ToJsonString());
             Console.WriteLine($"\nBlockchain is {(blockchain.IsValid() ? "VALID" : "COMPROMISED")}\n");
 
             // Mutate Block -> Blockchain is compromised
@@ -57,6 +56,9 @@ namespace ZRD
             // Look for balance for AntonioPublicKey
             int balance = blockchain.GetBalance(antonioWallet.GetPublicKeyStringBase64());
             Console.WriteLine($"Amount for key {antonioWallet.GetPublicKeyStringBase64()} : {balance}");
+            
+            // Save Blockchain to JSON
+            blockchain.SaveJsonToFile(blockchain.ToJsonString());
 
         }
     }

@@ -54,7 +54,7 @@ namespace TransactionNS
             this.id = id ?? Guid.NewGuid().ToString();
 
             // Calculate hash value of transaction
-            string concatenatedData = id + Sender + Receiver + Amount.ToString();
+            string concatenatedData = this.id + this.Sender + this.Receiver + this.Amount.ToString();
             this.hash = Statics.CreateHashSHA256(concatenatedData);
         }
 
@@ -100,7 +100,6 @@ namespace TransactionNS
             //      - the hash matches (between re-calculated hash using current field values and instance hash)
             //      - the signature is verified with the sender public key
             //      - sender's balance is higher than amount sent
-            //
 
             if (this.Amount > chain.GetBalance(this.Sender))
             {
@@ -108,7 +107,7 @@ namespace TransactionNS
             }
 
             // Calculate hash value of current transaction
-            string concatenatedData = id + this.Sender + this.Receiver + this.Amount.ToString();
+            string concatenatedData = this.id + this.Sender + this.Receiver + this.Amount.ToString();
             string calculatedHash = Statics.CreateHashSHA256(concatenatedData);
             if (this.hash != calculatedHash)
             {

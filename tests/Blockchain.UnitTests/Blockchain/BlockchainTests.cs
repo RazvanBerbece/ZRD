@@ -3,6 +3,7 @@ using BlockNS;
 using BlockchainNS;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.IO;
 using TransactionNS;
 using WalletNS;
 
@@ -220,7 +221,7 @@ namespace BlockchainTestsNS
                     this.chain.AddBlock(randomBlockCompromised1);
                     
                     // Mutate
-                    this.chain.chain.Last.Value.data[rnd.Next(1, 11)].Amount += -100;
+                    this.chain.chain.Last.Value.data[rnd.Next(1, 10)].Amount += -100;
                     
                     Assert.That(this.chain.IsValid(), Is.False);
                     break;
@@ -361,6 +362,29 @@ namespace BlockchainTestsNS
                         
                     break;
             }
+        }
+
+        [Test]
+        public void Blockchain_SavesJSONCorrectly_ToFile()
+        {
+            // Setup test Blockchain
+            int firstAmount = 1000000;
+            this.chain = Blockchain.CreateBlockchain(
+                firstMint: new Transaction(
+                    this.networkWallet.GetPublicKeyStringBase64(),
+                    this.testWallet.GetPublicKeyStringBase64(),
+                    firstAmount
+                ),
+                blockchainWallet: this.networkWallet,
+                difficulty: 2,
+                blockTime: 10,
+                reward: 10
+            );
+            
+            this.chain.SaveJsonToFile(this.chain.ToJsonString());
+            
+            // Check that file exists and that there is content in file "ZRD.json"
+            string expectedOutput = File.ReadAllText("ZRD.json");
         }
 
     }

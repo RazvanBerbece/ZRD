@@ -17,9 +17,22 @@ namespace MerkleTreeNS
             this.size = size;
             this.root = root;
         }
-
-        static public MerkleTree CreateMerkleTree(List<Transaction> transactions)
+        
+        /// <summary>
+        /// This function takes in a list of transactions and generates a MerkleTree based on the transaction list size
+        /// and indexed elements.
+        /// It creates a list of simple MerkleNodes with no parents, which are then organised in OrganiseTreeFromMerkleNodeList()
+        /// </summary>
+        /// <param name="transactions">List of transactions to be used in building list of MerkleNodes</param>
+        /// <returns>MerkleTree instance</returns>
+        public static MerkleTree CreateMerkleTree(List<Transaction> transactions)
         {
+
+            if (transactions.Count <= 0)
+            {
+                return null;
+            }
+            
             double size = Math.Ceiling(Math.Log2(transactions.Count)) + 1;
 
             // Create list of MerkleNodes from list of transactions
@@ -29,7 +42,7 @@ namespace MerkleTreeNS
                 nodes.Add(new MerkleNode(Statics.CreateHashSHA256FromTransaction(transaction), null, null));
             }
 
-            MerkleNode root = MakeMerkleTreeFromTransactionList(nodes);
+            MerkleNode root = OrganiseTreeFromMerkleNodeList(nodes);
 
             return new MerkleTree(root, size);
         }
@@ -41,7 +54,7 @@ namespace MerkleTreeNS
         /// </summary>
         /// <param name="transactionNodes">List of tree nodes organised so far. Starts initialised with MerkleNodes with no parents.</param>
         /// <returns>MerkleNode which can be used as root of the MerkleTree.</returns>
-        static public MerkleNode MakeMerkleTreeFromTransactionList(List<MerkleNode> transactionNodes)
+        static public MerkleNode OrganiseTreeFromMerkleNodeList(List<MerkleNode> transactionNodes)
         {
 
             if (transactionNodes.Count == 0) return null;
@@ -71,7 +84,7 @@ namespace MerkleTreeNS
                 nodeList.Add(newNode);
             }
 
-            return MakeMerkleTreeFromTransactionList(nodeList);
+            return OrganiseTreeFromMerkleNodeList(nodeList);
         }
 
     }
