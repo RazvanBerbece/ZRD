@@ -34,8 +34,8 @@ namespace BlockNS
         public int proofOfWork { get; set; }
         public DateTime timestamp { get; set; }
 
-        public MerkleTree tree;
-        public MerkleNode root;
+        public MerkleTree tree { get; set; }
+        public MerkleNode root { get; set; }
 
         public Block(List<Transaction> data, string previousHash, int index)
         {

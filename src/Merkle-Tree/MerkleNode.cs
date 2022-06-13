@@ -6,10 +6,10 @@ namespace MerkleTreeNS.MerkleNodeNS
     public class MerkleNode
     {
 
-        public string value;
+        public string value { get; set; }
 
-        public MerkleNode? left; 
-        public MerkleNode? right;
+        public MerkleNode? left { get; set; }
+        public MerkleNode? right { get; set; }
 
         public MerkleNode(string hashValue, MerkleNode left, MerkleNode right)
         {

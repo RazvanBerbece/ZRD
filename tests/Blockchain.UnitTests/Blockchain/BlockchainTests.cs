@@ -392,8 +392,10 @@ namespace BlockchainTestsNS
         [Test]
         public void Static_Blockchain_CanDeserializeFileJson_Correctly()
         {
+            // Will load a valid blockchain from 'ZRD.json'
             Blockchain chain = Blockchain.DeserialiseJsonStateToBlockchainInstance("ZRD.json");
-            Assert.Pass();
+            Assert.That(chain, Is.InstanceOf(typeof(Blockchain)));
+            Assert.That(chain.IsValid(), Is.True);
         }
 
     }

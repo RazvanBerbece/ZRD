@@ -6,7 +6,7 @@ using TransactionNS;
 namespace WalletNS
 {
     /// <summary>
-    /// Class that defines the properties and methods of a wallet for the ZRD blockchain.
+    /// Class that defines the properties and methods of a wallet on the ZRD blockchain.
     /// </summary>
     public class Wallet
     {

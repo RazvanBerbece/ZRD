@@ -9,8 +9,8 @@ namespace MerkleTreeNS
     public class MerkleTree
     {
 
-        public double size;
-        public MerkleNode root;
+        public double size { get; set; }
+        public MerkleNode root { get; set; }
 
         public MerkleTree(MerkleNode root, double size)
         {
