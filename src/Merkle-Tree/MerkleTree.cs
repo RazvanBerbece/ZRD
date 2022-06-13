@@ -54,10 +54,10 @@ namespace MerkleTreeNS
         /// </summary>
         /// <param name="transactionNodes">List of tree nodes organised so far. Starts initialised with MerkleNodes with no parents.</param>
         /// <returns>MerkleNode which can be used as root of the MerkleTree.</returns>
-        static public MerkleNode OrganiseTreeFromMerkleNodeList(List<MerkleNode> transactionNodes)
+        public static MerkleNode OrganiseTreeFromMerkleNodeList(List<MerkleNode> transactionNodes)
         {
 
-            if (transactionNodes.Count == 0) return null;
+            if (transactionNodes.Count <= 0) return null;
             if (transactionNodes.Count == 1) return transactionNodes[0];
 
             List<MerkleNode> nodeList = new List<MerkleNode> { };

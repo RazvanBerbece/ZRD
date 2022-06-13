@@ -42,5 +42,54 @@ namespace MerkleTreeNS.MerkleTreeNS
             }
         }
 
+        [TestCase(-1)]
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(37)]
+        public void Static_MerkleTree_CanOrganiseTreeFromMerkleNodeList(int numberOfNodes)
+        {
+            // Create list of simple MerkleNodes to organise
+            List<MerkleNode> nodes = new List<MerkleNode>() { };
+            for (int i = 0; i < numberOfNodes; ++i)
+            {
+                nodes.Add(
+                    new MerkleNode(
+                        "0xHashValue123-" + i.ToString(),
+                        null,
+                        null
+                    )
+                );
+            }
+            
+            // Organise MerkleNodes -- process hashes based on parent hashes
+            MerkleNode rootNode = MerkleTree.OrganiseTreeFromMerkleNodeList(nodes);
+
+            // Assert resulted root node & the tree
+            switch (numberOfNodes)
+            {
+                case -1:
+                    Assert.That(rootNode, Is.Null);
+                    break;
+                case 0:
+                    Assert.That(rootNode, Is.Null);
+                    break;
+                case 1:
+                    // Whole MerkleTree consists of 1 root MerkleNode
+                    Assert.That(rootNode, Is.InstanceOf(typeof(MerkleNode)));
+                    Assert.That(rootNode.left, Is.Null);
+                    Assert.That(rootNode.right, Is.Null);
+                    break;
+                default:
+                    // Assert that parents are MerkleNodes
+                    Assert.That(rootNode, Is.InstanceOf(typeof(MerkleNode)));
+                    Assert.That(rootNode.left, Is.InstanceOf(typeof(MerkleNode)));
+                    Assert.That(rootNode.right, Is.InstanceOf(typeof(MerkleNode)));
+                    break;
+            }
+
+        }
+
     }
 }
