@@ -11,10 +11,10 @@ namespace WalletNS
     public class Wallet
     {
 
-        public byte[] publicKey;
-        private byte[] privateKey;
+        public byte[] publicKey { get; set; }
+        private byte[] privateKey { get; set; }
 
-        private RSAParameters keyPair;
+        private RSAParameters keyPair { get; set; }
 
         /// <summary>
         /// Constructor for a <c>Wallet</c> object.

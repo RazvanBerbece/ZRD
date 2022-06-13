@@ -97,9 +97,28 @@ namespace BlockchainNS
         /// Saves the JSON representation of the blockchain instance to a file passed as a parameter
         /// </summary>
         /// <param name="jsonBlockchainString">JSON string of Blockchain instance</param>
-        public void SaveJsonToFile(string jsonBlockchainString)
+        public static void SaveJsonStateToFile(string jsonBlockchainString)
         {
             System.IO.File.WriteAllText(@"ZRD.json", jsonBlockchainString);
+        }
+
+        /// <summary>
+        /// Reads the JSON contents from file at argument location
+        /// and deserializes it into a Blockchain object instance
+        /// </summary>
+        /// <param name="blockchainJsonFilePath">Filepath to JSON file containing Blockchain data (blocks, transactions, etc.)</param>
+        /// <exception cref="NotImplementedException"></exception>
+        public static Blockchain DeserialiseJsonStateToBlockchainInstance(string blockchainJsonFilePath)
+        {
+            string blockchainJsonString = System.IO.File.ReadAllText(blockchainJsonFilePath);
+            Blockchain chain = JsonSerializer.Deserialize<Blockchain>(
+                blockchainJsonString,
+                options: new JsonSerializerOptions()
+                {
+                    WriteIndented = true,
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
+                });
+            return chain;
         }
 
         public bool IsValid()

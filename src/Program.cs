@@ -58,7 +58,7 @@ namespace ZRD
             Console.WriteLine($"Amount for key {antonioWallet.GetPublicKeyStringBase64()} : {balance}");
             
             // Save Blockchain to JSON
-            blockchain.SaveJsonToFile(blockchain.ToJsonString());
+            Blockchain.SaveJsonStateToFile(blockchain.ToJsonString());
 
         }
     }

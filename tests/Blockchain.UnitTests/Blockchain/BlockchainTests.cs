@@ -381,10 +381,19 @@ namespace BlockchainTestsNS
                 reward: 10
             );
             
-            this.chain.SaveJsonToFile(this.chain.ToJsonString());
+            Blockchain.SaveJsonStateToFile(this.chain.ToJsonString());
             
             // Check that file exists and that there is content in file "ZRD.json"
             string expectedOutput = File.ReadAllText("ZRD.json");
+            
+            Assert.That(expectedOutput, Is.Not.Empty);
+        }
+
+        [Test]
+        public void Static_Blockchain_CanDeserializeFileJson_Correctly()
+        {
+            Blockchain chain = Blockchain.DeserialiseJsonStateToBlockchainInstance("ZRD.json");
+            Assert.Pass();
         }
 
     }

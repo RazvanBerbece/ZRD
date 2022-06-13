@@ -106,9 +106,16 @@ namespace BlockTestsNS
             Assert.IsNotEmpty(blockWithTransactions.hash);
 
             // Calculate hash with empty transaction list and index=0
-            Block blockEmptyTransactions = new Block(this.emptyList, "publicKey123", 0);
-            blockEmptyTransactions.hash = blockEmptyTransactions.CalculateHash();
-            Assert.IsNotEmpty(blockEmptyTransactions.hash);
+            try
+            {
+                Block blockEmptyTransactions = new Block(this.emptyList, "publicKey123", 0);
+                Assert.Fail("It should not be possible to create a Block with a null MerkleTree representation");
+            }
+            catch (Exception)
+            {
+                Assert.Pass();
+            }
+            
         }
 
         [TestCase(0)]

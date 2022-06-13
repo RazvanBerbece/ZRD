@@ -50,6 +50,11 @@ namespace BlockNS
 
             // Process the Merkle tree & root for the given transactions under current Block
             this.tree = MerkleTree.CreateMerkleTree(this.data);
+            if (this.tree == null)
+            {
+                throw new ArgumentException("Transaction data list cannot be empty or null");
+            }
+            
             this.root = this.tree.root;
         }
 
