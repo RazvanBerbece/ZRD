@@ -11,9 +11,9 @@ namespace ZRD
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             Console.WriteLine("ON the ZRD Blockchain...");
-            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
             // Create network wallet & first user wallet
             Wallet networkWallet = new Wallet(keySize: 1024);
@@ -36,14 +36,17 @@ namespace ZRD
             testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5, true);
             Block testBlock1 = new Block(testBlockTransactions, blockchain.Chain.Last.Value.Hash, blockchain.Chain.Last.Value.Index + 1);
             blockchain.AddBlock(testBlock1);
+            Console.WriteLine($"-> Added Block with hash {(testBlock1.Hash)} to the Blockchain !\n");
 
             testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5, true);
             Block testBlock2 = new Block(testBlockTransactions, blockchain.Chain.Last.Value.Hash, blockchain.Chain.Last.Value.Index + 1);
             blockchain.AddBlock(testBlock2);
+            Console.WriteLine($"-> Added Block with hash {(testBlock2.Hash)} to the Blockchain !\n");
 
             testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5, true);
             Block testBlock3 = new Block(testBlockTransactions, blockchain.Chain.Last.Value.Hash, blockchain.Chain.Last.Value.Index + 1);
             blockchain.AddBlock(testBlock3);
+            Console.WriteLine($"-> Added Block with hash {(testBlock3.Hash)} to the Blockchain !\n");
 
             // Visualise blockchain
             // blockchain.ViewChain();
@@ -60,9 +63,9 @@ namespace ZRD
             // Save Blockchain to JSON
             Blockchain.SaveJsonStateToFile(blockchain.ToJsonString());
             
-            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             Console.WriteLine("OFF the ZRD Blockchain.");
-            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
         }
     }
