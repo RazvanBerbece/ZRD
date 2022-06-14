@@ -1,30 +1,30 @@
 {
-  "index": 99,
-  "data": [
+  "Index": 99,
+  "Data": [
     {
       "Sender": "publicKey123",
       "Receiver": "publicKey456",
       "Amount": 1000,
-      "id": "id123",
-      "hash": "92fcbbb3c3ea2aa1a8e7a197c6d89cfc27fedb0cc3e5efcb8036772c256b0c83",
-      "signature": null
+      "Id": "id123",
+      "Hash": "92fcbbb3c3ea2aa1a8e7a197c6d89cfc27fedb0cc3e5efcb8036772c256b0c83",
+      "Signature": null
     }
   ],
-  "hash": "",
-  "previousHash": "previousHash",
-  "proofOfWork": 0,
-  "timestamp": "2022-06-01T17:49:36.823434+01:00",
-  "tree": {
-    "size": 1,
-    "root": {
-      "value": "453b86d18f50a1697a31feb7ccce5cec35519318fae1c9b83518be91365d45ad",
-      "left": null,
-      "right": null
+  "Hash": "",
+  "PreviousHash": "previousHash",
+  "ProofOfWork": 0,
+  "Timestamp": "2022-06-01T17:49:36.823434+01:00",
+  "Tree": {
+    "Size": 1,
+    "Root": {
+      "Value": "453b86d18f50a1697a31feb7ccce5cec35519318fae1c9b83518be91365d45ad",
+      "Left": null,
+      "Right": null
     }
   },
-  "root": {
-    "value": "453b86d18f50a1697a31feb7ccce5cec35519318fae1c9b83518be91365d45ad",
-    "left": null,
-    "right": null
+  "Root": {
+    "Value": "453b86d18f50a1697a31feb7ccce5cec35519318fae1c9b83518be91365d45ad",
+    "Left": null,
+    "Right": null
   }
 }

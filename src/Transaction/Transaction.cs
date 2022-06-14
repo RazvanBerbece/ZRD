@@ -1,22 +1,9 @@
-﻿/**
- * Class which defines a Transaction in the blockchain
- * 
- * Fields :
- *  id          = transaction identifier
- *  sender      = public key of sender
- *  receiver    = public key of receiver
- *  amount      = transaction amount
- *  hash        = hash value of Transaction
- *  
- */
-
-using BlockchainNS;
+﻿using BlockchainNS;
 using System;
 using StaticsNS;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using WalletNS;
-using System.Text;
 
 namespace TransactionNS
 {
@@ -27,12 +14,12 @@ namespace TransactionNS
         public string Receiver { get; set; }
         public int Amount { get; set; }
 
-        public string id { get; set; }
-        public string hash { get; set; }
+        public string Id { get; set; }
+        public string Hash { get; set; }
 
-        public string signature { get; set; }
+        public string Signature { get; set; }
 
-        public Transaction(string senderPublicKey, string receiverPublicKey, int amount, string id = null)
+        public Transaction(string senderPublicKey, string receiverPublicKey, int amount, string id = null, string hash = null)
         {
             if (amount <= 0)
             {
@@ -48,14 +35,14 @@ namespace TransactionNS
             this.Receiver = receiverPublicKey;
             this.Amount = amount;
 
-            this.signature = null; // unsigned at the moment of instantiation
+            this.Signature = null; // unsigned at the moment of instantiation
           
             // Generate random version 4 UUID for transaction if id arg is null
-            this.id = id ?? Guid.NewGuid().ToString();
+            this.Id = id ?? Guid.NewGuid().ToString();
 
             // Calculate hash value of transaction
-            string concatenatedData = this.id + this.Sender + this.Receiver + this.Amount.ToString();
-            this.hash = Statics.CreateHashSHA256(concatenatedData);
+            string concatenatedData = this.Id + this.Sender + this.Receiver + this.Amount.ToString();
+            this.Hash = hash ?? Statics.CreateHashSha256(concatenatedData);
         }
 
         /// <summary>
@@ -73,7 +60,7 @@ namespace TransactionNS
             if (wallet.GetPublicKeyStringBase64() == this.Sender)
             {
                 
-                byte[] originalData = Convert.FromBase64String(this.hash);
+                byte[] originalData = Convert.FromBase64String(this.Hash);
 
                 // Create instance of RSACryptoServiceProvider using the
                 // key from RSAParameters
@@ -83,7 +70,7 @@ namespace TransactionNS
                     rsa.ImportParameters(wallet.GetKeyPairParams());
 
                     byte[] signature = rsa.SignData(originalData, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-                    this.signature = Convert.ToBase64String(signature);
+                    this.Signature = Convert.ToBase64String(signature);
                 }
                 catch (Exception e)
                 {
@@ -107,16 +94,16 @@ namespace TransactionNS
             }
 
             // Calculate hash value of current transaction
-            string concatenatedData = this.id + this.Sender + this.Receiver + this.Amount.ToString();
-            string calculatedHash = Statics.CreateHashSHA256(concatenatedData);
-            if (this.hash != calculatedHash)
+            string concatenatedData = this.Id + this.Sender + this.Receiver + this.Amount.ToString();
+            string calculatedHash = Statics.CreateHashSha256(concatenatedData);
+            if (this.Hash != calculatedHash)
             {
                 return false;
             }
 
             // Get bytes arrays for hash and signature
-            byte[] bytesHash = Convert.FromBase64String(this.hash);
-            byte[] signatureHash = Convert.FromBase64String(this.signature);
+            byte[] bytesHash = Convert.FromBase64String(this.Hash);
+            byte[] signatureHash = Convert.FromBase64String(this.Signature);
             if (!Statics.SignatureIsValid(bytesHash, signatureHash, this.Sender))
             {
                 return false;

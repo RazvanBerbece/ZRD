@@ -11,10 +11,10 @@ namespace WalletNS
     public class Wallet
     {
 
-        public byte[] publicKey { get; set; }
-        private byte[] privateKey { get; set; }
+        public byte[] PublicKey { get; set; }
+        private byte[] PrivateKey { get; set; }
 
-        private RSAParameters keyPair { get; set; }
+        private RSAParameters KeyPair { get; set; }
 
         /// <summary>
         /// Constructor for a <c>Wallet</c> object.
@@ -23,29 +23,29 @@ namespace WalletNS
         public Wallet(int keySize)
         {
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(keySize);
-            this.publicKey = rsa.ExportSubjectPublicKeyInfo();
-            this.privateKey = rsa.ExportPkcs8PrivateKey();
-            this.keyPair = rsa.ExportParameters(true);
+            this.PublicKey = rsa.ExportSubjectPublicKeyInfo();
+            this.PrivateKey = rsa.ExportPkcs8PrivateKey();
+            this.KeyPair = rsa.ExportParameters(true);
         }
 
         public string GetPrivateKeyStringBase64()
         {
-            return Convert.ToBase64String(this.privateKey);
+            return Convert.ToBase64String(this.PrivateKey);
         }
 
         public byte[] GetPrivateKeyBytesArray()
         {
-            return this.privateKey;
+            return this.PrivateKey;
         }
 
         public string GetPublicKeyStringBase64()
         {
-            return Convert.ToBase64String(this.publicKey);
+            return Convert.ToBase64String(this.PublicKey);
         }
 
         public RSAParameters GetKeyPairParams()
         {
-            return this.keyPair;
+            return this.KeyPair;
         }
 
         public void SendCurrency(int amount, string receiverPublicKey, Blockchain blockchain)

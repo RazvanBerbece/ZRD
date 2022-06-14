@@ -6,10 +6,10 @@ namespace MerkleTreeNS.MerkleNodeNS
     public class MerkleNode
     {
 
-        public string value { get; set; }
+        public string Value { get; set; }
 
-        public MerkleNode? left { get; set; }
-        public MerkleNode? right { get; set; }
+        public MerkleNode? Left { get; set; }
+        public MerkleNode? Right { get; set; }
 
         public MerkleNode(string hashValue, MerkleNode left, MerkleNode right)
         {
@@ -18,9 +18,9 @@ namespace MerkleTreeNS.MerkleNodeNS
                 throw new ArgumentException("Value in a MerkleNode cannot be the empty string");
             }
 
-            this.value = hashValue;
-            this.left = left;
-            this.right = right;
+            this.Value = hashValue;
+            this.Left = left;
+            this.Right = right;
         }
     }
 }

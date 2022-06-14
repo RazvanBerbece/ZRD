@@ -15,36 +15,36 @@ namespace MerkleTreeNS.MerkleNodeNS
             string value = "NodeHashValueOfParentsHash";
 
             // Node values for different cases
-            MerkleNode NodeNullParents = new MerkleNode(value, null, null);
-            MerkleNode NodeNullLeft = new MerkleNode(value, null, NodeNullParents);
-            MerkleNode NodeNullRight = new MerkleNode(value, NodeNullParents, null);
-            MerkleNode NodeFull = new MerkleNode(value, NodeNullParents, NodeNullParents);
-            MerkleNode NodeNoValue;
+            MerkleNode nodeNullParents = new MerkleNode(value, null, null);
+            MerkleNode nodeNullLeft = new MerkleNode(value, null, nodeNullParents);
+            MerkleNode nodeNullRight = new MerkleNode(value, nodeNullParents, null);
+            MerkleNode nodeFull = new MerkleNode(value, nodeNullParents, nodeNullParents);
+            MerkleNode nodeNoValue;
 
             // NodeNullParents
-            Assert.IsNotEmpty(NodeNullParents.value, "NodeNullParents should have a non-empty value");
-            Assert.IsNull(NodeNullParents.left, "NodeNullParents should have the left parent null");
-            Assert.IsNull(NodeNullParents.right, "NodeNullParents should have the right parent null");
+            Assert.IsNotEmpty(nodeNullParents.Value, "NodeNullParents should have a non-empty value");
+            Assert.IsNull(nodeNullParents.Left, "NodeNullParents should have the left parent null");
+            Assert.IsNull(nodeNullParents.Right, "NodeNullParents should have the right parent null");
 
             // NodeNullLeft
-            Assert.IsNotEmpty(NodeNullParents.value, "NodeNullLeft should have a non-empty value");
-            Assert.IsNull(NodeNullLeft.left, "NodeNullLeft should have the left parent null");
-            Assert.IsInstanceOf(typeof(MerkleNode), NodeNullLeft.right, "NodeNullLeft should have the right parent a MerkleNode");
+            Assert.IsNotEmpty(nodeNullParents.Value, "NodeNullLeft should have a non-empty value");
+            Assert.IsNull(nodeNullLeft.Left, "NodeNullLeft should have the left parent null");
+            Assert.IsInstanceOf(typeof(MerkleNode), nodeNullLeft.Right, "NodeNullLeft should have the right parent a MerkleNode");
 
             // NodeNullRight
-            Assert.IsNotEmpty(NodeNullRight.value, "NodeNullRight should have a non-empty value");
-            Assert.IsNull(NodeNullRight.right, "NodeNullRight should have the right parent null");
-            Assert.IsInstanceOf(typeof(MerkleNode), NodeNullRight.left, "NodeNullRight should have the left parent a MerkleNode");
+            Assert.IsNotEmpty(nodeNullRight.Value, "NodeNullRight should have a non-empty value");
+            Assert.IsNull(nodeNullRight.Right, "NodeNullRight should have the right parent null");
+            Assert.IsInstanceOf(typeof(MerkleNode), nodeNullRight.Left, "NodeNullRight should have the left parent a MerkleNode");
 
             // NodeFull
-            Assert.IsNotEmpty(NodeFull.value, "NodeFull should have a non-empty value");
-            Assert.IsInstanceOf(typeof(MerkleNode), NodeFull.left, "NodeFull should have the left parent a MerkleNode");
-            Assert.IsInstanceOf(typeof(MerkleNode), NodeFull.right, "NodeFull should have the right parent a MerkleNode");
+            Assert.IsNotEmpty(nodeFull.Value, "NodeFull should have a non-empty value");
+            Assert.IsInstanceOf(typeof(MerkleNode), nodeFull.Left, "NodeFull should have the left parent a MerkleNode");
+            Assert.IsInstanceOf(typeof(MerkleNode), nodeFull.Right, "NodeFull should have the right parent a MerkleNode");
 
             // NodeNoValue
             try
             {
-                NodeNoValue = new MerkleNode("", NodeNullParents, NodeNullParents);
+                nodeNoValue = new MerkleNode("", nodeNullParents, nodeNullParents);
                 Assert.Fail("MerkleNode constructor with empty string value should throw ArgumentException");
             }
             catch (ArgumentException)

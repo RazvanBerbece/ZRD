@@ -27,35 +27,35 @@ namespace BlockNS
     public class Block
     {
 
-        public int index { get; set; }
-        public List<Transaction> data { get; set; }
-        public string hash { get; set; }
-        public string previousHash { get; set; }
-        public int proofOfWork { get; set; }
-        public DateTime timestamp { get; set; }
+        public int Index { get; set; }
+        public List<Transaction> Data { get; set; }
+        public string Hash { get; set; }
+        public string PreviousHash { get; set; }
+        public int ProofOfWork { get; set; }
+        public DateTime Timestamp { get; set; }
 
-        public MerkleTree tree { get; set; }
-        public MerkleNode root { get; set; }
+        public MerkleTree Tree { get; set; }
+        public MerkleNode Root { get; set; }
 
         public Block(List<Transaction> data, string previousHash, int index)
         {
-            this.index = index;
-            this.data = data;
-            this.previousHash = previousHash;
-            this.hash = "";
-            this.proofOfWork = 0;
+            this.Index = index;
+            this.Data = data;
+            this.PreviousHash = previousHash;
+            this.Hash = "";
+            this.ProofOfWork = 0;
 
-            this.timestamp = new DateTime();
-            this.timestamp = DateTime.Now;
+            this.Timestamp = new DateTime();
+            this.Timestamp = DateTime.Now;
 
             // Process the Merkle tree & root for the given transactions under current Block
-            this.tree = MerkleTree.CreateMerkleTree(this.data);
-            if (this.tree == null)
+            this.Tree = MerkleTree.CreateMerkleTree(this.Data);
+            if (this.Tree == null)
             {
                 throw new ArgumentException("Transaction data list cannot be empty or null");
             }
             
-            this.root = this.tree.root;
+            this.Root = this.Tree.Root;
         }
 
         /// <summary>
@@ -66,13 +66,13 @@ namespace BlockNS
         public string CalculateHash()
         {
             string concatenatedBlockData =
-                this.index.ToString() +
-                Statics.TransactionsToJSONString(this.data) +
-                this.previousHash +
-                this.proofOfWork.ToString() +
-                this.timestamp.ToLongTimeString();
+                this.Index.ToString() +
+                Statics.TransactionsToJsonString(this.Data) +
+                this.PreviousHash +
+                this.ProofOfWork.ToString() +
+                this.Timestamp.ToLongTimeString();
 
-            return Statics.CreateHashSHA256(concatenatedBlockData);
+            return Statics.CreateHashSha256(concatenatedBlockData);
         }
         
         /// <summary>
@@ -86,14 +86,14 @@ namespace BlockNS
             // 'Work' starts on a block with PoW=0 and then calculates hashes with incrementing PoW values (1, 2, 3...)
             string regexHashPattern = $"^(0){{{difficulty}}}.*";
             Regex hashExpression = new Regex(regexHashPattern, RegexOptions.Compiled);
-            MatchCollection hashMatches = hashExpression.Matches(this.hash);
+            MatchCollection hashMatches = hashExpression.Matches(this.Hash);
 
             // While the hash doesn't match (expression doesn't match), keep generating hashes with incremented PoW values
             while (hashMatches.Count == 0)
             {
-                this.proofOfWork++;
-                this.hash = this.CalculateHash();
-                hashMatches = hashExpression.Matches(this.hash);
+                this.ProofOfWork++;
+                this.Hash = this.CalculateHash();
+                hashMatches = hashExpression.Matches(this.Hash);
             }
 
             return;
@@ -123,7 +123,7 @@ namespace BlockNS
         /// <returns>Boolean on the overall transaction valid status</returns>
         public bool HasAllValidTransactions(Blockchain chain)
         {
-            foreach (Transaction transaction in this.data) 
+            foreach (Transaction transaction in this.Data) 
             {
                 if (!transaction.IsValid(chain))
                 {

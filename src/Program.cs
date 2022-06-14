@@ -33,15 +33,15 @@ namespace ZRD
             List<Transaction> testBlockTransactions;
 
             testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5, true);
-            Block testBlock1 = new Block(testBlockTransactions, blockchain.chain.Last.Value.hash, blockchain.chain.Last.Value.index + 1);
+            Block testBlock1 = new Block(testBlockTransactions, blockchain.Chain.Last.Value.Hash, blockchain.Chain.Last.Value.Index + 1);
             blockchain.AddBlock(testBlock1);
 
             testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5, true);
-            Block testBlock2 = new Block(testBlockTransactions, blockchain.chain.Last.Value.hash, blockchain.chain.Last.Value.index + 1);
+            Block testBlock2 = new Block(testBlockTransactions, blockchain.Chain.Last.Value.Hash, blockchain.Chain.Last.Value.Index + 1);
             blockchain.AddBlock(testBlock2);
 
             testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5, true);
-            Block testBlock3 = new Block(testBlockTransactions, blockchain.chain.Last.Value.hash, blockchain.chain.Last.Value.index + 1);
+            Block testBlock3 = new Block(testBlockTransactions, blockchain.Chain.Last.Value.Hash, blockchain.Chain.Last.Value.Index + 1);
             blockchain.AddBlock(testBlock3);
 
             // Visualise blockchain

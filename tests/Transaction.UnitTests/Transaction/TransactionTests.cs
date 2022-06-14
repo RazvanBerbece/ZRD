@@ -125,8 +125,8 @@ namespace TransactionTestsNS
                     // Guard - List items have populated data
                     foreach (Transaction transaction in list)
                     {
-                        Assert.IsNotEmpty(transaction.id);
-                        Assert.IsNotEmpty(transaction.hash);
+                        Assert.IsNotEmpty(transaction.Id);
+                        Assert.IsNotEmpty(transaction.Hash);
                         Assert.IsNotEmpty(transaction.Sender);
                         Assert.IsNotEmpty(transaction.Receiver);
                     }
@@ -154,7 +154,7 @@ namespace TransactionTestsNS
             transaction.SignTransaction(wallet);
 
             // Verify that transaction was signed
-            Assert.NotNull(transaction.signature);
+            Assert.NotNull(transaction.Signature);
         }
 
         [TestCase("senderPublicKey", "receiverPublicKey", 2000, true)]

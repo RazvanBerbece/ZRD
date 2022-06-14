@@ -79,10 +79,10 @@ namespace BlockchainTestsNS
                     "previousHash",
                     1
                 );
-                randomBlock.hash = randomBlock.CalculateHash();
+                randomBlock.Hash = randomBlock.CalculateHash();
                 this.chain.AddBlock(randomBlock);
             
-                Assert.That(this.chain.chain.Count, Is.EqualTo(2)); // chain should have 2 blocks: genesis and randomBlock
+                Assert.That(this.chain.Chain.Count, Is.EqualTo(2)); // chain should have 2 blocks: genesis and randomBlock
             }
             else
             {
@@ -170,7 +170,7 @@ namespace BlockchainTestsNS
                     break;
                 case 2:
                     // Test case #2, Testing on compromised blockchain of size 1
-                    this.chain.chain.First.Value.data[0].Amount -= 100; // mutate first coin release transaction
+                    this.chain.Chain.First.Value.Data[0].Amount -= 100; // mutate first coin release transaction
                     Assert.That(this.chain.IsValid(), Is.False);
                     break;
                 case 3:
@@ -179,20 +179,20 @@ namespace BlockchainTestsNS
                     randomTransactions = Transaction.GenerateRandomTransactions(10, false);
                     Block randomBlockUncompromised1 = new Block(
                         randomTransactions,
-                        this.chain.chain.Last.Value.hash,
-                        this.chain.chain.Last.Value.index + 1
+                        this.chain.Chain.Last.Value.Hash,
+                        this.chain.Chain.Last.Value.Index + 1
                     );
-                    randomBlockUncompromised1.hash = randomBlockUncompromised1.CalculateHash();
+                    randomBlockUncompromised1.Hash = randomBlockUncompromised1.CalculateHash();
                     this.chain.AddBlock(randomBlockUncompromised1);
                     
                     // Add block 2 with random transactions
                     randomTransactions = Transaction.GenerateRandomTransactions(10, false);
                     Block randomBlockUncompromised2 = new Block(
                         randomTransactions,
-                        this.chain.chain.Last.Value.hash,
-                        this.chain.chain.Last.Value.index + 1
+                        this.chain.Chain.Last.Value.Hash,
+                        this.chain.Chain.Last.Value.Index + 1
                     );
-                    randomBlockUncompromised2.hash = randomBlockUncompromised2.CalculateHash();
+                    randomBlockUncompromised2.Hash = randomBlockUncompromised2.CalculateHash();
                     this.chain.AddBlock(randomBlockUncompromised2);
                     
                     Assert.That(this.chain.IsValid(), Is.True);
@@ -204,24 +204,24 @@ namespace BlockchainTestsNS
                     randomTransactions = Transaction.GenerateRandomTransactions(10, false);
                     Block randomBlockCUncompromised1 = new Block(
                         randomTransactions,
-                        this.chain.chain.Last.Value.hash,
-                        this.chain.chain.Last.Value.index + 1
+                        this.chain.Chain.Last.Value.Hash,
+                        this.chain.Chain.Last.Value.Index + 1
                     );
-                    randomBlockCUncompromised1.hash = randomBlockCUncompromised1.CalculateHash();
+                    randomBlockCUncompromised1.Hash = randomBlockCUncompromised1.CalculateHash();
                     this.chain.AddBlock(randomBlockCUncompromised1);
                     
                     // Add block 2 with random transactions AND mutate transaction post-hashing
                     randomTransactions = Transaction.GenerateRandomTransactions(10, false);
                     Block randomBlockCompromised1 = new Block(
                         randomTransactions,
-                        this.chain.chain.Last.Value.hash,
-                        this.chain.chain.Last.Value.index + 1
+                        this.chain.Chain.Last.Value.Hash,
+                        this.chain.Chain.Last.Value.Index + 1
                     );
-                    randomBlockCompromised1.hash = randomBlockCompromised1.CalculateHash();
+                    randomBlockCompromised1.Hash = randomBlockCompromised1.CalculateHash();
                     this.chain.AddBlock(randomBlockCompromised1);
                     
                     // Mutate
-                    this.chain.chain.Last.Value.data[rnd.Next(1, 10)].Amount += -100;
+                    this.chain.Chain.Last.Value.Data[rnd.Next(1, 10)].Amount += -100;
                     
                     Assert.That(this.chain.IsValid(), Is.False);
                     break;
@@ -275,7 +275,7 @@ namespace BlockchainTestsNS
                     
                     this.chain.AddTransaction(transaction);
                     
-                    Assert.That(this.chain.unconfirmedTransactions.Count , Is.EqualTo(1));
+                    Assert.That(this.chain.UnconfirmedTransactions.Count , Is.EqualTo(1));
                     break;
                 case "compromisedTransaction":
                     
@@ -289,7 +289,7 @@ namespace BlockchainTestsNS
                     
                     this.chain.AddTransaction(compromisedTransaction);
                     
-                    Assert.That(this.chain.unconfirmedTransactions.Count , Is.EqualTo(0));
+                    Assert.That(this.chain.UnconfirmedTransactions.Count , Is.EqualTo(0));
                     break;
             }
         }
@@ -356,8 +356,8 @@ namespace BlockchainTestsNS
                     minerPublicKey = this.testWallet.GetPublicKeyStringBase64(); // get wallet key at runtime
                     this.chain.MineUnconfirmedTransactions(minerPublicKey);
                     
-                    Assert.That(this.chain.unconfirmedTransactions.Count, Is.EqualTo(0));
-                    Assert.That(this.chain.chain.Count, Is.EqualTo(2)); // 2 block; 1 Genesis 1 for transactions
+                    Assert.That(this.chain.UnconfirmedTransactions.Count, Is.EqualTo(0));
+                    Assert.That(this.chain.Chain.Count, Is.EqualTo(2)); // 2 block; 1 Genesis 1 for transactions
                     Assert.That(this.chain.IsValid(), Is.True);
                         
                     break;

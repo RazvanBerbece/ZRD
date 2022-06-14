@@ -16,7 +16,7 @@ namespace StaticsNS
 {
     public class Statics
     {
-        public static string CreateHashSHA256(string data)
+        public static string CreateHashSha256(string data)
         {
             // Create SHA256
             using (SHA256 sha256Hash = SHA256.Create())
@@ -34,16 +34,16 @@ namespace StaticsNS
             }
         }
 
-        public static string CreateHashSHA256FromTransaction(Transaction transaction)
+        public static string CreateHashSha256FromTransaction(Transaction transaction)
         {
             string dataString =
-                transaction.id +
-                transaction.hash +
+                transaction.Id +
+                transaction.Hash +
                 transaction.Sender +
                 transaction.Receiver +
                 transaction.Amount.ToString();
 
-            return CreateHashSHA256(dataString);
+            return CreateHashSha256(dataString);
         }
 
         public static bool SignatureIsValid(byte[] data, byte[] signature, string publicKeyBase64String)
@@ -76,7 +76,7 @@ namespace StaticsNS
         /**
          * TODO: Could be built with template values ?
          */ 
-        public static string TransactionsToJSONString(List<Transaction> transactions)
+        public static string TransactionsToJsonString(List<Transaction> transactions)
         {
             return JsonSerializer.Serialize(transactions);
         }

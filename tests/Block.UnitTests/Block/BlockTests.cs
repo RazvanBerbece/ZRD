@@ -62,7 +62,7 @@ namespace BlockTestsNS
                 "previousHash",
                 99
                 );
-            genericBlockToJsonSerialize.timestamp = DateTime.Parse("2022-06-01T17:49:36.823434+01:00");
+            genericBlockToJsonSerialize.Timestamp = DateTime.Parse("2022-06-01T17:49:36.823434+01:00");
             
             // Setup testing Blockchain
             chain = Blockchain.CreateBlockchain(
@@ -102,8 +102,8 @@ namespace BlockTestsNS
         {
             // Calculate hash with random transaction list and index=0
             Block blockWithTransactions = new Block(this.randomUnsignedTransactions, "publicKey123", 0);
-            blockWithTransactions.hash = blockWithTransactions.CalculateHash();
-            Assert.IsNotEmpty(blockWithTransactions.hash);
+            blockWithTransactions.Hash = blockWithTransactions.CalculateHash();
+            Assert.IsNotEmpty(blockWithTransactions.Hash);
 
             // Calculate hash with empty transaction list and index=0
             try
@@ -131,7 +131,7 @@ namespace BlockTestsNS
             // Setup expected regex patern
             string regexHashPattern = $"^(0){{{difficulty}}}.*";
             Regex hashExpression = new Regex(regexHashPattern, RegexOptions.Compiled);
-            MatchCollection hashMatches = hashExpression.Matches(this.genericUnvalidatedBlock.hash);
+            MatchCollection hashMatches = hashExpression.Matches(this.genericUnvalidatedBlock.Hash);
 
             Assert.Greater(hashMatches.Count, 0);
         }

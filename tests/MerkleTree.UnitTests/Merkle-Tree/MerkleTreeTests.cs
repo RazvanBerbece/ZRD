@@ -37,8 +37,8 @@ namespace MerkleTreeNS.MerkleTreeNS
 
                 // Check tree status by checking instance type & other data (size, root instance type, etc.)
                 Assert.That(tree, Is.InstanceOf(typeof(MerkleTree)));
-                Assert.That(tree.root, Is.InstanceOf(typeof(MerkleNode)));
-                Assert.That(tree.size, Is.EqualTo(Math.Ceiling(Math.Log2(transactions.Count)) + 1));
+                Assert.That(tree.Root, Is.InstanceOf(typeof(MerkleNode)));
+                Assert.That(tree.Size, Is.EqualTo(Math.Ceiling(Math.Log2(transactions.Count)) + 1));
             }
         }
 
@@ -78,14 +78,14 @@ namespace MerkleTreeNS.MerkleTreeNS
                 case 1:
                     // Whole MerkleTree consists of 1 root MerkleNode
                     Assert.That(rootNode, Is.InstanceOf(typeof(MerkleNode)));
-                    Assert.That(rootNode.left, Is.Null);
-                    Assert.That(rootNode.right, Is.Null);
+                    Assert.That(rootNode.Left, Is.Null);
+                    Assert.That(rootNode.Right, Is.Null);
                     break;
                 default:
                     // Assert that parents are MerkleNodes
                     Assert.That(rootNode, Is.InstanceOf(typeof(MerkleNode)));
-                    Assert.That(rootNode.left, Is.InstanceOf(typeof(MerkleNode)));
-                    Assert.That(rootNode.right, Is.InstanceOf(typeof(MerkleNode)));
+                    Assert.That(rootNode.Left, Is.InstanceOf(typeof(MerkleNode)));
+                    Assert.That(rootNode.Right, Is.InstanceOf(typeof(MerkleNode)));
                     break;
             }
 

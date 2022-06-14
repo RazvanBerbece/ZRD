@@ -9,13 +9,13 @@ namespace MerkleTreeNS
     public class MerkleTree
     {
 
-        public double size { get; set; }
-        public MerkleNode root { get; set; }
+        public double Size { get; set; }
+        public MerkleNode Root { get; set; }
 
         public MerkleTree(MerkleNode root, double size)
         {
-            this.size = size;
-            this.root = root;
+            this.Size = size;
+            this.Root = root;
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace MerkleTreeNS
             List<MerkleNode> nodes = new List<MerkleNode> { };
             foreach (Transaction transaction in transactions)
             {
-                nodes.Add(new MerkleNode(Statics.CreateHashSHA256FromTransaction(transaction), null, null));
+                nodes.Add(new MerkleNode(Statics.CreateHashSha256FromTransaction(transaction), null, null));
             }
 
             MerkleNode root = OrganiseTreeFromMerkleNodeList(nodes);
@@ -73,11 +73,11 @@ namespace MerkleTreeNS
 
                 // Group (concatenate) node values for MerkleTree node
                 MerkleNode nextItem = transactionNodes[i + 1];
-                string groupHash = transactionNodes[i].value + nextItem.value;
+                string groupHash = transactionNodes[i].Value + nextItem.Value;
 
                 // Create MerkleNode with parents and add to tree/node list
                 MerkleNode newNode = new MerkleNode(
-                    Statics.CreateHashSHA256(groupHash),
+                    Statics.CreateHashSha256(groupHash),
                     transactionNodes[i],
                     nextItem
                     );

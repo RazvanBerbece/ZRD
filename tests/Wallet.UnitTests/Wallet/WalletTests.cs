@@ -27,7 +27,7 @@ namespace WalletTestsNS
         [Test]
         public void Wallet_CanConstruct()
         {
-            Assert.IsNotEmpty(this.walletA.publicKey);
+            Assert.IsNotEmpty(this.walletA.PublicKey);
             Assert.IsNotEmpty(this.walletA.GetPrivateKeyStringBase64());
         }
 

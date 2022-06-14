@@ -16,17 +16,17 @@ namespace BlockchainNS
     public class Blockchain
     {
 
-        public Block genesisBlock { get; set; }
-        public LinkedList<Block> chain { get; set; }
-        public int difficulty { get; set; }
+        public Block GenesisBlock { get; set; }
+        public LinkedList<Block> Chain { get; set; }
+        public int Difficulty { get; set; }
 
-        public int reward { get; set; }
+        public int Reward { get; set; }
 
-        public List<Transaction> unconfirmedTransactions { get; set; } // pool of transactions to be confirmed & mined into a new Block
+        public List<Transaction> UnconfirmedTransactions { get; set; } // pool of transactions to be confirmed & mined into a new Block
 
-        public int blockTime { get; set; }
+        public int BlockTime { get; set; }
 
-        public Wallet blockchainWallet { get; set; }
+        public Wallet BlockchainWallet { get; set; }
 
         /// <summary>
         /// Constructor for a <c>Blockchain</c> object.
@@ -39,13 +39,13 @@ namespace BlockchainNS
         /// <param name="reward">Reward amount offered to miner that solves the computational problem and mines a new block with the unconfirmed transactions.</param>
         public Blockchain(Block genesisBlock, LinkedList<Block> chain, Wallet blockchainWallet, int difficulty, int blockTime, int reward)
         {
-            this.genesisBlock = genesisBlock;
-            this.chain = chain;
-            this.difficulty = difficulty;
-            this.blockTime = blockTime;
-            this.reward = reward;
-            this.unconfirmedTransactions = new List<Transaction> { };
-            this.blockchainWallet = blockchainWallet;
+            this.GenesisBlock = genesisBlock;
+            this.Chain = chain;
+            this.Difficulty = difficulty;
+            this.BlockTime = blockTime;
+            this.Reward = reward;
+            this.UnconfirmedTransactions = new List<Transaction> { };
+            this.BlockchainWallet = blockchainWallet;
         }
 
         public void AddBlock(Block block)
@@ -56,25 +56,25 @@ namespace BlockchainNS
                 throw new ArgumentNullException("Error in Blockchain.AddBlock(): Block argument cannot be null");
             }
 
-            block.Mine(difficulty: this.difficulty);
-            this.chain.AddAfter(this.chain.Last, block);
+            block.Mine(difficulty: this.Difficulty);
+            this.Chain.AddAfter(this.Chain.Last, block);
 
             // Adjust the difficulty if the new block takes more time than the block time
-            if ((DateTime.Now - block.timestamp).Seconds > this.blockTime)
+            if ((DateTime.Now - block.Timestamp).Seconds > this.BlockTime)
             {
-                this.difficulty -= 1;
+                this.Difficulty -= 1;
                 // Console.WriteLine($"Adjusted difficulty to {this.difficulty}\n");
             }
             else
             {
-                this.difficulty += 1;
+                this.Difficulty += 1;
                 // Console.WriteLine($"Adjusted difficulty to {this.difficulty}\n");
             }
         }
 
         public void ViewChain()
         {
-            foreach (Block block in this.chain)
+            foreach (Block block in this.Chain)
             {
                 Console.WriteLine(block.ToJsonString());
             }
@@ -123,43 +123,43 @@ namespace BlockchainNS
 
         public bool IsValid()
         {
-            Block previousBlock = this.chain.First.Value;
+            Block previousBlock = this.Chain.First.Value;
 
-            foreach (Block block in this.chain)
+            foreach (Block block in this.Chain)
             {
-                if (block.index == 0) // if Genesis block
+                if (block.Index == 0) // if Genesis block
                 {
                     // Still validate for Genesis block
                     // Guard - Genesis block hash matches
-                    if (this.genesisBlock.hash != block.CalculateHash())
+                    if (this.GenesisBlock.Hash != block.CalculateHash())
                     {
                         return false;
                     }
                     
                     // Guard - Previous hash is ""
-                    if (block.previousHash != "")
+                    if (block.PreviousHash != "")
                     {
                         return false;
                     }
                     
-                    previousBlock = this.genesisBlock;
+                    previousBlock = this.GenesisBlock;
                     continue;
                 }
 
                 // Guard - Blocks are in right order
-                if (previousBlock.index + 1 != block.index)
+                if (previousBlock.Index + 1 != block.Index)
                 {
                     return false;
                 }
 
                 // Guard - Hash of the previous block is equal to current Block.previousHash
-                if (previousBlock.hash != block.previousHash)
+                if (previousBlock.Hash != block.PreviousHash)
                 {
                     return false;        
                 }
 
                 // Guard - Changes made to current Block hash (ie: changes in transactions)
-                if (block.hash != block.CalculateHash())
+                if (block.Hash != block.CalculateHash())
                 {
                     return false;
                 }
@@ -177,14 +177,14 @@ namespace BlockchainNS
                 return;
             }
             
-            foreach (Transaction unconfirmedTransaction in this.unconfirmedTransactions)
+            foreach (Transaction unconfirmedTransaction in this.UnconfirmedTransactions)
             {
-                if (unconfirmedTransaction.hash == transaction.hash || !unconfirmedTransaction.IsValid(this)) // transaction is already unconfirmed on chain or not valid
+                if (unconfirmedTransaction.Hash == transaction.Hash || !unconfirmedTransaction.IsValid(this)) // transaction is already unconfirmed on chain or not valid
                 {
                     return;
                 }
             }
-            this.unconfirmedTransactions.Add(transaction);
+            this.UnconfirmedTransactions.Add(transaction);
         }
 
         /**
@@ -200,9 +200,9 @@ namespace BlockchainNS
             
             int balance = 0;
 
-            foreach (Block block in this.chain)
+            foreach (Block block in this.Chain)
             {
-                foreach (Transaction transaction in block.data)
+                foreach (Transaction transaction in block.Data)
                 {
                     if (transaction.Sender == publicKey)
                     {
@@ -228,25 +228,25 @@ namespace BlockchainNS
         {
 
             Transaction rewardTransaction = new Transaction(
-                this.blockchainWallet.GetPublicKeyStringBase64(),
+                this.BlockchainWallet.GetPublicKeyStringBase64(),
                 minerPublicKey,
-                this.reward
+                this.Reward
                 );
-            rewardTransaction.SignTransaction(this.blockchainWallet);
+            rewardTransaction.SignTransaction(this.BlockchainWallet);
             this.AddTransaction(rewardTransaction);
 
             List<Transaction> transactionsCopy = new List<Transaction> { };
-            transactionsCopy.AddRange(this.unconfirmedTransactions);
+            transactionsCopy.AddRange(this.UnconfirmedTransactions);
 
             this.AddBlock(
                 new Block(
                     transactionsCopy,
-                    chain.Last.Value.hash,
-                    chain.Last.Value.index + 1
+                    Chain.Last.Value.Hash,
+                    Chain.Last.Value.Index + 1
                     )
                 );
 
-            this.unconfirmedTransactions.Clear();
+            this.UnconfirmedTransactions.Clear();
         }
 
         public static Blockchain CreateBlockchain(Transaction firstMint, Wallet blockchainWallet, int difficulty, int blockTime, int reward)
@@ -264,6 +264,7 @@ namespace BlockchainNS
 
             // Init Genesis block
             List<Transaction> genesisList = new List<Transaction> { };
+            firstMint.SignTransaction(blockchainWallet); // sign first transaction
             genesisList.Add(firstMint);
             Block genesisBlock = new Block(genesisList, "", 0);
             genesisBlock.Mine(difficulty);
