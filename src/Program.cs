@@ -11,7 +11,8 @@ namespace ZRD
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Running ZRD blockchain.\n");
+            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            Console.WriteLine("ON the ZRD Blockchain...");
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
             // Create network wallet & first user wallet
@@ -46,8 +47,7 @@ namespace ZRD
 
             // Visualise blockchain
             // blockchain.ViewChain();
-            Console.WriteLine(blockchain.ToJsonString());
-            Console.WriteLine($"\nBlockchain is {(blockchain.IsValid() ? "VALID" : "COMPROMISED")}\n");
+            Console.WriteLine($"Blockchain is {(blockchain.IsValid() ? "VALID" : "COMPROMISED")}\n");
 
             // Mutate Block -> Blockchain is compromised
             // blockchain.chain.Last.Value.data[0].Amount += 150;
@@ -59,6 +59,10 @@ namespace ZRD
             
             // Save Blockchain to JSON
             Blockchain.SaveJsonStateToFile(blockchain.ToJsonString());
+            
+            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            Console.WriteLine("OFF the ZRD Blockchain.");
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
         }
     }
