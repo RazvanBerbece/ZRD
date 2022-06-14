@@ -30,7 +30,7 @@ namespace MerkleTreeNS.MerkleTreeNS
             }
             else
             {
-                List<Transaction> transactions = Transaction.GenerateRandomTransactions(numberOfTransactions);
+                List<Transaction> transactions = Transaction.GenerateRandomTransactions(numberOfTransactions, false);
                 
                 // Use Static MerkleTree function to generate tree
                 MerkleTree tree = MerkleTree.CreateMerkleTree(transactions);

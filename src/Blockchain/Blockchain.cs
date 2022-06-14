@@ -26,7 +26,7 @@ namespace BlockchainNS
 
         public int blockTime { get; set; }
 
-        Wallet blockchainWallet { get; set; }
+        public Wallet blockchainWallet { get; set; }
 
         /// <summary>
         /// Constructor for a <c>Blockchain</c> object.
@@ -115,7 +115,7 @@ namespace BlockchainNS
                 blockchainJsonString,
                 options: new JsonSerializerOptions()
                 {
-                    WriteIndented = true,
+                    PropertyNameCaseInsensitive = true,
                     Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
                 });
             return chain;

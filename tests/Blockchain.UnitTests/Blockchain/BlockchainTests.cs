@@ -73,7 +73,7 @@ namespace BlockchainTestsNS
 
             if (!testWithNullBlock)
             {
-                List<Transaction> randomTransactions = Transaction.GenerateRandomTransactions(10);
+                List<Transaction> randomTransactions = Transaction.GenerateRandomTransactions(10, false);
                 Block randomBlock = new Block(
                     randomTransactions,
                     "previousHash",
@@ -176,7 +176,7 @@ namespace BlockchainTestsNS
                 case 3:
                     // Test case #3, Testing on non-compromised blockchain of size >1
                     // Add block 1 with random transactions
-                    randomTransactions = Transaction.GenerateRandomTransactions(10);
+                    randomTransactions = Transaction.GenerateRandomTransactions(10, false);
                     Block randomBlockUncompromised1 = new Block(
                         randomTransactions,
                         this.chain.chain.Last.Value.hash,
@@ -186,7 +186,7 @@ namespace BlockchainTestsNS
                     this.chain.AddBlock(randomBlockUncompromised1);
                     
                     // Add block 2 with random transactions
-                    randomTransactions = Transaction.GenerateRandomTransactions(10);
+                    randomTransactions = Transaction.GenerateRandomTransactions(10, false);
                     Block randomBlockUncompromised2 = new Block(
                         randomTransactions,
                         this.chain.chain.Last.Value.hash,
@@ -201,7 +201,7 @@ namespace BlockchainTestsNS
                     // Test case #4, Testing on compromised blockchain of size >1
                     Random rnd = new Random();
                     // Add block 1 with random transactions
-                    randomTransactions = Transaction.GenerateRandomTransactions(10);
+                    randomTransactions = Transaction.GenerateRandomTransactions(10, false);
                     Block randomBlockCUncompromised1 = new Block(
                         randomTransactions,
                         this.chain.chain.Last.Value.hash,
@@ -211,7 +211,7 @@ namespace BlockchainTestsNS
                     this.chain.AddBlock(randomBlockCUncompromised1);
                     
                     // Add block 2 with random transactions AND mutate transaction post-hashing
-                    randomTransactions = Transaction.GenerateRandomTransactions(10);
+                    randomTransactions = Transaction.GenerateRandomTransactions(10, false);
                     Block randomBlockCompromised1 = new Block(
                         randomTransactions,
                         this.chain.chain.Last.Value.hash,
@@ -314,7 +314,7 @@ namespace BlockchainTestsNS
             );
             
             // Add unconfirmed transactions to Blockchain
-            List<Transaction> transactions = Transaction.GenerateRandomTransactions(10);
+            List<Transaction> transactions = Transaction.GenerateRandomTransactions(10, false);
             int transactionsToAdd = 10;
             for (int i = 0; i < transactionsToAdd + 1; i++)
             {
@@ -392,10 +392,12 @@ namespace BlockchainTestsNS
         [Test]
         public void Static_Blockchain_CanDeserializeFileJson_Correctly()
         {
-            // Will load a valid blockchain from 'ZRD.json'
-            Blockchain chain = Blockchain.DeserialiseJsonStateToBlockchainInstance("ZRD.json");
-            Assert.That(chain, Is.InstanceOf(typeof(Blockchain)));
-            Assert.That(chain.IsValid(), Is.True);
+            // Load a valid blockchain state in JSON format from 'ZRD.json'
+            Blockchain deserializedChain = Blockchain.DeserialiseJsonStateToBlockchainInstance("ZRD.json");
+            
+            // Assert that string data was successfully deserialized into the Blockchain instance
+            Assert.That(deserializedChain, Is.InstanceOf(typeof(Blockchain)));
+            Assert.That(deserializedChain.IsValid(), Is.True);
         }
 
     }

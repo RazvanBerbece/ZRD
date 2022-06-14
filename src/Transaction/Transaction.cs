@@ -124,8 +124,17 @@ namespace TransactionNS
 
             return true;
         }
-
-        public static List<Transaction> GenerateRandomTransactions(int numberOfTransactions)
+        
+        /// <summary>
+        /// Generates a list of Transactions of size |numberOfTransactions|.
+        /// It generates random wallet addresses for senders and receivers and random amounts.
+        /// If the signed argument is set to true, the generated transactions will also be signed against the sender's wallet.
+        /// </summary>
+        /// <param name="numberOfTransactions">The number of transactions to generate and add to the returned list</param>
+        /// <param name="signed">Toggle whether the generated transactions are signed</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public static List<Transaction> GenerateRandomTransactions(int numberOfTransactions, bool signed)
         {
 
             // Throw ArgumentOutOfRangeException if asked to generate a list of 0 or less Transactions
@@ -138,19 +147,19 @@ namespace TransactionNS
             List<Transaction> transactions = new List<Transaction> { };
             for (int i = 0; i < numberOfTransactions; i++)
             {
-                // Generate key pairs to simulate party identifiers
-                RSACryptoServiceProvider rsaSender = new RSACryptoServiceProvider(1024);
-                RSACryptoServiceProvider rsaReceiver = new RSACryptoServiceProvider(1024);
-                
-                // Get sender & receiver public keys as base64
-                string senderPublicKey = Convert.ToBase64String(rsaSender.ExportSubjectPublicKeyInfo());
-                string receiverPublicKey = Convert.ToBase64String(rsaReceiver.ExportSubjectPublicKeyInfo());
+                // Generate wallets to simulate party identifiers
+                Wallet senderWallet = new Wallet(1024);
+                Wallet receiverWallet = new Wallet(1024);
 
-                transactions.Add(new Transaction(
-                    senderPublicKey,
-                    receiverPublicKey,
-                    randomTransactionAmountEngine.Next(1, 15000))
-                );
+                Transaction newTransaction = new Transaction(
+                    senderWallet.GetPublicKeyStringBase64(),
+                    receiverWallet.GetPublicKeyStringBase64(),
+                    randomTransactionAmountEngine.Next(1, 15000));
+                if (signed)
+                {
+                    newTransaction.SignTransaction(senderWallet);
+                }
+                transactions.Add(newTransaction);
             }
 
             return transactions; 

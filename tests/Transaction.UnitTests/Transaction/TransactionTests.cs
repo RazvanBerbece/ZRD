@@ -91,7 +91,7 @@ namespace TransactionTestsNS
                 try
                 {
                     // Generate 
-                    list = Transaction.GenerateRandomTransactions(numberOfTransactions);
+                    list = Transaction.GenerateRandomTransactions(numberOfTransactions, false);
                     Assert.Fail("GenerateRandomTransactions() should throw ArgumentOutOfRangeException if asked to generate a list of 0 or less Transactions");
                 }
                 catch (Exception e)
@@ -114,7 +114,7 @@ namespace TransactionTestsNS
                     // numberOfTransactions = 7 => 1548ms = 1.548s
                     // numberOfTransactions = 99 => 20584ms = 20.584s
                     this.watch.Start();
-                    list = Transaction.GenerateRandomTransactions(numberOfTransactions);
+                    list = Transaction.GenerateRandomTransactions(numberOfTransactions, false);
                     this.watch.Stop();
 
                     Console.WriteLine($"GenerateRandomTransactions({numberOfTransactions}) finished after {this.watch.ElapsedMilliseconds}ms\n");

@@ -32,15 +32,15 @@ namespace ZRD
             // Add new blocks to chain
             List<Transaction> testBlockTransactions;
 
-            testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5);
+            testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5, true);
             Block testBlock1 = new Block(testBlockTransactions, blockchain.chain.Last.Value.hash, blockchain.chain.Last.Value.index + 1);
             blockchain.AddBlock(testBlock1);
 
-            testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5);
+            testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5, true);
             Block testBlock2 = new Block(testBlockTransactions, blockchain.chain.Last.Value.hash, blockchain.chain.Last.Value.index + 1);
             blockchain.AddBlock(testBlock2);
 
-            testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5);
+            testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5, true);
             Block testBlock3 = new Block(testBlockTransactions, blockchain.chain.Last.Value.hash, blockchain.chain.Last.Value.index + 1);
             blockchain.AddBlock(testBlock3);
 

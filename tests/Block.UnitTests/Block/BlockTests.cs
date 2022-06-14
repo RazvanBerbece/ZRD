@@ -34,7 +34,7 @@ namespace BlockTestsNS
             networkWallet = new Wallet(1024);
             walletA = new Wallet(1024);
 
-            randomUnsignedTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 10);
+            randomUnsignedTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 10, false);
             emptyList = new List<Transaction> { };
 
             // Setup a generic unvalidated block
