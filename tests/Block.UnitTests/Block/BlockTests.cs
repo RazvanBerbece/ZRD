@@ -62,7 +62,7 @@ namespace BlockTestsNS
                 "previousHash",
                 99
                 );
-            genericBlockToJsonSerialize.Timestamp = DateTime.Parse("2022-06-01T17:49:36.823434+01:00");
+            genericBlockToJsonSerialize.Timestamp = DateTime.Parse("2022-06-01T17:49:36.823434+01:00").ToUniversalTime();
             
             // Setup testing Blockchain
             chain = Blockchain.CreateBlockchain(
