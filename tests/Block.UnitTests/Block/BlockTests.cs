@@ -4,6 +4,7 @@ using BlockNS;
 using NUnit.Framework;
 using TransactionNS;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using WalletNS;
@@ -62,7 +63,7 @@ namespace BlockTestsNS
                 "previousHash",
                 99
                 );
-            genericBlockToJsonSerialize.Timestamp = DateTime.Parse("2022-06-01T17:49:36.823434+01:00").ToLocalTime();
+            genericBlockToJsonSerialize.Timestamp = DateTime.Parse("2022-06-01T17:49:36.823434+01:00", CultureInfo.InvariantCulture);
             
             // Setup testing Blockchain
             chain = Blockchain.CreateBlockchain(
