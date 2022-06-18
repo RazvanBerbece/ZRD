@@ -170,7 +170,7 @@ namespace BlockchainTestsNS
                     break;
                 case 2:
                     // Test case #2, Testing on compromised blockchain of size 1
-                    this.chain.Chain.First.Value.Data[0].Amount -= 100; // mutate first coin release transaction
+                    this.chain.Chain.First.Value.Transactions[0].Amount -= 100; // mutate first coin release transaction
                     Assert.That(this.chain.IsValid(), Is.False);
                     break;
                 case 3:
@@ -221,7 +221,7 @@ namespace BlockchainTestsNS
                     this.chain.AddBlock(randomBlockCompromised1);
                     
                     // Mutate
-                    this.chain.Chain.Last.Value.Data[rnd.Next(1, 10)].Amount += -100;
+                    this.chain.Chain.Last.Value.Transactions[rnd.Next(1, 10)].Amount += -100;
                     
                     Assert.That(this.chain.IsValid(), Is.False);
                     break;

@@ -1,6 +1,6 @@
 {
   "Index": 99,
-  "Data": [
+  "Transactions": [
     {
       "Sender": "publicKey123",
       "Receiver": "publicKey456",
@@ -21,10 +21,5 @@
       "Left": null,
       "Right": null
     }
-  },
-  "Root": {
-    "Value": "453b86d18f50a1697a31feb7ccce5cec35519318fae1c9b83518be91365d45ad",
-    "Left": null,
-    "Right": null
   }
 }

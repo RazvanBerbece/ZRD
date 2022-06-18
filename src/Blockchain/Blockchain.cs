@@ -202,7 +202,7 @@ namespace BlockchainNS
 
             foreach (Block block in this.Chain)
             {
-                foreach (Transaction transaction in block.Data)
+                foreach (Transaction transaction in block.Transactions)
                 {
                     if (transaction.Sender == publicKey)
                     {

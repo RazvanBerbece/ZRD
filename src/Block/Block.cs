@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using MerkleTreeNS;
-using MerkleTreeNS.MerkleNodeNS;
 using System.Text.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -28,19 +27,18 @@ namespace BlockNS
     {
 
         public int Index { get; set; }
-        public List<Transaction> Data { get; set; }
+        public List<Transaction> Transactions { get; set; }
         public string Hash { get; set; }
         public string PreviousHash { get; set; }
         public int ProofOfWork { get; set; }
         public DateTime Timestamp { get; set; }
 
         public MerkleTree Tree { get; set; }
-        public MerkleNode Root { get; set; }
 
         public Block(List<Transaction> data, string previousHash, int index)
         {
             this.Index = index;
-            this.Data = data;
+            this.Transactions = data;
             this.PreviousHash = previousHash;
             this.Hash = "";
             this.ProofOfWork = 0;
@@ -49,13 +47,12 @@ namespace BlockNS
             this.Timestamp = DateTime.Now;
 
             // Process the Merkle tree & root for the given transactions under current Block
-            this.Tree = MerkleTree.CreateMerkleTree(this.Data);
+            this.Tree = MerkleTree.CreateMerkleTree(this.Transactions);
             if (this.Tree == null)
             {
                 throw new ArgumentException("Transaction data list cannot be empty or null");
             }
             
-            this.Root = this.Tree.Root;
         }
 
         /// <summary>
@@ -67,7 +64,7 @@ namespace BlockNS
         {
             string concatenatedBlockData =
                 this.Index.ToString() +
-                Statics.TransactionsToJsonString(this.Data) +
+                Statics.TransactionsToJsonString(this.Transactions) +
                 this.PreviousHash +
                 this.ProofOfWork.ToString() +
                 this.Timestamp.ToLongTimeString();
@@ -123,7 +120,7 @@ namespace BlockNS
         /// <returns>Boolean on the overall transaction valid status</returns>
         public bool HasAllValidTransactions(Blockchain chain)
         {
-            foreach (Transaction transaction in this.Data) 
+            foreach (Transaction transaction in this.Transactions) 
             {
                 if (!transaction.IsValid(chain))
                 {
