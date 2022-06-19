@@ -381,23 +381,46 @@ namespace BlockchainTestsNS
                 reward: 10
             );
             
-            Blockchain.SaveJsonStateToFile(this.chain.ToJsonString());
+            Blockchain.SaveJsonStateToFile(this.chain.ToJsonString(), @"TEST_ZRD.json");
             
             // Check that file exists and that there is content in file "ZRD.json"
-            string expectedOutput = File.ReadAllText("ZRD.json");
+            string output = File.ReadAllText("../../../local/Blockchain/ZRD.json");
             
-            Assert.That(expectedOutput, Is.Not.Empty);
+            Assert.That(output, Is.Not.Empty);
         }
 
         [Test]
         public void Static_Blockchain_CanDeserializeFileJson_Correctly()
         {
+            
+            // Setup test Blockchain
+            int firstAmount = 1000000;
+            this.chain = Blockchain.CreateBlockchain(
+                firstMint: new Transaction(
+                    this.networkWallet.GetPublicKeyStringBase64(),
+                    this.testWallet.GetPublicKeyStringBase64(),
+                    firstAmount
+                ),
+                blockchainWallet: this.networkWallet,
+                difficulty: 2,
+                blockTime: 10,
+                reward: 10
+            );
+            
+            Blockchain.SaveJsonStateToFile(this.chain.ToJsonString(), @"TEST_ZRD.json");
+            
             // Load a valid blockchain state in JSON format from 'ZRD.json'
-            Blockchain deserializedChain = Blockchain.DeserialiseJsonStateToBlockchainInstance("ZRD.json");
+            Blockchain deserializedChain = Blockchain.DeserializeJsonStateToBlockchainInstance(@"TEST_ZRD.json");
+            
+            Console.WriteLine(deserializedChain.ToJsonString());
             
             // Assert that string data was successfully deserialized into the Blockchain instance
             Assert.That(deserializedChain, Is.InstanceOf(typeof(Blockchain)));
             Assert.That(deserializedChain.IsValid(), Is.True);
+            
+            // Compare blockchain data by comparing objects (uses overriden operator)
+            Assert.That(this.chain.ToJsonString().Equals(deserializedChain.ToJsonString()), Is.True);
+
         }
 
     }

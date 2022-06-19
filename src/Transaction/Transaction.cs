@@ -19,20 +19,20 @@ namespace TransactionNS
 
         public string Signature { get; set; }
 
-        public Transaction(string senderPublicKey, string receiverPublicKey, int amount, string id = null, string hash = null)
+        public Transaction(string sender, string receiver, int amount, string id = null, string hash = null)
         {
             if (amount <= 0)
             {
                 throw new ArgumentOutOfRangeException("Transaction amount cannot be negative or zero");
             }
 
-            if (senderPublicKey.Length == 0 || receiverPublicKey.Length == 0)
+            if (sender.Length == 0 || receiver.Length == 0)
             {
                 throw new ArgumentException("Sender/Receiver RSA keys cannot be empty");
             }
 
-            this.Sender = senderPublicKey;
-            this.Receiver = receiverPublicKey;
+            this.Sender = sender;
+            this.Receiver = receiver;
             this.Amount = amount;
 
             this.Signature = null; // unsigned at the moment of instantiation

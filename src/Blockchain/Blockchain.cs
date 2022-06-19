@@ -81,7 +81,8 @@ namespace BlockchainNS
         }
 
         public string ToJsonString()
-        {
+        {   
+            // TODO: This can be improved using JsonSerializer.SerializeToUtf8Bytes and then saving bytes to file
             string jsonStringBlock = JsonSerializer.Serialize(
                 this,
                 options: new JsonSerializerOptions()
@@ -97,9 +98,9 @@ namespace BlockchainNS
         /// Saves the JSON representation of the blockchain instance to a file passed as a parameter
         /// </summary>
         /// <param name="jsonBlockchainString">JSON string of Blockchain instance</param>
-        public static void SaveJsonStateToFile(string jsonBlockchainString)
+        public static void SaveJsonStateToFile(string jsonBlockchainString, string filepath)
         {
-            System.IO.File.WriteAllText(@"ZRD.json", jsonBlockchainString);
+            System.IO.File.WriteAllText(filepath, jsonBlockchainString);
         }
 
         /// <summary>
@@ -108,7 +109,7 @@ namespace BlockchainNS
         /// </summary>
         /// <param name="blockchainJsonFilePath">Filepath to JSON file containing Blockchain data (blocks, transactions, etc.)</param>
         /// <exception cref="NotImplementedException"></exception>
-        public static Blockchain DeserialiseJsonStateToBlockchainInstance(string blockchainJsonFilePath)
+        public static Blockchain DeserializeJsonStateToBlockchainInstance(string blockchainJsonFilePath)
         {
             string blockchainJsonString = System.IO.File.ReadAllText(blockchainJsonFilePath);
             Blockchain chain = JsonSerializer.Deserialize<Blockchain>(

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 using BlockchainNS;
+using Newtonsoft.Json;
 using TransactionNS;
 
 namespace WalletNS
@@ -12,7 +13,7 @@ namespace WalletNS
     {
 
         public byte[] PublicKey { get; set; }
-        private byte[] PrivateKey { get; set; }
+        public byte[] PrivateKey { get; set; }
 
         private RSAParameters KeyPair { get; set; }
 
@@ -27,6 +28,21 @@ namespace WalletNS
             this.PrivateKey = rsa.ExportPkcs8PrivateKey();
             this.KeyPair = rsa.ExportParameters(true);
         }
+        
+        [JsonConstructor]
+        public Wallet(string publicKey, string privateKey)
+        {
+            this.PublicKey = Convert.FromBase64String(publicKey);
+            this.PrivateKey = Convert.FromBase64String(privateKey);
+            
+            // Create RSAParameters from existing public and private keys by importing them into the sp
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+            rsa.ImportRSAPublicKey(this.PublicKey, out _);
+            rsa.ImportPkcs8PrivateKey(this.PrivateKey, out _);
+            this.KeyPair = rsa.ExportParameters(true);
+        }
+
+        public Wallet() { }
 
         public string GetPrivateKeyStringBase64()
         {

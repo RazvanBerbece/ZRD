@@ -11,14 +11,14 @@ namespace MerkleTreeNS.MerkleNodeNS
         public MerkleNode? Left { get; set; }
         public MerkleNode? Right { get; set; }
 
-        public MerkleNode(string hashValue, MerkleNode left, MerkleNode right)
+        public MerkleNode(string value, MerkleNode left, MerkleNode right)
         {
-            if (hashValue == "")
+            if (value == "")
             {
                 throw new ArgumentException("Value in a MerkleNode cannot be the empty string");
             }
 
-            this.Value = hashValue;
+            this.Value = value;
             this.Left = left;
             this.Right = right;
         }

@@ -63,6 +63,10 @@ namespace BlockTestsNS
                 "previousHash",
                 99
                 );
+            // An Issue was observed where running the test Block.ToJsonString() on GitHub Actions would lead to parsing a different timestamp
+            // to the one provided due to CultureInfo system settings
+            // Adjusting to Universal with no culture info to have matching behaviour on different machines solved the issue
+            // We force a timestamp that we can hardcode in ExpectedJsonString.json for testing
             genericBlockToJsonSerialize.Timestamp = DateTime.Parse("2022-06-01T17:49:36.823434+01:00", null, System.Globalization.DateTimeStyles.AdjustToUniversal);
             
             // Setup testing Blockchain

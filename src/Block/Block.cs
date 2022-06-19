@@ -1,16 +1,4 @@
-﻿/**
- * Class which defines a Block in the blockchain
- * 
- * Fields :
- *  data            = pending transaction list to be minted 
- *  hash            = block hash value (concatenating all fields apart from hash)
- *  previousHash    = previous Block hash value
- *  timestamp       = timestamp when Block was created
- *  proofOfWork     = we use the Proof of Work (PoW) consensus - the amount of effort (iterations) taken to derive a valid hash for the current Block
- *  
- */
-
-using BlockchainNS;
+﻿using BlockchainNS;
 using System;
 using StaticsNS;
 using TransactionNS;
@@ -23,6 +11,16 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace BlockNS
 {
+    /// <summary>
+    /// Class which defines a Block in the blockchain
+    /// 
+    /// Fields :
+    /// data            = pending transaction list to be minted 
+    /// hash            = block hash value (concatenating all fields apart from hash)
+    /// previousHash    = previous Block hash value
+    /// timestamp       = timestamp when Block was created
+    /// proofOfWork     = we use the Proof of Work (PoW) consensus - the amount of effort (iterations) taken to derive a valid hash for the current Block
+    /// </summary>
     public class Block
     {
 
@@ -35,10 +33,10 @@ namespace BlockNS
 
         public MerkleTree Tree { get; set; }
 
-        public Block(List<Transaction> data, string previousHash, int index)
+        public Block(List<Transaction> transactions, string previousHash, int index)
         {
             this.Index = index;
-            this.Transactions = data;
+            this.Transactions = transactions;
             this.PreviousHash = previousHash;
             this.Hash = "";
             this.ProofOfWork = 0;
