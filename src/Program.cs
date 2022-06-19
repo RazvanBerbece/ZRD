@@ -63,6 +63,10 @@ namespace ZRD
             // Save Blockchain to JSON
             Blockchain.SaveJsonStateToFile(blockchain.ToJsonString(), @"../../../local/Blockchain/ZRD.json");
             
+            // Import Blockchain from JSON file
+            // Blockchain importedBlockchain = Blockchain.DeserializeJsonStateToBlockchainInstance(@"../../../local/Blockchain/ZRD.json");
+            // Blockchain.SaveJsonStateToFile(importedBlockchain.ToJsonString(), @"../../../local/Blockchain/ZRD_IMPORT.json");
+            
             Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             Console.WriteLine("OFF the ZRD Blockchain.");
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
