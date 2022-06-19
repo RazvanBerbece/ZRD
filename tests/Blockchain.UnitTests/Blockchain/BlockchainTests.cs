@@ -384,7 +384,7 @@ namespace BlockchainTestsNS
             Blockchain.SaveJsonStateToFile(this.chain.ToJsonString(), @"TEST_ZRD.json");
             
             // Check that file exists and that there is content in file "ZRD.json"
-            string output = File.ReadAllText("../../../local/Blockchain/ZRD.json");
+            string output = File.ReadAllText(@"TEST_ZRD.json");
             
             Assert.That(output, Is.Not.Empty);
         }
