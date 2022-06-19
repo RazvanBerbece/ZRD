@@ -15,10 +15,14 @@ namespace ZRD
             Console.WriteLine("ON the ZRD Blockchain...");
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
-            // Create network wallet & first user wallet
+            // Create network wallet
             Wallet networkWallet = new Wallet(keySize: 1024);
+            
+            // Create first user wallet & set up
             Wallet antonioWallet = new Wallet(keySize: 1024);
-
+            antonioWallet.SetPublicIpAddress();
+            
+            Console.WriteLine($"Node with EXT Public IP: {antonioWallet.GetPublicIpAddressString()}\n");
             Console.WriteLine($"Antonio's Wallet with publicKey: {antonioWallet.GetPublicKeyStringBase64()}\n");
 
             // Create Blockchain instance
