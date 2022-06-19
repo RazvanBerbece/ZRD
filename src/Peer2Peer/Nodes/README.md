@@ -36,6 +36,7 @@ A lightweight node should :
 - Have a lightweight copy of the blockchain (headers)
 - Have a wallet configured
 - Be able to make transactions (send, receive coin)
+- Get available balance for current wallet
 
 ## 3 Miner Node
 Mining nodes confirm transactions by including them in blocks (mining unconfirmed transactions).

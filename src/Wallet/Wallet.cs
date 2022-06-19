@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Security.Cryptography;
 using BlockchainNS;
 using Newtonsoft.Json;
@@ -11,11 +12,15 @@ namespace WalletNS
     /// </summary>
     public class Wallet
     {
-
+        
+        // Core
         public byte[] PublicKey { get; set; }
         public byte[] PrivateKey { get; set; }
-
         private RSAParameters KeyPair { get; set; }
+        
+        // Private Metadata
+        private string walletName;
+        private IPAddress publicIpAddress; // .ToString() will return the string representation of the EXT public IP Address
 
         /// <summary>
         /// Constructor for a <c>Wallet</c> object.
@@ -27,6 +32,7 @@ namespace WalletNS
             this.PublicKey = rsa.ExportSubjectPublicKeyInfo();
             this.PrivateKey = rsa.ExportPkcs8PrivateKey();
             this.KeyPair = rsa.ExportParameters(true);
+            this.walletName = "ZRD Wallet";
         }
         
         [JsonConstructor]
@@ -80,6 +86,35 @@ namespace WalletNS
             Transaction transaction = new Transaction(this.GetPublicKeyStringBase64(), receiverPublicKey, amount);
             transaction.SignTransaction(this);
             blockchain.AddTransaction(transaction);
+        }
+
+        public void SetWalletName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("Wallet name cannot be null or empty");
+            }
+            this.walletName = name;
+        }
+
+        public string GetWalletName()
+        {
+            return this.walletName;
+        }
+        
+        public void SetPublicIpAddress()
+        {
+            string externalIpString = new WebClient().DownloadString("http://icanhazip.com").Replace("\\r\\n", "").Replace("\\n", "").Trim();
+            this.publicIpAddress = IPAddress.Parse(externalIpString);
+        }
+
+        public string GetPublicIpAddressString()
+        {
+            if (this.publicIpAddress == null || string.IsNullOrEmpty(this.publicIpAddress.ToString()))
+            {
+                return "";
+            }
+            return this.publicIpAddress.ToString();
         }
 
     }

@@ -113,6 +113,50 @@ namespace WalletTestsNS
 
         }
 
+        [TestCase("")]
+        [TestCase(null)]
+        [TestCase("validName")]
+        public void Wallet_CanSet_WalletName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                try
+                {
+                    this.walletA.SetWalletName(name);
+                    Assert.Fail("Wallet should not set name with null or empty parameter");
+                }
+                catch (Exception)
+                {
+                    Assert.Pass();
+                }
+            }
+            
+            this.walletA.SetWalletName(name);
+            Assert.That(this.walletA.GetWalletName().Equals("validName"), Is.True);
+        }
+
+        [Test]
+        public void Wallet_CanGet_WalletName()
+        {
+            this.walletA.SetWalletName("validName");
+            Assert.That(this.walletA.GetWalletName().Equals("validName"), Is.True);
+        }
+        
+        [Test]
+        public void Wallet_CanSet_PublicIpAddress()
+        {
+            this.walletA.SetPublicIpAddress();
+            Assert.That(string.IsNullOrEmpty(this.walletA.GetPublicIpAddressString()), Is.Not.True);
+        }
+        
+        [Test]
+        public void Wallet_CanGet_PublicIpAddress()
+        {
+            Assert.That(this.walletA.GetPublicIpAddressString().Equals(""), Is.True);
+            this.walletA.SetPublicIpAddress();
+            Assert.That(this.walletA.GetPublicIpAddressString().Equals(""), Is.Not.True);
+        }
+
     }
 
 }
