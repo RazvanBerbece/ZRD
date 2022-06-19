@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using System.Security.Cryptography;
 using BlockchainNS;
 using Newtonsoft.Json;
@@ -20,7 +19,6 @@ namespace WalletNS
         
         // Private Metadata
         private string walletName;
-        private IPAddress publicIpAddress; // .ToString() will return the string representation of the EXT public IP Address
 
         /// <summary>
         /// Constructor for a <c>Wallet</c> object.
@@ -100,21 +98,6 @@ namespace WalletNS
         public string GetWalletName()
         {
             return this.walletName;
-        }
-        
-        public void SetPublicIpAddress()
-        {
-            string externalIpString = new WebClient().DownloadString("http://icanhazip.com").Replace("\\r\\n", "").Replace("\\n", "").Trim();
-            this.publicIpAddress = IPAddress.Parse(externalIpString);
-        }
-
-        public string GetPublicIpAddressString()
-        {
-            if (this.publicIpAddress == null || string.IsNullOrEmpty(this.publicIpAddress.ToString()))
-            {
-                return "";
-            }
-            return this.publicIpAddress.ToString();
         }
 
     }

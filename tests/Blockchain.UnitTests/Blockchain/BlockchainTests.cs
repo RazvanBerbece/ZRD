@@ -411,9 +411,7 @@ namespace BlockchainTestsNS
             
             // Load a valid blockchain state in JSON format from 'ZRD.json'
             Blockchain deserializedChain = Blockchain.DeserializeJsonStateToBlockchainInstance(@"TEST_ZRD.json");
-            
-            Console.WriteLine(deserializedChain.ToJsonString());
-            
+
             // Assert that string data was successfully deserialized into the Blockchain instance
             Assert.That(deserializedChain, Is.InstanceOf(typeof(Blockchain)));
             Assert.That(deserializedChain.IsValid(), Is.True);

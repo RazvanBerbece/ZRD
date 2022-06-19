@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Collections.Generic;
 using TransactionNS;
 using System;
+using System.Net;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -79,6 +80,12 @@ namespace StaticsNS
         public static string TransactionsToJsonString(List<Transaction> transactions)
         {
             return JsonSerializer.Serialize(transactions);
+        }
+
+        public static IPAddress GetExternalPublicIpAddress()
+        {
+            string externalIpString = new WebClient().DownloadString("http://icanhazip.com").Replace("\\r\\n", "").Replace("\\n", "").Trim();
+            return IPAddress.Parse(externalIpString);
         }
 
     }

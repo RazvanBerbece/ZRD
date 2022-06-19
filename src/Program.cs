@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using TransactionNS;
 using BlockchainNS;
+using Peer2PeerNS.NodesNS.LightweightNodeNS;
 using WalletNS;
+using ZRD.Peer2Peer.CmdClient;
 
 namespace ZRD
 {
@@ -11,6 +13,13 @@ namespace ZRD
     {
         static void Main(string[] args)
         {
+            
+            // Onboard - Entry Point to Terminal Blockchain Client
+            Onboard.Run();
+            
+            // Create Lightweight node
+            // LightweightNode node = LightweightNode.ConfigureLightweightNode();
+
             Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             Console.WriteLine("ON the ZRD Blockchain...");
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
@@ -20,9 +29,8 @@ namespace ZRD
             
             // Create first user wallet & set up
             Wallet antonioWallet = new Wallet(keySize: 1024);
-            antonioWallet.SetPublicIpAddress();
-            
-            Console.WriteLine($"Node with EXT Public IP: {antonioWallet.GetPublicIpAddressString()}\n");
+
+            // Console.WriteLine($"Node with EXT Public IP: {node.GetIpAddressString()}\n");
             Console.WriteLine($"Antonio's Wallet with publicKey: {antonioWallet.GetPublicKeyStringBase64()}\n");
 
             // Create Blockchain instance
