@@ -9,7 +9,7 @@ Uses .net6.0 and nUnit for testing.
 
 [**IN PROGRESS**] Storage Considerations & Solution
 
-[**IN REVIEW**] Nodes (Full Node, Lightweight Node, Miner Node)
+[**IN PROGRESS**] Nodes (Full Node, Lightweight Node, Miner Node)
 
 [**COMPLETED**] Genesis Block
 
