@@ -4,6 +4,7 @@ using WalletNS;
 using System.Security.Cryptography;
 using TransactionNS;
 using System;
+using System.IO;
 
 namespace WalletTestsNS
 {
@@ -140,6 +141,43 @@ namespace WalletTestsNS
         {
             this.walletA.SetWalletName("validName");
             Assert.That(this.walletA.GetWalletName().Equals("validName"), Is.True);
+        }
+
+        [Test]
+        public void Wallet_GetsJsonString_Correctly()
+        {
+            Assert.That(string.IsNullOrEmpty(this.walletA.GetJsonString()), Is.Not.True);
+        }
+
+        [TestCase("")]
+        [TestCase(null)]
+        [TestCase(@"TEST_WALLET.json")]
+        public void Wallet_SavesToJsonFile_Correctly(string filepath)
+        {
+            if (string.IsNullOrEmpty(filepath))
+            {
+                try
+                {
+                    this.walletA.SaveToJsonFile(filepath, this.walletA.GetJsonString());
+                    Assert.Fail("Wallet.SaveToJsonFile should throw for empty or null parameter value");
+                }
+                catch (Exception)
+                {
+                    Assert.Pass();
+                }
+            }
+            // Check that file exists and that there is content in file "TEST_WALLET.json"
+            string output = File.ReadAllText(filepath);
+            Assert.That(output, Is.Not.Empty);
+        }
+
+        [Test]
+        public void Static_Wallet_CanDeserializeWalletFromJsonFile()
+        {
+            this.walletA.SaveToJsonFile(@"TEST_WALLET.json", this.walletA.GetJsonString());
+            Wallet importedWallet = Wallet.DeserializeWalletFromJsonFile(@"TEST_WALLET.json");
+            
+            Assert.That(this.walletA.GetJsonString().Equals(importedWallet.GetJsonString()), Is.True);
         }
 
     }

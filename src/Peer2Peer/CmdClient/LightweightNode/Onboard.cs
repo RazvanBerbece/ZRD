@@ -1,10 +1,14 @@
+using Peer2PeerNS.NodesNS.LightweightNodeNS;
 using System;
+using Peer2PeerNS.CmdClientNS.LightweightNodeNS;
+using Peer2PeerNS.CmdClientNS.LightweightNodeNS.WalletGatewayNS;
+using WalletNS;
 
-namespace ZRD.Peer2Peer.CmdClient
+namespace ZRD.Peer2Peer.CmdClientNS.LightweightNodeNS
 {
     public static class Onboard
     {
-        public static void Run()
+        public static void Run(LightweightNode node)
         {
             Console.WriteLine(
                 "\nWelcome to the ZRD Blockchain!\n" +
@@ -21,9 +25,14 @@ namespace ZRD.Peer2Peer.CmdClient
             switch (option)
             {
                 case "1":
-                    CreateWallet.Run();
+                    CreateWallet.Run(node);
                     break;
                 case "2":
+                    // TODO: Access wallet using master password ?
+                    // Create Wallet object with given pair and name
+                    Wallet loggedOnWallet = Wallet.DeserializeWalletFromJsonFile(@"../../../local/Wallet/Wallet.json");
+                    node.SetWallet(loggedOnWallet);
+                    WalletGateway.Run(node);
                     break;
                 case "3":
                     break;
@@ -31,6 +40,9 @@ namespace ZRD.Peer2Peer.CmdClient
                     break;
                 case "0":
                     Environment.Exit(1);
+                    break;
+                default:
+                    Console.WriteLine($"Option {option} not available\n");
                     break;
             }
         }

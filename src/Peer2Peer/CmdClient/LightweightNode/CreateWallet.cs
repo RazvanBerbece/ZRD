@@ -1,11 +1,13 @@
 using System;
+using Peer2PeerNS.CmdClientNS.LightweightNodeNS.WalletGatewayNS;
+using Peer2PeerNS.NodesNS.LightweightNodeNS;
 using WalletNS;
 
-namespace ZRD.Peer2Peer.CmdClient
+namespace Peer2PeerNS.CmdClientNS.LightweightNodeNS
 {
     public static class CreateWallet
     {
-        public static void Run()
+        public static void Run(LightweightNode node)
         {
             Console.WriteLine(
                 "\nZRD Wallet Creation\n" +
@@ -25,11 +27,18 @@ namespace ZRD.Peer2Peer.CmdClient
                         "The keys below should be securely stored.\n\n" +
                         $"Wallet Public Key : {userWallet.GetPublicKeyStringBase64()}\n" +
                         $"Wallet Private Key : {userWallet.GetPrivateKeyStringBase64()}");
+                    // Set node wallet data
+                    node.SetWallet(userWallet);
                     // Save wallet details locally
-                    WalletGateway.Run();
+                    userWallet.SaveToJsonFile(@"../../../local/Wallet/Wallet.json", userWallet.GetJsonString());
+                    // TODO: Download initial Blockchain data from upstream
+                    WalletGateway.Run(node);
                     break;
                 case "0":
                     Environment.Exit(1);
+                    break;
+                default:
+                    Console.WriteLine($"Option {option} not available\n");
                     break;
             }
         }

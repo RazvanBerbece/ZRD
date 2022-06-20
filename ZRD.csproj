@@ -26,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="local\Blockchain" />
+    <Folder Include="local\Wallet" />
     <Folder Include="src\Peer2Peer\Nodes\FullNode" />
     <Folder Include="src\Peer2Peer\Nodes\MinerNode" />
     <Folder Include="src\Peer2Peer\Server" />

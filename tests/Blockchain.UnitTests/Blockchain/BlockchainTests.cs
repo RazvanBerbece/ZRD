@@ -365,7 +365,7 @@ namespace BlockchainTestsNS
         }
 
         [Test]
-        public void Blockchain_SavesJSONCorrectly_ToFile()
+        public void Blockchain_SavesJsonCorrectly_ToFile()
         {
             // Setup test Blockchain
             int firstAmount = 1000000;

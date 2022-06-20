@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using TransactionNS;
 using BlockchainNS;
 using Peer2PeerNS.NodesNS.LightweightNodeNS;
+using StaticsNS;
 using WalletNS;
-using ZRD.Peer2Peer.CmdClient;
+using ZRD.Peer2Peer.CmdClientNS.LightweightNodeNS;
 
 namespace ZRD
 {
@@ -14,11 +15,12 @@ namespace ZRD
         static void Main(string[] args)
         {
             
-            // Onboard - Entry Point to Terminal Blockchain Client
-            Onboard.Run();
-            
             // Create Lightweight node
-            // LightweightNode node = LightweightNode.ConfigureLightweightNode();
+            LightweightNode node = LightweightNode.ConfigureLightweightNode();
+            node.SetIpAddress(Statics.GetExternalPublicIpAddress());
+            
+            // Onboard - Entry Point to Terminal Blockchain Client
+            Onboard.Run(node);
 
             Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             Console.WriteLine("ON the ZRD Blockchain...");
@@ -26,6 +28,7 @@ namespace ZRD
 
             // Create network wallet
             Wallet networkWallet = new Wallet(keySize: 1024);
+            networkWallet.SetWalletName("ZRD Network Wallet");
             
             // Create first user wallet & set up
             Wallet antonioWallet = new Wallet(keySize: 1024);

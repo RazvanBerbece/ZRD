@@ -16,11 +16,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
         // Networking
         private IPAddress ipAddress;
 
-        public LightweightNode(Blockchain chain, Wallet wallet)
-        {
-            this.Blockchain = chain;
-            this.Wallet = wallet;
-        }
+        private LightweightNode() { }
         
         /// <summary>
         /// Configures a lightweight node on the user machine
@@ -30,9 +26,9 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
         ///     - 
         /// </summary>
         /// <returns></returns>
-        public static LightweightNode ConfigureLightweightNode(Blockchain chain, Wallet wallet)
+        public static LightweightNode ConfigureLightweightNode()
         {
-            LightweightNode node = new LightweightNode(chain, wallet);
+            LightweightNode node = new LightweightNode();
             node.SetIpAddress(Statics.GetExternalPublicIpAddress());
             return node;
         }
@@ -55,9 +51,9 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
             throw new NotImplementedException();
         }
         
-        public void CreateWallet()
+        public void SetWallet(Wallet userWallet)
         {
-            throw new NotImplementedException();
+            this.Wallet = userWallet;
         }
 
         public void SetIpAddress(IPAddress newIpAddress)
