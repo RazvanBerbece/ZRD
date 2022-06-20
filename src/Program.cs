@@ -17,8 +17,7 @@ namespace ZRD
             
             // Create Lightweight node
             LightweightNode node = LightweightNode.ConfigureLightweightNode();
-            node.SetIpAddress(Statics.GetExternalPublicIpAddress());
-            
+
             // Onboard - Entry Point to Terminal Blockchain Client
             Onboard.Run(node);
 

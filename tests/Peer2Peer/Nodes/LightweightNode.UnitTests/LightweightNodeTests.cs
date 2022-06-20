@@ -10,19 +10,13 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
     [TestFixture]
     public class LightweightNodeTests
     {
-        
-        private LightweightNode node;
-
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            node = LightweightNode.ConfigureLightweightNode();
-        }
 
         [Test]
         public void LightweightNode_CanConstruct()
         {
-            Assert.Fail();
+            LightweightNode node = LightweightNode.ConfigureLightweightNode();
+            Assert.That(node, Is.InstanceOf(typeof(LightweightNode)));
+            Assert.That(node.GetIpAddressString().Equals(Statics.GetExternalPublicIpAddress().ToString()), Is.True);
         }
         
         [Test]
@@ -41,11 +35,12 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
         [TestCase(false, TestName = "Test case #2, Testing by passing correct Wallet to setter")]
         public void LightweightNode_CanSetWallet(bool isNullWallet)
         {
+            LightweightNode node = LightweightNode.ConfigureLightweightNode();
             if (isNullWallet)
             {
                 try
                 {
-                    this.node.SetWallet(null);
+                    node.SetWallet(null);
                     Assert.Fail("LightweightNode should not set wallet to null");
                 }
                 catch (Exception)
@@ -56,8 +51,8 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
             else
             {
                 Wallet wallet = new Wallet(1024);
-                this.node.SetWallet(wallet);
-                Assert.That(this.node.Wallet != default, Is.True);
+                node.SetWallet(wallet);
+                Assert.That(node.Wallet != default, Is.True);
             }
         }
 
@@ -65,11 +60,12 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
         [TestCase(false, TestName = "Test case #2, Testing by passing correct IPAddress to setter")]
         public void LightweightNode_CanSetIpAddress(bool isNullIpAddress)
         {
+            LightweightNode node = LightweightNode.ConfigureLightweightNode();
             if (isNullIpAddress)
             {
                 try
                 {
-                    this.node.SetIpAddress(null);
+                    node.SetIpAddress(null);
                     Assert.Fail("LightweightNode should not set IPAddress to null");
                 }
                 catch (Exception)
@@ -79,7 +75,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
             }
             else
             {
-                this.node.SetIpAddress(Statics.GetExternalPublicIpAddress());
+                node.SetIpAddress(Statics.GetExternalPublicIpAddress());
                 Assert.That(string.IsNullOrEmpty(node.GetIpAddressString()), Is.Not.True);
             }
         }
@@ -87,7 +83,8 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
         [Test]
         public void LightweightNode_CanGetIpAddressString()
         {
-            Assert.Fail();
+            LightweightNode node = LightweightNode.ConfigureLightweightNode();
+            Assert.That(node.GetIpAddressString().Equals(Statics.GetExternalPublicIpAddress().ToString()), Is.True);
         }
         
     }
