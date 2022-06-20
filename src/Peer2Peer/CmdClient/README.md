@@ -14,6 +14,7 @@ By progressing through the command line options, the node configs will be mutate
   - TODO: Implement wallet creation timestamp
 - Sends new transactions to full nodes (via direct TCP to full node peer)
   - TODO: Peer networking (IPs & ports) considerations: initial master list that is broadcasted, central discovery server, distributed discovery server, peer discovery mesh ?
+- Loads Blockchain state from local file (if existing)
 - Listens for new Blockchain states from full nodes 
   - Same considerations as for Peer networking
 
