@@ -28,9 +28,9 @@ A full node should NOT :
 - Make transactions (sending, receiving coin)
 
 ## 2 Lightweight Node
-A lightweight node functioning as a wallet sends a new transaction through full nodes, which spread the information across the network.
+A lightweight node functioning as a wallet sends a new transaction through to full nodes, which spread the information across the network.
 
-It contains only a partial list of a blockchain operation, which usually includes just the block headers, instead of its entire transaction history.
+It contains only a partial list of a blockchain data, which usually includes just the block headers (TODO: Figure out what data is needed for a header), instead of its entire transaction history.
 
 A lightweight node should :
 - Have a lightweight copy of the blockchain (headers)
