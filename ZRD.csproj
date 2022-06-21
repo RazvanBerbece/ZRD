@@ -25,6 +25,7 @@
     <None Remove="tests\MerkleTree.UnitTests\Merkle-Tree\" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="assets" />
     <Folder Include="local\Blockchain" />
     <Folder Include="local\Wallet" />
     <Folder Include="src\Peer2Peer\Nodes\FullNode" />

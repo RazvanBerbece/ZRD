@@ -19,6 +19,14 @@ There are a few solutions to this problem :
 2. Port Forwarding Config on Router or Firewall level - **expensive, ZRD wants as less low level configs as possible on external devices**
 
 ## Hole Punching
+Currently not implemented.
+
+## Port Forwarding
+For educational and starting point purposes, 
+I set up port forwarding on my router from public port 420 to private port 420.
+![Port Forwarding Modal View Configuration](../../assets/img/pfding.png)
+
+Basically, TCP connections from external networks to the public EXT IP (usually router EXT NAT) and port (420 in the screenshot above) will be forwarded to the local IP on the private port.
 
 # Resources
 1. https://en.wikipedia.org/wiki/Hole_punching_%28networking%29
