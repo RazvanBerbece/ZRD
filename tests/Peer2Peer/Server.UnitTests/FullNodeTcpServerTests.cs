@@ -54,9 +54,21 @@ namespace Peer2PeerNS.ServerNS.FullNodeTcpServerTestsNS
                     }
                     break;
                 default:
-                    server.Init(portToOpen);
-                    Assert.That(server.port == portToOpen, Is.True);
-                    Assert.That(server.GetListenerSocket(), Is.InstanceOf(typeof(TcpListener)));
+                    try
+                    {
+                        server.Init(portToOpen);
+                        Assert.That(server.port == portToOpen, Is.True);
+                        Assert.That(server.GetListenerSocket(), Is.InstanceOf(typeof(TcpListener)));
+                        server.GetListenerSocket().Stop();
+                    }
+                    catch (SocketException e)
+                    {
+                        if (e.Message.Equals("Permission denied"))
+                        {
+                            Assert.Pass($"Expected error : {e}");
+                        }
+                        Assert.Fail("The error message should be either null or \"Permission denied\"");
+                    }
                     break;
             }
         }
