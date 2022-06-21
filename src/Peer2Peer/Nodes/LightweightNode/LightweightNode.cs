@@ -1,5 +1,9 @@
 using System;
 using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using BlockchainNS;
 using StaticsNS;
 using WalletNS;
@@ -41,9 +45,30 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
         /// </summary>
         /// <param name="newChain">Chain received from upstream</param>
         /// <exception cref="NotImplementedException"></exception>
-        public void SyncBlockchainFromUpstream(Blockchain newChain)
+        public void SyncBlockchainFromUpstream()
         {
-            throw new NotImplementedException();
+            try
+            {
+                TcpListener listener = new TcpListener(420);
+                TcpClient externalPeer = default(TcpClient);
+                listener.Start();
+                Console.WriteLine("Lightweight Node listener waiting for new Blockchain from upstream... Press ^C to Stop...");  
+                externalPeer = listener.AcceptTcpClient();
+                NetworkStream stream = externalPeer.GetStream();
+                while (true)
+                {
+                    while (!stream.DataAvailable);
+                    Byte[] bytes = new Byte[externalPeer.Available];
+                    stream.Read(bytes, 0, bytes.Length);
+                    // Translate bytes of request to string
+                    String data = Encoding.UTF8.GetString(bytes);
+                    // TODO: Add Blockchain deserialization from received bytes
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"An Exception Occurred while Listening : {e}");  
+            }
         }
 
         public void SendBlockchainUpstream(IPAddress upstreamNodeIpAddress)

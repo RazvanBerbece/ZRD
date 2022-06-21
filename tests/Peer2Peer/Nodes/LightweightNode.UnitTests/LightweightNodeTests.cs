@@ -1,11 +1,10 @@
 using System;
 using Peer2PeerNS.NodesNS.LightweightNodeNS;
 using NUnit.Framework;
-using System.Net;
 using StaticsNS;
 using WalletNS;
 
-namespace Peer2PeerNS.NodesNS.LightweightNodeNS
+namespace Peer2PeerNS.NodesNS.LightweightNodeTestsNS
 {
     [TestFixture]
     public class LightweightNodeTests

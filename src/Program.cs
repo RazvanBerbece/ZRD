@@ -19,6 +19,7 @@ namespace ZRD
             LightweightNode node = LightweightNode.ConfigureLightweightNode();
 
             // Onboard - Entry Point to Terminal Blockchain Client
+            node.SyncBlockchainFromUpstream();
             Onboard.Run(node);
 
             Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");

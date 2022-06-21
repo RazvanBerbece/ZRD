@@ -29,7 +29,8 @@
     <Folder Include="local\Wallet" />
     <Folder Include="src\Peer2Peer\Nodes\FullNode" />
     <Folder Include="src\Peer2Peer\Nodes\MinerNode" />
-    <Folder Include="src\Peer2Peer\Server" />
+    <Folder Include="src\Peer2Peer\TcpServerClient\LightweightNode" />
+    <Folder Include="src\Peer2Peer\TcpServerClient\MinerNode" />
     <Folder Include="tests\Transaction.UnitTests\" />
     <Folder Include="tests\Transaction.UnitTests\Transaction\" />
     <Folder Include="src\Wallet\" />

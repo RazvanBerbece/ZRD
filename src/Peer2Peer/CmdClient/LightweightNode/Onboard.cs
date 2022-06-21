@@ -39,7 +39,7 @@ namespace ZRD.Peer2Peer.CmdClientNS.LightweightNodeNS
                         node.SetWallet(loggedOnWallet);
                         WalletGateway.Run(node);
                     }
-                    catch (FileNotFoundException e)
+                    catch (FileNotFoundException)
                     {
                         // local/Wallet/Wallet.json data file not found
                         Console.WriteLine(
