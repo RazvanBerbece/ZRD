@@ -102,24 +102,49 @@ namespace BlockchainNS
         {
             System.IO.File.WriteAllText(filepath, jsonBlockchainString);
         }
+        
+        public static Blockchain JsonStringToBlockchainInstance(string blockchainJsonString)
+        {
+            try
+            {
+                Blockchain chain = JsonSerializer.Deserialize<Blockchain>(
+                    blockchainJsonString,
+                    options: new JsonSerializerOptions()
+                    {
+                        PropertyNameCaseInsensitive = true,
+                        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
+                    });
+                return chain;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Reads the JSON contents from file at argument location
         /// and deserializes it into a Blockchain object instance
         /// </summary>
         /// <param name="blockchainJsonFilePath">Filepath to JSON file containing Blockchain data (blocks, transactions, etc.)</param>
-        /// <exception cref="NotImplementedException"></exception>
-        public static Blockchain DeserializeJsonStateToBlockchainInstance(string blockchainJsonFilePath)
+        public static Blockchain FileJsonStringToBlockchainInstance(string blockchainJsonFilePath)
         {
-            string blockchainJsonString = System.IO.File.ReadAllText(blockchainJsonFilePath);
-            Blockchain chain = JsonSerializer.Deserialize<Blockchain>(
-                blockchainJsonString,
-                options: new JsonSerializerOptions()
-                {
-                    PropertyNameCaseInsensitive = true,
-                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
-                });
-            return chain;
+            try
+            {
+                string blockchainJsonString = System.IO.File.ReadAllText(blockchainJsonFilePath);
+                Blockchain chain = JsonSerializer.Deserialize<Blockchain>(
+                    blockchainJsonString,
+                    options: new JsonSerializerOptions()
+                    {
+                        PropertyNameCaseInsensitive = true,
+                        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
+                    });
+                return chain;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
         public bool IsValid()

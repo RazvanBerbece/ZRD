@@ -1,28 +1,24 @@
 using System;
 using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using BlockchainNS;
-using Peer2PeerNS.NodesNS.Abstract;
 using StaticsNS;
 using WalletNS;
+using Peer2PeerNS.NodesNS.Abstract;
 
 namespace Peer2PeerNS.NodesNS.LightweightNodeNS
 {
-    public class LightweightNode: INode
+    public class FullNode: INode
     {
         
         // Core
         public Blockchain Blockchain;
-        public Wallet Wallet;
+        public Wallet NetworkWallet;
         
         // Networking
         private IPAddress privateIpAddress;
         private IPAddress publicNatIpAddress;
 
-        private LightweightNode() { }
+        private FullNode() { }
         
         /// <summary>
         /// Configures a lightweight node on the user machine
@@ -32,26 +28,26 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
         ///     - 
         /// </summary>
         /// <returns></returns>
-        public static LightweightNode ConfigureNode()
+        public static FullNode ConfigureNode()
         {
-            LightweightNode node = new LightweightNode();
+            FullNode node = new FullNode();
             node.SetPublicNatIpAddress(Statics.GetExternalPublicIpAddress());
             return node;
         }
         
-        public void SendBlockchainToPeer(IPAddress peerIpAddress)
+        public void SetBlockchain(Blockchain upstreamBlockchain)
         {
-            throw new NotImplementedException();
+            this.Blockchain = upstreamBlockchain;
         }
 
-        public void SetBlockchain(Blockchain upstreamChain)
+        public void SendBlockchainToPeer(IPAddress peerIpAddress)
         {
             throw new NotImplementedException();
         }
         
         public void SetWallet(Wallet userWallet)
         {
-            this.Wallet = userWallet;
+            this.NetworkWallet = userWallet;
         }
 
         public void SetPrivateIpAddress(IPAddress newPrivateIpAddress)

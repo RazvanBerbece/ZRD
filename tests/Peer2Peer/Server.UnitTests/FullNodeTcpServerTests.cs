@@ -1,7 +1,7 @@
 using System;
 using System.Net.Sockets;
 using NUnit.Framework;
-using ZRD.Peer2Peer.Server;
+using Peer2PeerNS.FullNodeTcpServerNS;
 
 namespace Peer2PeerNS.ServerNS.FullNodeTcpServerTestsNS
 {
@@ -85,6 +85,6 @@ namespace Peer2PeerNS.ServerNS.FullNodeTcpServerTestsNS
                 "until a solution to the pending connection while running test issue is found."
                 );
         }
-        
+
     }
 }

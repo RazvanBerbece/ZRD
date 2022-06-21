@@ -12,10 +12,8 @@ namespace ZRD.Peer2Peer.TcpServerClient.Abstract
         /// <returns></returns>
         public void Init(int port);
 
-        public TcpClient AcceptConnections();
-        public NetworkStream GetNetworkStreamFromPeer(TcpClient peer);
-        public string GetDataFromNetworkStreamBytes(NetworkStream stream);
-        public Blockchain DeserializeDataStringToBlockchain(string dataString);
+        public TcpClient AcceptConnection();
+        public void HandleDataFromPeer(TcpClient peer);
         public void Kill();
     }
 }

@@ -409,8 +409,12 @@ namespace BlockchainTestsNS
             
             Blockchain.SaveJsonStateToFile(this.chain.ToJsonString(), @"TEST_ZRD.json");
             
+            // Check that the function returns null when json cannot be deserialized
+            // by passing wrong filepath to deserializer
+            Assert.That(Blockchain.FileJsonStringToBlockchainInstance(@"TEST_ZRDx.json"), Is.Null);
+            
             // Load a valid blockchain state in JSON format from 'ZRD.json'
-            Blockchain deserializedChain = Blockchain.DeserializeJsonStateToBlockchainInstance(@"TEST_ZRD.json");
+            Blockchain deserializedChain = Blockchain.FileJsonStringToBlockchainInstance(@"TEST_ZRD.json");
 
             // Assert that string data was successfully deserialized into the Blockchain instance
             Assert.That(deserializedChain, Is.InstanceOf(typeof(Blockchain)));

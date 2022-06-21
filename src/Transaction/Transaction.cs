@@ -3,6 +3,8 @@ using System;
 using StaticsNS;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using WalletNS;
 
 namespace TransactionNS
@@ -119,7 +121,7 @@ namespace TransactionNS
         /// </summary>
         /// <param name="numberOfTransactions">The number of transactions to generate and add to the returned list</param>
         /// <param name="signed">Toggle whether the generated transactions are signed</param>
-        /// <returns></returns>
+        /// <returns>List of size numberOfTransactions of random transactions</returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static List<Transaction> GenerateRandomTransactions(int numberOfTransactions, bool signed)
         {
@@ -150,6 +152,39 @@ namespace TransactionNS
             }
 
             return transactions; 
+        }
+        
+        public string ToJsonString()
+        {   
+            // TODO: This can be improved using JsonSerializer.SerializeToUtf8Bytes and then saving bytes to file
+            string jsonStringBlock = JsonSerializer.Serialize(
+                this,
+                options: new JsonSerializerOptions()
+                {
+                    WriteIndented = true,
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
+                }
+            );
+            return jsonStringBlock;
+        }
+        
+        public static Transaction JsonStringToTransactionInstance(string transactionJsonString)
+        {
+            try
+            {
+                Transaction transaction = JsonSerializer.Deserialize<Transaction>(
+                    transactionJsonString,
+                    options: new JsonSerializerOptions()
+                    {
+                        PropertyNameCaseInsensitive = true,
+                        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
+                    });
+                return transaction;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
     }

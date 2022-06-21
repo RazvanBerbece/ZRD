@@ -13,9 +13,9 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeTestsNS
         [Test]
         public void LightweightNode_CanConstruct()
         {
-            LightweightNode node = LightweightNode.ConfigureLightweightNode();
+            LightweightNode node = LightweightNode.ConfigureNode();
             Assert.That(node, Is.InstanceOf(typeof(LightweightNode)));
-            Assert.That(node.GetIpAddressString().Equals(Statics.GetExternalPublicIpAddress().ToString()), Is.True);
+            Assert.That(node.GetPublicNatIpAddressString().Equals(Statics.GetExternalPublicIpAddress().ToString()), Is.True);
         }
         
         [Test]
@@ -34,7 +34,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeTestsNS
         [TestCase(false, TestName = "Test case #2, Testing by passing correct Wallet to setter")]
         public void LightweightNode_CanSetWallet(bool isNullWallet)
         {
-            LightweightNode node = LightweightNode.ConfigureLightweightNode();
+            LightweightNode node = LightweightNode.ConfigureNode();
             if (isNullWallet)
             {
                 try
@@ -59,12 +59,12 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeTestsNS
         [TestCase(false, TestName = "Test case #2, Testing by passing correct IPAddress to setter")]
         public void LightweightNode_CanSetIpAddress(bool isNullIpAddress)
         {
-            LightweightNode node = LightweightNode.ConfigureLightweightNode();
+            LightweightNode node = LightweightNode.ConfigureNode();
             if (isNullIpAddress)
             {
                 try
                 {
-                    node.SetIpAddress(null);
+                    node.SetPublicNatIpAddress(null);
                     Assert.Fail("LightweightNode should not set IPAddress to null");
                 }
                 catch (Exception)
@@ -74,16 +74,16 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeTestsNS
             }
             else
             {
-                node.SetIpAddress(Statics.GetExternalPublicIpAddress());
-                Assert.That(string.IsNullOrEmpty(node.GetIpAddressString()), Is.Not.True);
+                node.SetPublicNatIpAddress(Statics.GetExternalPublicIpAddress());
+                Assert.That(string.IsNullOrEmpty(node.GetPublicNatIpAddressString()), Is.Not.True);
             }
         }
         
         [Test]
         public void LightweightNode_CanGetIpAddressString()
         {
-            LightweightNode node = LightweightNode.ConfigureLightweightNode();
-            Assert.That(node.GetIpAddressString().Equals(Statics.GetExternalPublicIpAddress().ToString()), Is.True);
+            LightweightNode node = LightweightNode.ConfigureNode();
+            Assert.That(node.GetPublicNatIpAddressString().Equals(Statics.GetExternalPublicIpAddress().ToString()), Is.True);
         }
         
     }

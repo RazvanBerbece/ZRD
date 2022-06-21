@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using WalletNS;
 using System.ComponentModel;
+using System.IO;
 
 namespace TransactionTestsNS
 {
@@ -228,6 +229,34 @@ namespace TransactionTestsNS
                 Assert.Fail();
             }
 
+        }
+
+        [Test]
+        public void Transaction_CanSerializeToJsonString()
+        {
+            Transaction transaction = new Transaction(this.walletA.GetPublicKeyStringBase64(), "receiverPublicKey", 9999);
+            transaction.SignTransaction(this.walletA);
+            Assert.That(string.IsNullOrEmpty(transaction.ToJsonString()), Is.False);
+        }
+
+        [Test]
+        public void Transaction_CanDeserializeFromJsonString()
+        {
+            // Generate expected transaction to compare output with
+            Transaction expectedTransaction = new Transaction(this.walletA.GetPublicKeyStringBase64(), "receiverPublicKey", 9999);
+            expectedTransaction.Id = "2ce4d267-0709-4372-8415-971663529079";
+            expectedTransaction.SignTransaction(this.walletA);
+            
+            // Get JSON transaction string from file and deserialize
+            string jsonString = File.ReadAllText("../../../tests/Transaction.UnitTests/Transaction/ExpectedJsonString.txt");
+            Transaction actualTransaction = Transaction.JsonStringToTransactionInstance(jsonString);
+            
+            // Assert that fields match
+            // Note: Signature won't match due to it using the current timestamp
+            // TODO: Maybe dynamic ExpectedJsonString.txt file ? 
+            Assert.That(actualTransaction, Is.InstanceOf(typeof(Transaction)));
+            Assert.That(actualTransaction.Id == expectedTransaction.Id, Is.True);
+            Assert.That(actualTransaction.Amount == expectedTransaction.Amount, Is.True);
         }
 
     }

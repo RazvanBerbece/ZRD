@@ -14,7 +14,7 @@ namespace ZRD.Peer2Peer.CmdClientNS.LightweightNodeNS
             Console.WriteLine(
                 "\nWelcome to the ZRD Blockchain!\n" +
                 "You need to create a Wallet to be able to use the Blockchain capabilities.\n" +
-                $"EXT IP Address: {node.GetIpAddressString()}\n" +
+                $"EXT IP Address: {node.GetPublicNatIpAddressString()}\n" +
                 "--------------------------------------------------------------------------------\n" +
                 "Choose one of the following options to continue :\n" +
                 "\t1. Create Wallet\n" +

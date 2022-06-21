@@ -6,6 +6,10 @@ Since full nodes store the entire database of ZRD420 transactions, they can chec
 
 **Full nodes are, therefore, essential for maintaining the honesty of the entire network**.
 
+All node types will have some access to TCP connectivity capabilities :
+1. TCP Server creation, listener setup and incoming message handling
+2. TCP Client creation, upstream connection and incoming & outbound message handling
+
 # Node Categories
 
 1. Full Node
