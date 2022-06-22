@@ -5,4 +5,4 @@ These can include :
 1. Blockchain data (blocks, unvalidated transactions, etc..) in ```Blockchain/ZRD.json```
 2. User wallet data (stored once user creates wallet on ZRD) in ```Wallet/Wallet.json```
    1. **This needs further consideration to avoid deletion of local data, or maybe wallet recovery ?**
-3. Other metadata
+3. Peer data (initial lists provided, updated and then broadcasted) in ```Peers/Peers.json```

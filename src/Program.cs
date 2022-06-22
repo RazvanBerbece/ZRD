@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using TransactionNS;
 using BlockchainNS;
+using Peer2PeerNS.CmdClientNS.FullNodeNS;
 using Peer2PeerNS.NodesNS.LightweightNodeNS;
 using StaticsNS;
 using WalletNS;
@@ -15,11 +16,13 @@ namespace ZRD
         static void Main(string[] args)
         {
             
-            // Create Lightweight node
-            LightweightNode node = LightweightNode.ConfigureNode();
+            // Create example nodes
+            // LightweightNode lightNode = LightweightNode.ConfigureNode();
+            FullNode fullNode = FullNode.ConfigureNode();
 
-            // Onboard - Entry Point to Terminal Blockchain Client
-            Onboard.Run(node);
+            // Onboard - Entry Point to Terminal Blockchain Clients
+            // Onboard.Run(lightNode);
+            FullNodeOnboard.Run(fullNode);
 
             Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             Console.WriteLine("ON the ZRD Blockchain...");

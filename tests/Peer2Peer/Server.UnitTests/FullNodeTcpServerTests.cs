@@ -72,6 +72,15 @@ namespace Peer2PeerNS.ServerNS.FullNodeTcpServerTestsNS
                     break;
             }
         }
+        
+        [Test]
+        public void Server_CanBeKilled()
+        {
+            FullNodeTcpServer server = new FullNodeTcpServer();
+            server.Init(5000);
+            server.Kill();
+            Assert.That(server.GetListenerSocket().Server.Available == 0, Is.True);
+        }
 
         [Test]
         public void Server_CanAcceptConnections()
@@ -80,6 +89,7 @@ namespace Peer2PeerNS.ServerNS.FullNodeTcpServerTestsNS
             server.Init(5000);
             // TcpClient extPeer = server.AcceptConnections();
             // Assert.That(extPeer, Is.InstanceOf(typeof(TcpClient)));
+            server.Kill();
             Assert.Pass(
                 "Server_CanAcceptConnections passes by default for now, " +
                 "until a solution to the pending connection while running test issue is found."

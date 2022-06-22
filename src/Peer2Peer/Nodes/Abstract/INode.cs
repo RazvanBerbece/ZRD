@@ -7,7 +7,7 @@ namespace Peer2PeerNS.NodesNS.Abstract
     public interface INode
     {
         public void SetBlockchain(Blockchain upstreamChain);
-        public void SendBlockchainToPeer(IPAddress peerIpAddress);
+        public void SendBlockchainToPeer(string peerIpAddress, int port);
         public void SetWallet(Wallet wallet);
         public void SetPrivateIpAddress(IPAddress newPrivateIpAddress);
         public void SetPublicNatIpAddress(IPAddress newPublicNatIpAddress);

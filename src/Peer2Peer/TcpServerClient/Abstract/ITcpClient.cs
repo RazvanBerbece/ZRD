@@ -6,10 +6,9 @@ namespace ZRD.Peer2Peer.TcpServerClient.Abstract
 {
     public interface ITcpClient
     {
-        public void Init(IPAddress dest, int port);
+        public void Init(string dest, int port);
         public NetworkStream Connect();
-        public string GetDataFromNetworkStream(NetworkStream stream);
-        public Blockchain DeserializeDataStringToBlockchain(string dataString);
+        public string SendDataStringToPeer(string data, NetworkStream stream);
         public void Close();
     }
 }

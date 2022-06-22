@@ -18,13 +18,14 @@ All node types will have some access to TCP connectivity capabilities :
 
 # Node Specifications
 ## 1 Full Node
-Full nodes store unconfirmed transactions in their memory pool, or mempool, and check whether transactions are valid according to Bitcoin’s consensus rules.
+Full nodes store unconfirmed transactions in their memory pool, or mempool, and check whether transactions are valid according to ZRD’s consensus rules.
 They also spread their blockchain status across the P2P network.
 
 A full node should :
 - Have a local copy of the entire blockchain stored
     - Blockchain instance -> genesis block, list, difficulty, unconfirmed transactions etc.
 - Connect to peers and share the blockchain status (the saved data from above)
+- Receive new transactions from peers and add them to the mempool
 - Go through the unconfirmed transactions and validate them
 
 A full node should NOT :

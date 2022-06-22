@@ -181,7 +181,7 @@ namespace TransactionNS
                     });
                 return transaction;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }

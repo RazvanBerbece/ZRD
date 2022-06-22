@@ -1,9 +1,5 @@
 using System;
 using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using BlockchainNS;
 using Peer2PeerNS.NodesNS.Abstract;
 using StaticsNS;
@@ -39,7 +35,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
             return node;
         }
         
-        public void SendBlockchainToPeer(IPAddress peerIpAddress)
+        public void SendBlockchainToPeer(string peerIpAddress, int port)
         {
             throw new NotImplementedException();
         }

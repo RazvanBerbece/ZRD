@@ -4,7 +4,6 @@ using System.Net.Sockets;
 using System.Text;
 using BlockchainNS;
 using Peer2PeerNS.NodesNS.LightweightNodeNS;
-using Peer2PeerNS.ServerNS;
 using TransactionNS;
 using ZRD.Peer2Peer.TcpServerClient.Abstract;
 
@@ -90,7 +89,12 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
         {
             return this.listener;
         }
-
+        
+        public void SetFullNode(FullNode newFullNode)
+        {
+            this.node = newFullNode;
+        }
+        
         public void RunServer(int portToOpen)
         {
             Init(portToOpen);

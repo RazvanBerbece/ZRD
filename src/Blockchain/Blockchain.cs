@@ -116,7 +116,7 @@ namespace BlockchainNS
                     });
                 return chain;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -141,7 +141,7 @@ namespace BlockchainNS
                     });
                 return chain;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
