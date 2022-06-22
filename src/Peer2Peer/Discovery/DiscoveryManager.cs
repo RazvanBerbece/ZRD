@@ -32,8 +32,10 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
             if (peerList == null)
             {
                 // No peers were found in the list, so this is the first peer to be added
+                List<PeerDetails> initList = new List<PeerDetails> { };
+                initList.Add(details);
                 string peerDetails = JsonSerializer.Serialize(
-                    details,
+                    initList,
                     options: new JsonSerializerOptions()
                     {
                         WriteIndented = true,
@@ -43,6 +45,20 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
                 // Write to file
                 System.IO.File.WriteAllText(filepath, peerDetails);
                 return;
+            }
+            // Sanity check for duplicate entries in list, duplicates are not allowed
+            foreach (PeerDetails peerDetails in peerList)
+            {
+                if (
+                    peerDetails.GetPort() == details.GetPort() &&
+                    peerDetails.GetExtIp() == details.GetExtIp() &&
+                    peerDetails.GetPort() == details.GetPort()
+                )
+                {
+                    // Found duplicate peer entry, refuse it and return without storing
+                    Console.WriteLine("Peers.json already has your current full node configuration");
+                    return;
+                }
             }
             peerList.Add(details);
             // Serialize updated (appended) list

@@ -9,6 +9,8 @@ namespace Peer2PeerNS.CmdClientNS.FullNodeNS
     {
         public static void Run(FullNode node)
         {
+            // Standard port range for Full Nodes : 420-430
+            node.SetPort(420);
             Console.WriteLine(
                 "\nZRD Full Node Setup\n" +
                 "You will first need to download a full copy of the blockchain from a peer node\n" +

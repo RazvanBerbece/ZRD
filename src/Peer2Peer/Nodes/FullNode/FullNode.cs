@@ -118,6 +118,16 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
             }
             return this.publicNatIpAddress.ToString();
         }
+
+        public void SetPort(int newPort)
+        {
+            this.port = newPort;
+        }
+
+        public int GetPort()
+        {
+            return this.port;
+        }
         
         /// <summary>
         /// Adds current node connection details (ext NAT IP, open port, node type)
