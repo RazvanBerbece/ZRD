@@ -13,7 +13,7 @@ Uses .net6.0 and nUnit for testing.
 
 [**COMPLETED**] Genesis Block
 
-[**COMPLETED**] Minting - this is not applicable as ZRD will use the PoW consensus mechanism
+[**COMPLETED**] Minting (**NOTE: this is not applicable as ZRD will use the PoW consensus mechanism. minting uses Proof of Stake**)
 
 [**COMPLETED**] Mining
 
