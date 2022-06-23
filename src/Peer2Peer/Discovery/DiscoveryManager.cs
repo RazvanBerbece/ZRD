@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
@@ -92,8 +93,9 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
                     });
                 return peerList;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e);
                 return null;
             }
         }
@@ -107,13 +109,27 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
         /// The method scans that the given IP and port are reachable
         /// TODO: If not, maybe delete from list ?
         /// </summary>
-        /// <param name="requiredPeerType">String representation of peer type(s) (e.g.: LIGHT, FULL, MINER, FULL MINER)</param>
+        /// <param name="requiredPeerTypes">String representation of peer type(s) (e.g.: LIGHT, FULL, MINER, FULL MINER)</param>
         /// <param name="possiblePeers">List of PeerDetails structs</param>
         /// <returns></returns>
         public PeerDetails FindSuitablePeerInList(string requiredPeerTypes, List<PeerDetails> possiblePeers)
         {
-            // string[] types = requiredPeerTypes.Split(' ');
-            throw new NotImplementedException();
+            string[] types = requiredPeerTypes.Split(' ');
+            
+            PeerDetails suitablePeer = new PeerDetails();
+            foreach (PeerDetails peer in possiblePeers)
+            {
+                if (types.Contains(peer.PeerType))
+                {
+                    // Check that a connection can be made to peer
+                    // TODO
+                    // Found suitable peer, update variable and break loop
+                    suitablePeer = peer;
+                    break;
+                }
+            }
+
+            return suitablePeer;
         }
 
         public void RemovePeerFromPeerList(string hostname, int port)

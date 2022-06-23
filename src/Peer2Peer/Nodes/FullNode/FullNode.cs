@@ -6,12 +6,13 @@ using System.Text.Json;
 using BlockchainNS;
 using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
 using Peer2PeerNS.FullNodeTcpClientNS;
+using Peer2PeerNS.FullNodeTcpServerNS;
 using StaticsNS;
 using WalletNS;
 using Peer2PeerNS.NodesNS.Abstract;
 using DiscoveryManager = Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS.DiscoveryManager;
 
-namespace Peer2PeerNS.NodesNS.LightweightNodeNS
+namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
 {
     public class FullNode: INode
     {
@@ -38,6 +39,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
         public static FullNode ConfigureNode()
         {
             FullNode node = new FullNode();
+            node.SetPrivateIpAddress(Statics.GetLocalIpAddress());
             node.SetPublicNatIpAddress(Statics.GetExternalPublicIpAddress());
             return node;
         }
@@ -56,14 +58,14 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
         {
             // Discover a MINER or FULL peer to ask for a copy of the ZRD Blockchain
             DiscoveryManager peerDiscovery = new DiscoveryManager();
-            List<PeerDetails> possiblePeers = peerDiscovery.LoadPeerDetails(@"../../../local/Blockchain/ZRD.json");
+            List<PeerDetails> possiblePeers = peerDiscovery.LoadPeerDetails("local/Peers/Peers.json");
             PeerDetails suitablePeer = peerDiscovery.FindSuitablePeerInList("FULL MINER", possiblePeers);
             
             // Use found peer details to connect to it and ask for blockchain copy
-            // by sending "DOWNLOAD_BLOCKCHAIN_FOR_INIT" operation
+            // by sending "GET BLOCKCHAIN_FOR_INIT" operation
             FullNodeTcpClient peerClient = new FullNodeTcpClient();
             peerClient.Init(suitablePeer.GetExtIp(), suitablePeer.GetPort());
-            string response = peerClient.SendDataStringToPeer("DOWNLOAD_BLOCKCHAIN_FOR_INIT", peerClient.Connect());
+            string response = peerClient.SendDataStringToPeer("GET BLOCKCHAIN_FOR_INIT", peerClient.Connect());
             
             // Handle response: Deserialize received JSON Blockchain to actual instance
             Blockchain upstreamBlockchain = Blockchain.JsonStringToBlockchainInstance(response);
@@ -73,7 +75,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
                 {
                     SetBlockchain(upstreamBlockchain);
                     SetWallet(upstreamBlockchain.BlockchainWallet);
-                    Blockchain.SaveJsonStateToFile(this.Blockchain.ToJsonString(), @"../../../local/Blockchain/ZRD.json");
+                    Blockchain.SaveJsonStateToFile(this.Blockchain.ToJsonString(), "local/Blockchain/ZRD.json");
                 }
                 else
                 {
@@ -84,6 +86,13 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
             {
                 throw new JsonException("Blockchain JSON string from peer could not be deserialized");
             }
+        }
+        
+        public void StartFullServer()
+        {
+            FullNodeTcpServer server = new FullNodeTcpServer();
+            server.SetFullNode(this);
+            server.RunServer(this.port);
         }
         
         public void SetWallet(Wallet newWallet)
@@ -140,7 +149,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
                 this.publicNatIpAddress.ToString(), 
                 this.port, 
                 "FULL", 
-                "../../../local/Peers/Peers.json");
+                "local/Peers/Peers.json");
         }
 
     }

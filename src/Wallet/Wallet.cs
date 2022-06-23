@@ -17,7 +17,7 @@ namespace WalletNS
         
         // Core
         public byte[] PublicKey { get; set; }
-        public byte[] PrivateKey { get; set; }
+        private byte[] PrivateKey { get; set; }
         private RSAParameters KeyPair { get; set; }
         
         // Other Metadata

@@ -8,7 +8,11 @@ using System.Text.Json;
 using System.Collections.Generic;
 using TransactionNS;
 using System;
+using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Sockets;
+using System.Text.RegularExpressions;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -87,6 +91,27 @@ namespace StaticsNS
             string externalIpString = new WebClient().DownloadString("http://icanhazip.com").Replace("\\r\\n", "").Replace("\\n", "").Trim();
             return IPAddress.Parse(externalIpString);
         }
+        
+        public static IPAddress GetLocalIpAddress()
+        {
+            IPHostEntry ipEntry = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress[] addr = ipEntry.AddressList;
+
+            for (int i = 0; i < addr.Length; i++)
+            {
+                // Get 192.168.x.x IP here and return it
+                string regexHashPattern = "192.168.*.*";
+                Regex hashExpression = new Regex(regexHashPattern, RegexOptions.Compiled);
+                MatchCollection hashMatches = hashExpression.Matches(addr[i].ToString());
+                if (hashMatches.Count != 0)
+                {
+                    return addr[i];
+                }
+            }
+
+            return null;
+        }
 
     }
+    
 }

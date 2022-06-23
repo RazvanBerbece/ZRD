@@ -1,20 +1,30 @@
 using System;
-using Peer2PeerNS.CmdClientNS.LightweightNodeNS.WalletGatewayNS;
-using Peer2PeerNS.NodesNS.LightweightNodeNS;
-using WalletNS;
+using BlockchainNS;
+using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
+using StaticsNS;
 
 namespace Peer2PeerNS.CmdClientNS.FullNodeNS
 {
     public static class FullNodeOnboard
     {
-        public static void Run(FullNode node)
+        public static void Run(FullNode node, int port)
         {
             // Standard port range for Full Nodes : 420-430
-            node.SetPort(420);
+            node.SetPort(port);
+            
+            // Set Node blockchain instance to existing state in local/Blockchain/ZRD.json
+            string intro = "You will first need to download a full copy of the blockchain from a peer node";
+            Blockchain blockchainFromStateFile = Blockchain.FileJsonStringToBlockchainInstance("local/Blockchain/ZRD.json");
+            if (blockchainFromStateFile != null)
+            {
+                node.SetBlockchain(blockchainFromStateFile);
+                intro = "Successfully loaded ZRD state from local/Blockchain/ZRD.json";
+            }
+
             Console.WriteLine(
                 "\nZRD Full Node Setup\n" +
-                "You will first need to download a full copy of the blockchain from a peer node\n" +
-                "Then, you can set up the server node to receive new transactions for the mempool " +
+                $"{intro}\n" +
+                "You can set up the server node to receive new transactions for the mempool" +
                 ", updated ZRD versions from miner nodes or to broadcast network to other nodes.\n" +
                 "--------------------------------------------------------------------------------\n" +
                 "Choose one of the following options to continue :\n" +
@@ -30,11 +40,21 @@ namespace Peer2PeerNS.CmdClientNS.FullNodeNS
                 switch (option)
                 {
                     case "1":
-                        InitialBlockchainDownload.Run(node);
+                        try
+                        {
+                            InitialBlockchainDownload.Run(node);
+                            intro = "Successfully loaded ZRD state from peer";
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine($"Could not download initial ZRD state from peer: {e}");
+                        }
                         break;
                     case "2":
+                        Broadcast.Run(node);
                         break;
                     case "3":
+                        FullNodeServer.Run(node, port);
                         break;
                     case "0":
                         Environment.Exit(1);
@@ -45,8 +65,8 @@ namespace Peer2PeerNS.CmdClientNS.FullNodeNS
                 }
                 Console.WriteLine(
                     "\nZRD Full Node Setup\n" +
-                    "You will first need to download a full copy of the blockchain from a peer node\n" +
-                    "Then, you can set up the server node to receive new transactions for the mempool " +
+                    $"{intro}\n" +
+                    "You can set up the server node to receive new transactions for the mempool" +
                     ", updated ZRD versions from miner nodes or to broadcast network to other nodes.\n" +
                     "--------------------------------------------------------------------------------\n" +
                     "Choose one of the following options to continue :\n" +

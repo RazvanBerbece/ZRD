@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using BlockchainNS;
-using Peer2PeerNS.NodesNS.LightweightNodeNS;
+using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
 using TransactionNS;
 using ZRD.Peer2Peer.TcpServerClient.Abstract;
 
@@ -25,7 +25,7 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
         public void Init(int portToOpen)
         {
             this.port = portToOpen;
-            this.listener = new TcpListener(IPAddress.Parse("127.0.0.1"), this.port);
+            this.listener = new TcpListener(IPAddress.Parse(this.node.GetPrivateIpAddressString()), this.port);
             this.listener.Start();
         }
 
@@ -57,8 +57,17 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
             // Handle data by iteratively deserializing through the possible scenarios :
             //      1. Lightweight node connecting to send new Transaction to be added to mempool + validation
             //      2. Miner node connecting to send new Blockchain state after new block was mined + validation
-            //      3. Any other node connecting to request initial Blockchain data for setup TODO
-            if (Blockchain.JsonStringToBlockchainInstance(receivedData) is Blockchain upstreamBlockchain)
+            //      3. Any other node connecting to request initial Blockchain data for setup or peer list TODO
+            if (receivedData.Equals("GET BLOCKCHAIN_FOR_INIT"))
+            {
+                byte[] blockchainStateBuffer = Encoding.ASCII.GetBytes(this.node.Blockchain.ToJsonString());
+                stream.Write(blockchainStateBuffer, 0, blockchainStateBuffer.Length);
+            }
+            if (receivedData.Equals("GET PEER_LIST"))
+            {
+                // TODO
+            }
+            else if (Blockchain.JsonStringToBlockchainInstance(receivedData) is Blockchain upstreamBlockchain)
             {
                 // TODO
             }
@@ -94,6 +103,13 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
         {
             this.node = newFullNode;
         }
+
+        public static string GetPeerPublicIp(TcpClient peer)
+        {
+            var peerEndpoint = peer.Client.LocalEndPoint as IPEndPoint;
+            string localAddress = peerEndpoint.Address.ToString();
+            return localAddress;
+        }
         
         public void RunServer(int portToOpen)
         {
@@ -101,6 +117,7 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
             while (true)
             {
                 TcpClient peer = AcceptConnection();
+                Console.WriteLine($"Accepted incoming connection from {GetPeerPublicIp(peer)}");
                 HandleDataFromPeer(peer);
                 peer.Close();
             }

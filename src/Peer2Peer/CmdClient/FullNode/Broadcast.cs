@@ -3,16 +3,15 @@ using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
 
 namespace Peer2PeerNS.CmdClientNS.FullNodeNS
 {
-    public static class InitialBlockchainDownload
+    public static class Broadcast
     {
         public static void Run(FullNode node)
         {
             Console.WriteLine(
-                "\nZRD Blockchain Download from Peer\n" +
-                "Looking for a peer to download a full ZRD copy of the Blockchain from ...\n" +
+                "\nZRD Blockchain Broadcast Client\n" +
+                $"Searching for peers to share ZRD version with ... \n" +
                 "--------------------------------------------------------------------------------\n");
-            // node.DownloadBlockchainFromPeer();
-            node.StoreFullNodeDetailsInPeersList();
+            // TODO
         }
     }
 }

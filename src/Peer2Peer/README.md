@@ -22,11 +22,22 @@ There are a few solutions to this problem :
 Currently not implemented.
 
 ## Port Forwarding
-For educational and starting point purposes, 
+For educational and starting point purposes,
 I set up port forwarding on my router from public port 420 to private port 420.
 ![Port Forwarding Modal View Configuration](../../assets/img/pfding.png)
 
+# Application Layer
+In the application, if on a full node, we start listeners configured with the private port(s) documented above and the MACHINE'S LOCAL IP (usually 192.168.x.x).
+If running the sync peer node, it has to be run with administrator rights in order to open listening socket.
+
 Basically, TCP connections from external networks to the public EXT IP (usually router EXT NAT) and port (420 in the screenshot above) will be forwarded to the local IP on the private port.
+
+# Testing
+Testing is a bit more complicated considering the direct connections being made.
+As a result, a range of solutions were found :
+- Multiple terminal sessions on same machine
+- Virtual Machines
+- Laptops in local network
 
 # Resources
 1. https://en.wikipedia.org/wiki/Hole_punching_%28networking%29
