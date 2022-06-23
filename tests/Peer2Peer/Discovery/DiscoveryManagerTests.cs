@@ -5,7 +5,7 @@ using NUnit.Framework;
 using Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS;
 using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
 
-namespace ZRD.tests.Peer2Peer.Discovery
+namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerTestsNS
 {
     public class DiscoveryManagerTests
     {
@@ -23,6 +23,7 @@ namespace ZRD.tests.Peer2Peer.Discovery
         [TestCase("127.0.0.1", 420, "FULL", null)]
         [TestCase("abcdefgh", 420, "FULL", "TEST_PEERS.json")]
         [TestCase("1023.266.913.213", 420, "FULL", null)]
+        // [TestCase()] <- Tailor this test case for duplicate entry where we expect duplicate exception to be thrown
         public void DiscoveryManager_CanStoreExtNatIpAndPortToFile(string extNat, int port, string type,
             string filepath)
         {
@@ -111,6 +112,81 @@ namespace ZRD.tests.Peer2Peer.Discovery
                 discoveryManager.StoreExtNatIpAndPortToFile("127.0.0.1", 420, "FULL", filepath);
                 List<PeerDetails> peerList = discoveryManager.LoadPeerDetails(filepath);
                 Assert.That(peerList.Count, Is.EqualTo(1));   
+            }
+        }
+
+        [TestCase("127.0.0.1", 420, "TEST_PEERS_3.json")]
+        [TestCase("", 420, "TEST_PEERS_3.json")]
+        [TestCase("127.0.0.1", 0, "TEST_PEERS_3.json")]
+        [TestCase(null, 420, "TEST_PEERS_3.json")]
+        [TestCase("127.0.0.1", 420, "")]
+        [TestCase("127.0.0.1", 420, null)]
+        public void DiscoveryManager_CanRemovePeerFromPeerListFile(string hostname, int port, string filepath)
+        {
+            DiscoveryManager discoveryManager = new DiscoveryManager();
+            discoveryManager.StoreExtNatIpAndPortToFile("127.0.0.1", 420, "MINER", "TEST_PEERS_3.json");
+            discoveryManager.StoreExtNatIpAndPortToFile("127.0.0.1", 425, "FULL", "TEST_PEERS_3.json");
+            
+            if (string.IsNullOrEmpty(hostname) ||
+                string.IsNullOrEmpty(filepath) ||
+                port <= 0)
+            {
+                try
+                {
+                    bool deletedPeer = discoveryManager.RemovePeerFromPeerListFile(hostname, port, filepath);
+                    Assert.Fail(
+                        "Discovery Manager should not attempt to delete peer with missing details " +
+                        "or from empty or null filepath"
+                    );
+                }
+                catch (Exception)
+                {
+                    Assert.Pass();
+                }
+            }
+            else
+            {
+                bool deletedPeer = discoveryManager.RemovePeerFromPeerListFile(hostname, port, filepath);
+                // Assert that a peer was deleted from the list by checking the bool value and the list size
+                Assert.That(deletedPeer, Is.EqualTo(true));
+                List<PeerDetails> peers = discoveryManager.LoadPeerDetails("TEST_PEERS_3.json");
+                Assert.That(peers.Count, Is.EqualTo(1));
+            }
+
+        }
+
+        [TestCase("TEST_PEERS_4.json")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void DiscoveryManager_CanStorePeerList(string filepath)
+        {
+            DiscoveryManager discoveryManager = new DiscoveryManager();
+            List<PeerDetails> possiblePeers = new List<PeerDetails>
+            {
+                new PeerDetails("127.0.0.1", 420, "MINER"),
+                new PeerDetails("127.0.0.1", 425, "FULL"),
+            };
+            if (string.IsNullOrEmpty(filepath))
+            {
+                try
+                {
+                    discoveryManager.WritePeerListToFile(possiblePeers, filepath);
+                    Assert.Fail(
+                        "Discovery Manager should not attempt to store peer lists " +
+                        "in null or empty filepaths"
+                        );
+                }
+                catch (Exception)
+                {
+                    Assert.Pass();
+                }
+            }
+            else
+            {
+                discoveryManager.WritePeerListToFile(possiblePeers, filepath);
+                // Check that the file content matches the runtime list content
+                List<PeerDetails> peerDetailsList = discoveryManager.LoadPeerDetails(filepath);
+                Assert.That(peerDetailsList.Count == possiblePeers.Count, Is.True);
             }
         }
         

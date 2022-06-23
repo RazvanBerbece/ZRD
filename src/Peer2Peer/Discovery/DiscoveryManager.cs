@@ -136,9 +136,41 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
             return suitablePeer;
         }
 
-        public void RemovePeerFromPeerList(string hostname, int port)
+        public bool RemovePeerFromPeerListFile(string hostname, int port, string filepath)
         {
-            throw new NotImplementedException();
+            // Load peer list
+            List<PeerDetails> peerList = LoadPeerDetails(filepath);
+            
+            // Check whether peerList has the target hostname and port
+            foreach (PeerDetails peer in peerList)
+            {
+                if (peer.Port == port && peer.ExtIp.Equals(hostname))
+                {
+                    // found match, delete it from runtime list
+                    peerList.Remove(peer);
+                    
+                    // Write new list back to peer list file
+                    WritePeerListToFile(peerList, filepath);
+
+                    return true;
+                }
+            }
+
+            return false; // no element removed
+        }
+
+        public void WritePeerListToFile(List<PeerDetails> peerList, string filepath)
+        {
+            string jsonPeerList = JsonSerializer.Serialize(
+                peerList,
+                options: new JsonSerializerOptions()
+                {
+                    WriteIndented = true,
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
+                }
+            );
+            // Write to file
+            System.IO.File.WriteAllText(filepath, jsonPeerList);
         }
 
     }
