@@ -2,12 +2,20 @@ using System;
 using System.Net.Sockets;
 using NUnit.Framework;
 using Peer2PeerNS.FullNodeTcpServerNS;
+using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
 
 namespace Peer2PeerNS.ServerNS.FullNodeTcpServerTestsNS
 {
     [TestFixture]
     public class FullNodeTcpServerTests
     {
+        private FullNode node;
+        
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            this.node = FullNode.ConfigureNode();
+        } 
 
         [TestCase(-1)]
         [TestCase(0)]
@@ -18,6 +26,7 @@ namespace Peer2PeerNS.ServerNS.FullNodeTcpServerTestsNS
         public void FullNodeTcpServer_CanInitialise(int portToOpen)
         {
             FullNodeTcpServer server = new FullNodeTcpServer();
+            server.SetFullNode(this.node);
             switch (portToOpen)
             {
                 case -1:
@@ -77,6 +86,7 @@ namespace Peer2PeerNS.ServerNS.FullNodeTcpServerTestsNS
         public void Server_CanBeKilled()
         {
             FullNodeTcpServer server = new FullNodeTcpServer();
+            server.SetFullNode(this.node);
             server.Init(5000);
             server.Kill();
             Assert.That(server.GetListenerSocket().Server.Available == 0, Is.True);
@@ -86,6 +96,7 @@ namespace Peer2PeerNS.ServerNS.FullNodeTcpServerTestsNS
         public void Server_CanAcceptConnections()
         {
             FullNodeTcpServer server = new FullNodeTcpServer();
+            server.SetFullNode(this.node);
             server.Init(5000);
             // TcpClient extPeer = server.AcceptConnections();
             // Assert.That(extPeer, Is.InstanceOf(typeof(TcpClient)));
