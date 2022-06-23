@@ -9,14 +9,14 @@ using ZRD.Peer2Peer.TcpServerClient.Abstract;
 
 namespace Peer2PeerNS.FullNodeTcpServerNS
 {
-    public class FullNodeTcpServer: ITcpServer
+    public class FullNodeTcpServer: ITcpServer, IDisposable
     {
 
         public int port;
         private TcpListener listener;
 
         private FullNode node;
-        
+
         /// <summary>
         /// Open given port on localhost to accept TCP connections
         /// And start listening
@@ -121,6 +121,12 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
                 HandleDataFromPeer(peer);
                 peer.Close();
             }
+        }
+        
+        public void Dispose()
+        {
+            if(this.listener != null) this.listener.Stop();
+            this.listener = null;
         }
     }
 }

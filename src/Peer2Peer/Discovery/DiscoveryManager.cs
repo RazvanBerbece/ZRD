@@ -81,6 +81,10 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
         /// <returns></returns>
         public List<PeerDetails> LoadPeerDetails(string filepath)
         {
+            if (string.IsNullOrEmpty(filepath))
+            {
+                throw new ArgumentException("Filepath cannot be null or empty");
+            }
             try
             {
                 string peerDetailsString = System.IO.File.ReadAllText(filepath);
