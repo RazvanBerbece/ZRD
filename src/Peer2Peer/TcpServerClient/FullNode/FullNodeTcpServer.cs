@@ -24,6 +24,7 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
         /// <param name="portToOpen">Port to open on localhost machine</param>
         public void Init(int portToOpen)
         {
+            Console.WriteLine(IPAddress.Parse(this.node.GetPrivateIpAddressString()).ToString());
             this.port = portToOpen;
             this.listener = new TcpListener(IPAddress.Parse(this.node.GetPrivateIpAddressString()), this.port);
             this.listener.Start();
