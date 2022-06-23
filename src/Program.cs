@@ -11,7 +11,10 @@ namespace ZRD
     {
         static void Main(string[] args)
         {
-            
+            /*
+             
+             THIS SHOULD BE RUN WHEN THE BLOCKCHAIN IS DEPLOYED IN LIVE THE FIRST TIME
+             
             // Create network wallet
             Wallet networkWallet = new Wallet(keySize: 1024);
             networkWallet.SetWalletName("ZRD Network Wallet");
@@ -38,6 +41,7 @@ namespace ZRD
                 reward: 420
             );
             Blockchain.SaveJsonStateToFile(blockchain.ToJsonString(), @"local/Blockchain/ZRD.json");
+            */
 
             // Create example nodes
             FullNode fullNode = FullNode.ConfigureNode();
