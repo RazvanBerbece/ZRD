@@ -6,7 +6,11 @@ namespace MerkleTreeNS.MerkleNodeNS
     public class MerkleNodeTests
     {
 
-        // Generic values which are Setup for every test
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            TestContext.Progress.WriteLine("-- Testing MerkleNode --\n");
+        }
 
         [Test]
         public void MerkleNode_CanConstruct()

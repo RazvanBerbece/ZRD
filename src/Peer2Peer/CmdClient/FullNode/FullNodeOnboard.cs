@@ -1,7 +1,6 @@
 using System;
 using BlockchainNS;
 using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
-using StaticsNS;
 
 namespace Peer2PeerNS.CmdClientNS.FullNodeNS
 {

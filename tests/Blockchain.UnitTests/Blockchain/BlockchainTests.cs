@@ -18,6 +18,12 @@ namespace BlockchainTestsNS
         
         private Wallet testWallet;
         
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            TestContext.Progress.WriteLine("-- Testing Blockchain --\n");
+        }
+        
         [SetUp]
         public void Setup()
         {

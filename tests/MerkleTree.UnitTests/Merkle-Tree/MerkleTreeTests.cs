@@ -10,6 +10,12 @@ namespace MerkleTreeNS.MerkleTreeNS
     public class MerkleTreeTests
     {
         
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            TestContext.Progress.WriteLine("-- Testing MerkleTree --\n");
+        }
+        
         [TestCase(-1)]
         [TestCase(0)]
         [TestCase(1)]

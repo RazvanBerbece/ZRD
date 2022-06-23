@@ -27,6 +27,12 @@ namespace BlockTestsNS
         private Wallet networkWallet; // used for rewards, first mint, etc.
         private Wallet walletA; // main wallet
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            TestContext.Progress.WriteLine("-- Testing Block --\n");
+        }
+
         [SetUp]
         public void Setup()
         {

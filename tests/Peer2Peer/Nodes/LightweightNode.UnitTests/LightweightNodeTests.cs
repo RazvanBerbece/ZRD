@@ -9,6 +9,12 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeTestsNS
     [TestFixture]
     public class LightweightNodeTests
     {
+        
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            TestContext.Progress.WriteLine("-- Testing LightweightNode --\n");
+        }
 
         [Test]
         public void LightweightNode_CanConstruct()

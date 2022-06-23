@@ -21,6 +21,7 @@ namespace WalletTestsNS
         [OneTimeSetUp]
         public void Setup()
         {
+            TestContext.Progress.WriteLine("-- Testing Wallet --\n");
             this.networkWallet = new Wallet(1024);
             this.walletA = new Wallet(1024);
             this.walletB = new Wallet(1024);

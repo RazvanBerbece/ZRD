@@ -14,6 +14,7 @@ namespace Peer2PeerNS.ServerNS.FullNodeTcpServerTestsNS
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
+            TestContext.Progress.WriteLine("-- Testing FullNodeTcpServer --\n");
             this.node = FullNode.ConfigureNode();
         } 
 

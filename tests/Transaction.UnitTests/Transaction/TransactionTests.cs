@@ -24,6 +24,7 @@ namespace TransactionTestsNS
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
+            TestContext.Progress.WriteLine("-- Testing Transaction --\n");
             this.list = new List<Transaction> { };
             this.watch = new System.Diagnostics.Stopwatch();
             this.networkWallet = new Wallet(1024);
