@@ -11,7 +11,7 @@ namespace Peer2PeerNS.CmdClientNS.FullNodeNS
                 "\nZRD Blockchain Download from Peer\n" +
                 "Looking for a peer to download a full ZRD copy of the Blockchain from ...\n" +
                 "--------------------------------------------------------------------------------\n");
-            // node.DownloadBlockchainFromPeer();
+            node.DownloadBlockchainFromPeer();
             node.StoreFullNodeDetailsInPeersList();
         }
     }
