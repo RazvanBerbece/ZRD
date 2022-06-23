@@ -73,11 +73,11 @@ namespace Peer2PeerNS.ServerNS.FullNodeTcpServerTestsNS
                     }
                     catch (SocketException e)
                     {
-                        if (e.Message.Equals("Permission denied"))
+                        if (e.Message.Equals("Permission denied") || e.Message.Equals("Invalid argument"))
                         {
                             Assert.Pass($"Expected error : {e}");
                         }
-                        Assert.Fail("The error message should be either null or \"Permission denied\"");
+                        Assert.Fail("The error message does not match any of the expected possible values");
                     }
                     break;
             }

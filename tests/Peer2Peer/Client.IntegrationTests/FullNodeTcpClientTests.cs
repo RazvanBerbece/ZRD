@@ -1,7 +1,4 @@
-using System;
 using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using Peer2PeerNS.FullNodeTcpClientNS;
 using Peer2PeerNS.FullNodeTcpServerNS;
@@ -42,10 +39,11 @@ namespace Peer2PeerNS.ClientNS.FullNodeTcpClientTestsNS
             }
             catch (SocketException e)
             {
-                if (e.Message.Equals("Permission denied"))
+                if (e.Message.Equals("Permission denied") || e.Message.Equals("Invalid argument"))
                 {
-                    Assert.Pass($"Expected error for this test due to file write permissions : {e.Message}");
+                    Assert.Pass($"Expected error : {e}");
                 }
+                Assert.Fail("The error message does not match any of the expected possible values");
             }
         }
         
@@ -71,10 +69,11 @@ namespace Peer2PeerNS.ClientNS.FullNodeTcpClientTestsNS
             }
             catch (SocketException e)
             {
-                if (e.Message.Equals("Permission denied"))
+                if (e.Message.Equals("Permission denied") || e.Message.Equals("Invalid argument"))
                 {
-                    Assert.Pass($"Expected error for this test due to file write permissions : {e.Message}");
+                    Assert.Pass($"Expected error : {e}");
                 }
+                Assert.Fail("The error message does not match any of the expected possible values");
             }
         }
         
@@ -101,10 +100,11 @@ namespace Peer2PeerNS.ClientNS.FullNodeTcpClientTestsNS
             }
             catch (SocketException e)
             {
-                if (e.Message.Equals("Permission denied"))
+                if (e.Message.Equals("Permission denied") || e.Message.Equals("Invalid argument"))
                 {
-                    Assert.Pass($"Expected error for this test due to file write permissions : {e.Message}");
+                    Assert.Pass($"Expected error : {e}");
                 }
+                Assert.Fail("The error message does not match any of the expected possible values");
             }
         }
         
@@ -129,10 +129,11 @@ namespace Peer2PeerNS.ClientNS.FullNodeTcpClientTestsNS
             }
             catch (SocketException e)
             {
-                if (e.Message.Equals("Permission denied"))
+                if (e.Message.Equals("Permission denied") || e.Message.Equals("Invalid argument"))
                 {
-                    Assert.Pass($"Expected error for this test due to file write permissions : {e.Message}");
+                    Assert.Pass($"Expected error : {e}");
                 }
+                Assert.Fail("The error message does not match any of the expected possible values");
             }
         }
         

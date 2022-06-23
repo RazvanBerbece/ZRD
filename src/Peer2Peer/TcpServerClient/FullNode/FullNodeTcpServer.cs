@@ -24,10 +24,17 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
         /// <param name="portToOpen">Port to open on localhost machine</param>
         public void Init(int portToOpen)
         {
-            Console.WriteLine(IPAddress.Parse(this.node.GetPrivateIpAddressString()).ToString());
             this.port = portToOpen;
-            this.listener = new TcpListener(IPAddress.Parse(this.node.GetPrivateIpAddressString()), this.port);
-            this.listener.Start();
+            try
+            {
+                this.listener = new TcpListener(IPAddress.Parse(this.node.GetPrivateIpAddressString()), this.port);
+                this.listener.Start();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public TcpClient AcceptConnection()
@@ -114,13 +121,21 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
         
         public void RunServer(int portToOpen)
         {
-            Init(portToOpen);
-            while (true)
+            try
             {
-                TcpClient peer = AcceptConnection();
-                Console.WriteLine($"Accepted incoming connection from {GetPeerPublicIp(peer)}");
-                HandleDataFromPeer(peer);
-                peer.Close();
+                Init(portToOpen);
+                while (true)
+                {
+                    TcpClient peer = AcceptConnection();
+                    Console.WriteLine($"Accepted incoming connection from {GetPeerPublicIp(peer)}");
+                    HandleDataFromPeer(peer);
+                    peer.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
         
