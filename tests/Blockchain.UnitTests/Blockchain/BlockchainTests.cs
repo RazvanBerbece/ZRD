@@ -31,12 +31,14 @@ namespace BlockchainTestsNS
         [TestCase(1, 10, 1000, true)]
         public void Static_CanCreateBlockchain_Correctly(int difficulty, int blockTime, int reward, bool expectedOutputResult)
         {
+            // Create Blockchain instance with initial coin offerings
+            List<Transaction> initialCoinOfferings = new List<Transaction>()
+            {
+                new Transaction(networkWallet.GetPublicKeyStringBase64(), testWallet.GetPublicKeyStringBase64(),
+                    1000000),
+            };
             this.chain = Blockchain.CreateBlockchain(
-                firstMint: new Transaction(
-                    this.networkWallet.GetPublicKeyStringBase64(),
-                    this.testWallet.GetPublicKeyStringBase64(),
-                    1000000
-                    ),
+                initialCoinOfferings: initialCoinOfferings,
                 blockchainWallet: this.networkWallet,
                 difficulty: difficulty,
                 blockTime: blockTime,
@@ -57,14 +59,15 @@ namespace BlockchainTestsNS
         [TestCase(false, TestName = "Test case #2, Using null for Block object instance")]
         public void Blockchain_CanAddBlock(bool testWithNullBlock)
         {
-            
-            // Setup test Blockchain
+            const int firstAmount = 1000000;
+            List<Transaction> initialCoinOfferings = new List<Transaction>()
+            {
+                new Transaction(networkWallet.GetPublicKeyStringBase64(), testWallet.GetPublicKeyStringBase64(),
+                    firstAmount),
+            };
+            // Setup test blockchain
             this.chain = Blockchain.CreateBlockchain(
-                firstMint: new Transaction(
-                    this.networkWallet.GetPublicKeyStringBase64(),
-                    this.testWallet.GetPublicKeyStringBase64(),
-                    1000000
-                ),
+                initialCoinOfferings: initialCoinOfferings,
                 blockchainWallet: this.networkWallet,
                 difficulty: 2,
                 blockTime: 10,
@@ -104,15 +107,15 @@ namespace BlockchainTestsNS
         [TestCase("nonExistingKey")]
         public void Blockchain_GetsBalance(string publicKey)
         {
-            
-            // Setup test Blockchain
-            int firstAmount = 1000000;
+            const int firstAmount = 1000000;
+            List<Transaction> initialCoinOfferings = new List<Transaction>()
+            {
+                new Transaction(networkWallet.GetPublicKeyStringBase64(), testWallet.GetPublicKeyStringBase64(),
+                    firstAmount),
+            };
+            // Setup test blockchain
             this.chain = Blockchain.CreateBlockchain(
-                firstMint: new Transaction(
-                    this.networkWallet.GetPublicKeyStringBase64(),
-                    this.testWallet.GetPublicKeyStringBase64(),
-                    firstAmount
-                ),
+                initialCoinOfferings: initialCoinOfferings,
                 blockchainWallet: this.networkWallet,
                 difficulty: 2,
                 blockTime: 10,
@@ -145,15 +148,15 @@ namespace BlockchainTestsNS
         [TestCase(4, TestName = "Test case #4, Testing on compromised blockchain of size >1")]
         public void Blockchain_CanValidate(int blockchainStatus)
         {
-            
-            // Setup test Blockchain
-            int firstAmount = 1000000;
+            const int firstAmount = 1000000;
+            List<Transaction> initialCoinOfferings = new List<Transaction>()
+            {
+                new Transaction(networkWallet.GetPublicKeyStringBase64(), testWallet.GetPublicKeyStringBase64(),
+                    firstAmount),
+            };
+            // Setup test blockchain
             this.chain = Blockchain.CreateBlockchain(
-                firstMint: new Transaction(
-                    this.networkWallet.GetPublicKeyStringBase64(),
-                    this.testWallet.GetPublicKeyStringBase64(),
-                    firstAmount
-                ),
+                initialCoinOfferings: initialCoinOfferings,
                 blockchainWallet: this.networkWallet,
                 difficulty: 2,
                 blockTime: 10,
@@ -236,15 +239,15 @@ namespace BlockchainTestsNS
             TestName = "Test case #3, Testing by passing compromised Transaction to AddTransaction")]
         public void Blockchain_CanAddTransaction_Correctly(string transactionStatus)
         {
-            
-            // Setup test Blockchain
-            int firstAmount = 1000000;
+            const int firstAmount = 1000000;
+            List<Transaction> initialCoinOfferings = new List<Transaction>()
+            {
+                new Transaction(networkWallet.GetPublicKeyStringBase64(), testWallet.GetPublicKeyStringBase64(),
+                    firstAmount),
+            };
+            // Setup test blockchain
             this.chain = Blockchain.CreateBlockchain(
-                firstMint: new Transaction(
-                    this.networkWallet.GetPublicKeyStringBase64(),
-                    this.testWallet.GetPublicKeyStringBase64(),
-                    firstAmount
-                ),
+                initialCoinOfferings: initialCoinOfferings,
                 blockchainWallet: this.networkWallet,
                 difficulty: 2,
                 blockTime: 10,
@@ -299,14 +302,15 @@ namespace BlockchainTestsNS
         [TestCase("atRuntimeMinerPublicKey", TestName = "Test case #3, Testing by passing public key to MineUnconfirmedTransactions")]
         public void Blockchain_MinesUnconfirmedTransactions_Correctly(string minerPublicKey)
         {
-            // Setup test Blockchain
-            int firstAmount = 1000000;
+            const int firstAmount = 1000000;
+            List<Transaction> initialCoinOfferings = new List<Transaction>()
+            {
+                new Transaction(networkWallet.GetPublicKeyStringBase64(), testWallet.GetPublicKeyStringBase64(),
+                    firstAmount),
+            };
+            // Setup test blockchain
             this.chain = Blockchain.CreateBlockchain(
-                firstMint: new Transaction(
-                    this.networkWallet.GetPublicKeyStringBase64(),
-                    this.testWallet.GetPublicKeyStringBase64(),
-                    firstAmount
-                ),
+                initialCoinOfferings: initialCoinOfferings,
                 blockchainWallet: this.networkWallet,
                 difficulty: 2,
                 blockTime: 10,
@@ -367,14 +371,15 @@ namespace BlockchainTestsNS
         [Test]
         public void Blockchain_SavesJsonCorrectly_ToFile()
         {
-            // Setup test Blockchain
-            int firstAmount = 1000000;
+            const int firstAmount = 1000000;
+            List<Transaction> initialCoinOfferings = new List<Transaction>()
+            {
+                new Transaction(networkWallet.GetPublicKeyStringBase64(), testWallet.GetPublicKeyStringBase64(),
+                    firstAmount),
+            };
+            // Setup test blockchain
             this.chain = Blockchain.CreateBlockchain(
-                firstMint: new Transaction(
-                    this.networkWallet.GetPublicKeyStringBase64(),
-                    this.testWallet.GetPublicKeyStringBase64(),
-                    firstAmount
-                ),
+                initialCoinOfferings: initialCoinOfferings,
                 blockchainWallet: this.networkWallet,
                 difficulty: 2,
                 blockTime: 10,
@@ -392,15 +397,15 @@ namespace BlockchainTestsNS
         [Test]
         public void Static_Blockchain_CanDeserializeFileJson_Correctly()
         {
-            
-            // Setup test Blockchain
-            int firstAmount = 1000000;
+            const int firstAmount = 1000000;
+            List<Transaction> initialCoinOfferings = new List<Transaction>()
+            {
+                new Transaction(networkWallet.GetPublicKeyStringBase64(), testWallet.GetPublicKeyStringBase64(),
+                    firstAmount),
+            };
+            // Setup test blockchain
             this.chain = Blockchain.CreateBlockchain(
-                firstMint: new Transaction(
-                    this.networkWallet.GetPublicKeyStringBase64(),
-                    this.testWallet.GetPublicKeyStringBase64(),
-                    firstAmount
-                ),
+                initialCoinOfferings: initialCoinOfferings,
                 blockchainWallet: this.networkWallet,
                 difficulty: 2,
                 blockTime: 10,

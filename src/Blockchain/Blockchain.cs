@@ -275,11 +275,11 @@ namespace BlockchainNS
             this.UnconfirmedTransactions.Clear();
         }
 
-        public static Blockchain CreateBlockchain(Transaction firstMint, Wallet blockchainWallet, int difficulty, int blockTime, int reward)
+        public static Blockchain CreateBlockchain(List<Transaction> initialCoinOfferings, Wallet blockchainWallet, int difficulty, int blockTime, int reward)
         {
             
             // Argument sanitising
-            if (firstMint == null || blockchainWallet == null)
+            if (initialCoinOfferings == null || blockchainWallet == null)
             {
                 return null;
             }
@@ -290,8 +290,13 @@ namespace BlockchainNS
 
             // Init Genesis block
             List<Transaction> genesisList = new List<Transaction> { };
-            firstMint.SignTransaction(blockchainWallet); // sign first transaction
-            genesisList.Add(firstMint);
+            
+            // Sign initial coin offerings
+            foreach (Transaction transaction in initialCoinOfferings)
+            {
+                transaction.SignTransaction(blockchainWallet);
+                genesisList.Add(transaction);
+            }
             Block genesisBlock = new Block(genesisList, "", 0);
             genesisBlock.Mine(difficulty);
             

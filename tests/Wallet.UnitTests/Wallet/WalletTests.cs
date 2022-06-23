@@ -4,6 +4,7 @@ using WalletNS;
 using System.Security.Cryptography;
 using TransactionNS;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace WalletTestsNS
@@ -67,13 +68,16 @@ namespace WalletTestsNS
         [TestCase(int.MaxValue)]
         public void Wallet_CanSendCurrency(int amount)
         {
+            const int firstAmount = int.MaxValue;
+            List<Transaction> initialCoinOfferings = new List<Transaction>()
+            {
+                new Transaction(networkWallet.GetPublicKeyStringBase64(), walletA.GetPublicKeyStringBase64(),
+                    firstAmount),
+            };
+            // Setup test blockchain
             // Setup blockchain
             Blockchain blockchain = Blockchain.CreateBlockchain(
-                    firstMint: new Transaction(
-                        this.networkWallet.GetPublicKeyStringBase64(),
-                        this.walletA.GetPublicKeyStringBase64(),
-                        int.MaxValue
-                        ),
+                    initialCoinOfferings: initialCoinOfferings,
                     blockchainWallet: this.networkWallet,
                     difficulty: 2,
                     blockTime: 5,

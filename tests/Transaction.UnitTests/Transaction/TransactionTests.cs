@@ -169,13 +169,16 @@ namespace TransactionTestsNS
         {
             try
             {
+                const int firstAmount = 1000000;
+                List<Transaction> initialCoinOfferings = new List<Transaction>()
+                {
+                    new Transaction(networkWallet.GetPublicKeyStringBase64(), walletA.GetPublicKeyStringBase64(),
+                        firstAmount),
+                };
+                // Setup test blockchain
                 // Setup blockchain
                 Blockchain blockchain = Blockchain.CreateBlockchain(
-                        firstMint: new Transaction(
-                            this.networkWallet.GetPublicKeyStringBase64(),
-                            this.walletA.GetPublicKeyStringBase64(),
-                            1000000
-                            ),
+                        initialCoinOfferings: initialCoinOfferings,
                         blockchainWallet: this.networkWallet,
                         difficulty: 2,
                         blockTime: 5,

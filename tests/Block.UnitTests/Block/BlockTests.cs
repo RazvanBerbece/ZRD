@@ -69,13 +69,16 @@ namespace BlockTestsNS
             // We force a timestamp that we can hardcode in ExpectedJsonString.json for testing
             genericBlockToJsonSerialize.Timestamp = DateTime.Parse("2022-06-01T17:49:36.823434+01:00", null, System.Globalization.DateTimeStyles.AdjustToUniversal);
             
+            const int firstAmount = 1000000;
+            List<Transaction> initialCoinOfferings = new List<Transaction>()
+            {
+                new Transaction(networkWallet.GetPublicKeyStringBase64(), walletA.GetPublicKeyStringBase64(),
+                    firstAmount),
+            };
+            // Setup test blockchain
             // Setup testing Blockchain
             chain = Blockchain.CreateBlockchain(
-                firstMint: new Transaction(
-                    this.networkWallet.GetPublicKeyStringBase64(),
-                    this.walletA.GetPublicKeyStringBase64(),
-                    1000000
-                ),
+                initialCoinOfferings: initialCoinOfferings,
                 blockchainWallet: this.networkWallet,
                 difficulty: 2,
                 blockTime: 5,
