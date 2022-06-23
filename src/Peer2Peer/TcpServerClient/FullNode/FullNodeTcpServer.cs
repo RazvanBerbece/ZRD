@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -9,7 +10,7 @@ using ZRD.Peer2Peer.TcpServerClient.Abstract;
 
 namespace Peer2PeerNS.FullNodeTcpServerNS
 {
-    public class FullNodeTcpServer: ITcpServer, IDisposable
+    public class FullNodeTcpServer: ITcpServer
     {
 
         public int port;
@@ -139,10 +140,5 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
             }
         }
         
-        public void Dispose()
-        {
-            if(this.listener != null) this.listener.Stop();
-            this.listener = null;
-        }
     }
 }
