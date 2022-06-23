@@ -31,6 +31,15 @@ namespace BlockchainTestsNS
             testWallet = new Wallet(1024);
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            if(File.Exists(@"TEST_ZRD.json"))
+            {
+                File.Delete(@"TEST_ZRD.json");
+            }
+        }
+
         [TestCase(-1, 10, 1000, false)]
         [TestCase(1, -10, 1000, false)]
         [TestCase(1, 10, -1000, false)]

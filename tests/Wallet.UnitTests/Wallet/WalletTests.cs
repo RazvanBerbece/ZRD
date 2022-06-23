@@ -27,6 +27,15 @@ namespace WalletTestsNS
             this.walletB = new Wallet(1024);
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            if(File.Exists(@"TEST_WALLET.json"))
+            {
+                File.Delete(@"TEST_WALLET.json");
+            }
+        }
+
         [Test]
         public void Wallet_CanConstruct()
         {
@@ -172,6 +181,7 @@ namespace WalletTestsNS
                 }
             }
             // Check that file exists and that there is content in file "TEST_WALLET.json"
+            this.walletA.SaveToJsonFile(filepath, this.walletA.GetJsonString());
             string output = File.ReadAllText(filepath);
             Assert.That(output, Is.Not.Empty);
         }

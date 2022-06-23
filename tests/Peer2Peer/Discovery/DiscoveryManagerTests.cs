@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS;
@@ -9,7 +10,28 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerTestsNS
 {
     public class DiscoveryManagerTests
     {
-        
+
+        [TearDown]
+        public void TearDown()
+        {
+            // Remove all TEST_PEERS_*.json files from bin/Debug/net5.0/
+            List<string> testPeerFilepaths = new List<string>()
+            {
+                @"TEST_PEERS.json",
+                @"TEST_PEERS_2.json",
+                @"TEST_PEERS_3.json",
+                @"TEST_PEERS_4.json",
+                @"TEST_PEERS_DUPLICATE.json"
+            };
+            foreach (string filepath in testPeerFilepaths)
+            {
+                if(File.Exists(filepath))
+                {
+                    File.Delete(filepath);
+                }
+            }
+        }
+
         [TestCase("127.0.0.1", 420, "FULL", "TEST_PEERS.json")]
         [TestCase("127.0.0.1", 420, "MINER", "TEST_PEERS.json")]
         [TestCase("127.0.0.1", 420, "FULL MINER", "TEST_PEERS.json")]
@@ -23,7 +45,7 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerTestsNS
         [TestCase("127.0.0.1", 420, "FULL", null)]
         [TestCase("abcdefgh", 420, "FULL", "TEST_PEERS.json")]
         [TestCase("1023.266.913.213", 420, "FULL", null)]
-        // [TestCase()] <- Tailor this test case for duplicate entry where we expect duplicate exception to be thrown
+        [TestCase("127.0.0.1", 420, "FULL", "TEST_PEERS_DUPLICATE.json")]  // Test case for duplicate entry where we expect an exception to be thrown
         public void DiscoveryManager_CanStoreExtNatIpAndPortToFile(string extNat, int port, string type,
             string filepath)
         {
@@ -32,7 +54,8 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerTestsNS
                 string.IsNullOrEmpty(filepath) ||
                 port <= 0 ||
                 extNat.Equals("abcdefgh") ||
-                extNat.Equals("1023.266.913.213")
+                extNat.Equals("1023.266.913.213") ||
+                type.Equals("FULL MINER")
                )
             {
                 try
@@ -44,6 +67,20 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerTestsNS
                 catch (Exception)
                 {
                     Assert.Pass();
+                }
+            }
+            else if (type.Equals("TEST_PEERS_DUPLICATE.json"))
+            {
+                // Add duplicate and check for exception to be thrown
+                try
+                {
+                    DiscoveryManager dmng = new DiscoveryManager();
+                    dmng.StoreExtNatIpAndPortToFile(extNat, port, type, filepath);
+                    dmng.StoreExtNatIpAndPortToFile(extNat, port, type, filepath); // <- this should throw exception
+                }
+                catch (Exception e)
+                {
+                    Assert.Pass($"Exception caught : {e.Message}");
                 }
             }
             else
@@ -166,6 +203,7 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerTestsNS
                 new PeerDetails("127.0.0.1", 420, "MINER"),
                 new PeerDetails("127.0.0.1", 425, "FULL"),
             };
+
             if (string.IsNullOrEmpty(filepath))
             {
                 try

@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Sockets;
 using System.Security.Cryptography;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using BlockchainNS;
+using Peer2PeerNS.NodesNS.Abstract;
 using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
 using Peer2PeerNS.FullNodeTcpClientNS;
 using Peer2PeerNS.FullNodeTcpServerNS;
 using StaticsNS;
 using WalletNS;
-using Peer2PeerNS.NodesNS.Abstract;
 using DiscoveryManager = Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS.DiscoveryManager;
 
 namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
@@ -25,15 +27,18 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
         private IPAddress privateIpAddress;
         private IPAddress publicNatIpAddress;
         private int port;
+        
+        // Peer Discovery
+        private List<PeerDetails> possiblePeers;
 
         private FullNode() { }
         
         /// <summary>
         /// Configures a lightweight node on the user machine
         /// Config consists of :
-        ///     - setting node IP address with EXT Public IP
-        ///     - syncing local blockchain data with data from upstream
-        ///     - 
+        ///     - setting node public IP address with EXT Public IP
+        ///     - setting node private IP address with private local IP (e.g. : 192.168.x.x)
+        ///     - loading up peer list from Peers.json
         /// </summary>
         /// <returns></returns>
         public static FullNode ConfigureNode()
@@ -41,6 +46,14 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
             FullNode node = new FullNode();
             node.SetPrivateIpAddress(Statics.GetLocalIpAddress());
             node.SetPublicNatIpAddress(Statics.GetExternalPublicIpAddress());
+            try
+            {
+                node.possiblePeers = new DiscoveryManager().LoadPeerDetails("local/Peers/Peers.json");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Could not load Peers.json file: {e}");
+            }
             return node;
         }
         
@@ -52,6 +65,40 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
         public void SendBlockchainToPeer(string peerIpAddress, int port)
         {
             throw new NotImplementedException();
+        }
+        
+        /// <summary>
+        /// Iteratively attempts connections to peers and sends them the blockchain and the peerList
+        /// TODO: Consider merging peerLists ??
+        /// </summary>
+        public void Broadcast()
+        {
+            foreach (PeerDetails peerItem in this.possiblePeers)
+            {
+                // Create connection to peer EXT NAT IP on their open port
+                FullNodeTcpClient peer = new FullNodeTcpClient();
+                peer.Init(peerItem.ExtIp, peerItem.Port);
+                NetworkStream peerStream = peer.Connect();
+                
+                // Send data - Blockchain data
+                string blockchainBroadcastReceivedData = peer.SendDataStringToPeer(this.Blockchain.ToJsonString(), peerStream);
+                // Handle response - Blockchain data
+                // TODO ?
+                
+                // Send data - Peer list data 
+                string peerListJsonString = JsonSerializer.Serialize(
+                    this.possiblePeers.ToString(),
+                    options: new JsonSerializerOptions()
+                    {
+                        WriteIndented = true,
+                        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
+                    }
+                );
+                string peerListBroadcastReceivedData = peer.SendDataStringToPeer(peerListJsonString, peerStream);
+                // Handle response - Peer list data
+                // TODO ?
+                
+            }
         }
 
         public void DownloadBlockchainFromPeer()
@@ -133,11 +180,6 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
             this.port = newPort;
         }
 
-        public int GetPort()
-        {
-            return this.port;
-        }
-        
         /// <summary>
         /// Adds current node connection details (ext NAT IP, open port, node type)
         /// to the list of potential peers
@@ -149,7 +191,8 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
                 this.publicNatIpAddress.ToString(), 
                 this.port, 
                 "FULL", 
-                "local/Peers/Peers.json");
+                "local/Peers/Peers.json"
+                );
         }
 
     }

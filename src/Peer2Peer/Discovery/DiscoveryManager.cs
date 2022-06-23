@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.RegularExpressions;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -26,6 +28,23 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
         /// <param name="filepath">Filepath to store potential peer list at</param>
         public void StoreExtNatIpAndPortToFile(string extNatIp, int port, string nodeType, string filepath)
         {
+            // Guard - extNatIp, port and nodeType are in the correct format
+            if (port <= 0 || port >= 65535)
+            {
+                throw new ArgumentOutOfRangeException("Port number should be between 1 and 65535");
+            }
+            // Create Regex pattern matcher
+            Regex expression = new Regex(@"^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$");
+            var results = expression.Matches(extNatIp);
+            if (results.Count <= 0)
+            {
+                throw new ArgumentException("extNatIp should be a valid IPv4 address");
+            }
+            if (!nodeType.Equals("MINER") && !nodeType.Equals("FULL"))
+            {
+                throw new ArgumentException("Node type should be either FULL or MINER");
+            }
+            
             // Create struct with passed details
             PeerDetails details = new PeerDetails(extNatIp, port, nodeType);
             // Deserialize data from Peers json file & add new record in
@@ -58,7 +77,7 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
                 {
                     // Found duplicate peer entry, refuse it and return without storing
                     Console.WriteLine("Peers.json already has your current full node configuration");
-                    return;
+                    throw new DuplicatePeerDetailInListException();
                 }
             }
             peerList.Add(details);
@@ -174,4 +193,9 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
         }
 
     }
+    
+    /// <summary>
+    /// Exception thrown when there is a duplicate PeerDetail struct in a List<PeerDetail>
+    /// </summary>
+    public class DuplicatePeerDetailInListException : Exception { }
 }

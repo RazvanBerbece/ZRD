@@ -1,6 +1,5 @@
 using System;
 using Peer2PeerNS.NodesNS.LightweightNodeNS;
-using WalletNS;
 
 namespace Peer2PeerNS.CmdClientNS.LightweightNodeNS.WalletGatewayNS
 {
