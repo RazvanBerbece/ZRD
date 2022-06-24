@@ -25,10 +25,14 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerTestsNS
             };
             foreach (string filepath in testPeerFilepaths)
             {
-                if(File.Exists(filepath))
+                try
                 {
-                    File.Delete(filepath);
+                    if(File.Exists(filepath))
+                    {
+                        File.Delete(filepath);
+                    }
                 }
+                catch (FileNotFoundException) { }
             }
         }
 
