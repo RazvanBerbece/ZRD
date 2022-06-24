@@ -6,6 +6,7 @@ using TransactionNS;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using WalletNS.BlockchainWalletNS;
 
 namespace WalletTestsNS
 {
@@ -14,7 +15,7 @@ namespace WalletTestsNS
     {
 
         // Generic values which are Setup for every test
-        private Wallet networkWallet; // used for rewards, first mint, etc.
+        private BlockchainWallet networkWallet; // used for rewards, first mint, etc.
         private Wallet walletA; // main wallet
         private Wallet walletB; // secondary wallet
 
@@ -22,7 +23,7 @@ namespace WalletTestsNS
         public void Setup()
         {
             TestContext.Progress.WriteLine("-- Testing Wallet --\n");
-            this.networkWallet = new Wallet(1024);
+            this.networkWallet = new BlockchainWallet(1024);
             this.walletA = new Wallet(1024);
             this.walletB = new Wallet(1024);
         }

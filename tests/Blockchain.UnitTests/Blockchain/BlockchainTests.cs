@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using TransactionNS;
 using WalletNS;
+using WalletNS.BlockchainWalletNS;
 
 namespace BlockchainTestsNS
 {
@@ -13,7 +14,7 @@ namespace BlockchainTestsNS
     public class BlockchainTests
     {
         
-        private Wallet networkWallet;
+        private BlockchainWallet networkWallet;
         private Blockchain chain;
         
         private Wallet testWallet;
@@ -27,7 +28,7 @@ namespace BlockchainTestsNS
         [SetUp]
         public void Setup()
         {
-            networkWallet = new Wallet(1024);
+            networkWallet = new BlockchainWallet(1024);
             testWallet = new Wallet(1024);
         }
 

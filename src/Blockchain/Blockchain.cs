@@ -5,6 +5,7 @@ using System.Text.Encodings.Web;
 using TransactionNS;
 using WalletNS;
 using System.Text.Json;
+using WalletNS.BlockchainWalletNS;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace BlockchainNS
@@ -26,18 +27,18 @@ namespace BlockchainNS
 
         public int BlockTime { get; set; }
 
-        public Wallet BlockchainWallet { get; set; }
+        public BlockchainWallet BlockchainWallet { get; set; }
 
         /// <summary>
         /// Constructor for a <c>Blockchain</c> object.
         /// </summary>
         /// <param name="genesisBlock">Starting block.</param>
         /// <param name="chain">Initial chain. Usually, it only contains the Genesis block.</param>
-        /// <param name="blockchainWallet">The network wallet that issues new coins.</param>
+        /// <param name="blockchainWallet">The network wallet that issues new coins and rewards miners</param>
         /// <param name="difficulty">Amount of effort required to solve the computational problem.</param>
         /// <param name="blockTime">Estimated time (in seconds) it takes for a new block to be mined. Used to dynamically change the blockchain difficulty.</param>
         /// <param name="reward">Reward amount offered to miner that solves the computational problem and mines a new block with the unconfirmed transactions.</param>
-        public Blockchain(Block genesisBlock, LinkedList<Block> chain, Wallet blockchainWallet, int difficulty, int blockTime, int reward)
+        public Blockchain(Block genesisBlock, LinkedList<Block> chain, BlockchainWallet blockchainWallet, int difficulty, int blockTime, int reward)
         {
             this.GenesisBlock = genesisBlock;
             this.Chain = chain;
@@ -98,6 +99,7 @@ namespace BlockchainNS
         /// Saves the JSON representation of the blockchain instance to a file passed as a parameter
         /// </summary>
         /// <param name="jsonBlockchainString">JSON string of Blockchain instance</param>
+        /// <param name="filepath">filepath where to save the state of the current blockchain instance</param>
         public static void SaveJsonStateToFile(string jsonBlockchainString, string filepath)
         {
             System.IO.File.WriteAllText(filepath, jsonBlockchainString);
@@ -258,7 +260,7 @@ namespace BlockchainNS
                 minerPublicKey,
                 this.Reward
                 );
-            rewardTransaction.SignTransaction(this.BlockchainWallet);
+            rewardTransaction.SignTransaction(this.BlockchainWallet.GetCommonWallet());
             this.AddTransaction(rewardTransaction);
 
             List<Transaction> transactionsCopy = new List<Transaction> { };
@@ -275,7 +277,7 @@ namespace BlockchainNS
             this.UnconfirmedTransactions.Clear();
         }
 
-        public static Blockchain CreateBlockchain(List<Transaction> initialCoinOfferings, Wallet blockchainWallet, int difficulty, int blockTime, int reward)
+        public static Blockchain CreateBlockchain(List<Transaction> initialCoinOfferings, BlockchainWallet blockchainWallet, int difficulty, int blockTime, int reward)
         {
             
             // Argument sanitising
@@ -294,7 +296,7 @@ namespace BlockchainNS
             // Sign initial coin offerings
             foreach (Transaction transaction in initialCoinOfferings)
             {
-                transaction.SignTransaction(blockchainWallet);
+                transaction.SignTransaction(blockchainWallet.GetCommonWallet());
                 genesisList.Add(transaction);
             }
             Block genesisBlock = new Block(genesisList, "", 0);

@@ -6,6 +6,7 @@ using System;
 using WalletNS;
 using System.ComponentModel;
 using System.IO;
+using WalletNS.BlockchainWalletNS;
 
 namespace TransactionTestsNS
 {
@@ -17,7 +18,7 @@ namespace TransactionTestsNS
         private List<Transaction> list;
         private System.Diagnostics.Stopwatch watch;
 
-        private Wallet networkWallet; // used for rewards, first mint, etc.
+        private BlockchainWallet networkWallet; // used for rewards, first mint, etc.
         private Wallet walletA; // main wallet
         private Wallet walletB; // secondary wallet
 
@@ -27,7 +28,7 @@ namespace TransactionTestsNS
             TestContext.Progress.WriteLine("-- Testing Transaction --\n");
             this.list = new List<Transaction> { };
             this.watch = new System.Diagnostics.Stopwatch();
-            this.networkWallet = new Wallet(1024);
+            this.networkWallet = new BlockchainWallet(1024);
             this.walletA = new Wallet(1024);
             this.walletB = new Wallet(1024);
         }

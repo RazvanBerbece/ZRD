@@ -12,6 +12,7 @@ using Peer2PeerNS.FullNodeTcpClientNS;
 using Peer2PeerNS.FullNodeTcpServerNS;
 using StaticsNS;
 using WalletNS;
+using WalletNS.BlockchainWalletNS;
 using DiscoveryManager = Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS.DiscoveryManager;
 
 namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
@@ -21,7 +22,7 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
         
         // Core
         public Blockchain Blockchain;
-        public Wallet NetworkWallet;
+        public BlockchainWallet NetworkWallet;
         
         // Networking
         private IPAddress privateIpAddress;
@@ -142,7 +143,7 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
             server.RunServer(this.port);
         }
         
-        public void SetWallet(Wallet newWallet)
+        public void SetWallet(BlockchainWallet newWallet)
         {
             this.NetworkWallet = newWallet;
         }

@@ -4,10 +4,10 @@ using BlockNS;
 using NUnit.Framework;
 using TransactionNS;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using WalletNS;
+using WalletNS.BlockchainWalletNS;
 
 namespace BlockTestsNS
 {
@@ -24,7 +24,7 @@ namespace BlockTestsNS
         private Block genericBlockToJsonSerialize;
         private Blockchain chain;
         
-        private Wallet networkWallet; // used for rewards, first mint, etc.
+        private BlockchainWallet networkWallet; // used for rewards, first mint, etc.
         private Wallet walletA; // main wallet
 
         [OneTimeSetUp]
@@ -38,7 +38,7 @@ namespace BlockTestsNS
         {
             
             // Setup wallets
-            networkWallet = new Wallet(1024);
+            networkWallet = new BlockchainWallet(1024);
             walletA = new Wallet(1024);
 
             randomUnsignedTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 10, false);
