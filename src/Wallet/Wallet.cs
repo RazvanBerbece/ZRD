@@ -44,7 +44,7 @@ namespace WalletNS
             
             // Create RSAParameters from existing public and private keys by importing them into the sp
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
-            rsa.ImportRSAPublicKey(this.PublicKey, out _);
+            rsa.ImportSubjectPublicKeyInfo(this.PublicKey, out _);
             rsa.ImportPkcs8PrivateKey(this.PrivateKey, out _);
             this.KeyPair = rsa.ExportParameters(true);
 
