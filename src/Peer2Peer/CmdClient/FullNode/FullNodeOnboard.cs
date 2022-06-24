@@ -13,10 +13,7 @@ namespace Peer2PeerNS.CmdClientNS.FullNodeNS
             {
                 node.SetPort(port);
             }
-            catch (ArgumentOutOfRangeException e)
-            {
-                
-            }
+            catch (ArgumentOutOfRangeException) { }
 
             // Set Node blockchain instance to existing state in local/Blockchain/ZRD.json
             string intro = "You will first need to download a full copy of the blockchain from a peer node";

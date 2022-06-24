@@ -247,7 +247,7 @@ namespace BlockchainNS
         /// <param name="transaction">
         /// Transaction to be added to UnconfirmedTransactions under current instance
         /// </param>
-        /// <returns>true if </returns>
+        /// <returns>true if transaction was added to UnconfirmedTransactions, false otherwise</returns>
         public bool AddTransaction(Transaction transaction)
         {
             if (!transaction.IsValid(this))

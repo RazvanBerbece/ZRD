@@ -92,6 +92,9 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
                 // Handle response - Peer list data
                 // TODO ?
                 
+                // Close connection
+                peer.Close();
+                
             }
         }
         

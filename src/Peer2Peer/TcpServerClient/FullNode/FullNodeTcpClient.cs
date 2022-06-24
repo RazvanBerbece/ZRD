@@ -31,7 +31,6 @@ namespace Peer2PeerNS.FullNodeTcpClientNS
             int bytesRead = stream.Read(bytesToRead, 0, this.peer.ReceiveBufferSize);
             // Convert response byte array to string for deserialization
             string receivedData = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
-            Close();
             return receivedData;
         }
 

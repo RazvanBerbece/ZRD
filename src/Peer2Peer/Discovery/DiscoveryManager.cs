@@ -5,6 +5,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
+using StaticsNS;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
@@ -141,8 +142,11 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
             
             PeerDetails suitablePeer = new PeerDetails();
             foreach (PeerDetails peer in possiblePeers)
-            {
-                if (types.Contains(peer.PeerType))
+            {   
+                // If the current peer in list has a suitable type
+                // and if the current peer in list is NOT a node running on the same Ext Public IP
+                // Then continue
+                if (types.Contains(peer.PeerType) && !peer.ExtIp.Equals(Statics.GetExternalPublicIpAddress().ToString()))
                 {
                     // Check that a connection can be made to peer
                     // TODO
@@ -208,6 +212,18 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
             );
             // Write to file
             System.IO.File.WriteAllText(filepath, jsonPeerList);
+        }
+        
+        /// <summary>
+        /// Merges 2 lists of PeerDetails into one.
+        /// Handles duplicates and non-conforming PeerDetails objects
+        /// </summary>
+        /// <param name="list1">List 1 to merge</param>
+        /// <param name="list2">List 2 to merge</param>
+        /// <returns>New list instance of PeerDetails with objects from both lists</returns>
+        public static List<PeerDetails> MergePeerLists(List<PeerDetails> list1, List<PeerDetails> list2)
+        {
+            throw new NotImplementedException();
         }
 
     }

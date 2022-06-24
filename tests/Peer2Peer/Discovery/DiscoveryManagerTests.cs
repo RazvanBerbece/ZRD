@@ -231,6 +231,80 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerTestsNS
                 Assert.That(peerDetailsList.Count == possiblePeers.Count, Is.True);
             }
         }
+
+        [Test]
+        public void Static_DiscoveryManager_MergesPeerListsCorrectly()
+        {
+            // ======================== COMMON CASE ========================
+            // Construct lists
+            List<PeerDetails> peerList1 = new List<PeerDetails>
+            {
+                new PeerDetails("127.0.0.1", 420, "MINER"),
+                new PeerDetails("127.0.0.1", 425, "FULL"),
+                new PeerDetails("127.0.0.1", 430, "MINER"),
+                new PeerDetails("127.0.0.1", 435, "FULL")
+            };
+            List<PeerDetails> peerList2 = new List<PeerDetails>
+            {
+                new PeerDetails("127.0.2.1", 420, "MINER"),
+                new PeerDetails("127.0.2.1", 425, "FULL"),
+                new PeerDetails("127.0.2.1", 430, "MINER"),
+                new PeerDetails("127.0.2.1", 435, "FULL")
+            };
+            
+            // Merge lists
+            List<PeerDetails> mergedList = DiscoveryManager.MergePeerLists(peerList1, peerList2);
+            
+            // Assert on list length, objects, etc.
+            Assert.That(mergedList.Count, Is.EqualTo(8));
+            
+            // ======================== DUPLICATE CASE ========================
+            // Construct lists
+            List<PeerDetails> peerList3 = new List<PeerDetails>
+            {
+                new PeerDetails("127.0.0.1", 420, "MINER"),
+                new PeerDetails("127.0.0.1", 425, "FULL"),
+                new PeerDetails("127.0.0.1", 430, "MINER"),
+                new PeerDetails("127.0.0.1", 435, "FULL")
+            };
+            List<PeerDetails> peerList4 = new List<PeerDetails>
+            {
+                new PeerDetails("127.0.0.1", 420, "MINER"),
+                new PeerDetails("127.0.0.1", 425, "FULL"),
+                new PeerDetails("127.0.2.1", 430, "MINER"),
+                new PeerDetails("127.0.2.1", 435, "FULL")
+            };
+            
+            // Merge lists
+            List<PeerDetails> mergedList2 = DiscoveryManager.MergePeerLists(peerList3, peerList4);
+            
+            // Assert on list length, objects, etc.
+            Assert.That(mergedList2.Count, Is.EqualTo(6));
+            
+            // ======================== DUPLICATE CASE - TYPE ========================
+            // Construct lists
+            List<PeerDetails> peerList5 = new List<PeerDetails>
+            {
+                new PeerDetails("127.0.0.1", 420, "MINER"),
+                new PeerDetails("127.0.0.1", 425, "FULL"),
+                new PeerDetails("127.0.0.1", 430, "MINER"),
+                new PeerDetails("127.0.0.1", 435, "FULL")
+            };
+            List<PeerDetails> peerList6 = new List<PeerDetails>
+            {
+                new PeerDetails("127.0.0.1", 420, "FULL"), // <- culprit, in same list, cannot have 2 different nodes with same connection details
+                new PeerDetails("127.0.2.1", 425, "FULL"),
+                new PeerDetails("127.0.2.1", 430, "MINER"),
+                new PeerDetails("127.0.2.1", 435, "FULL")
+            };
+            
+            // Merge lists
+            List<PeerDetails> mergedList3 = DiscoveryManager.MergePeerLists(peerList5, peerList6);
+            
+            // Assert on list length, objects, etc.
+            Assert.That(mergedList3.Count, Is.EqualTo(7));
+            
+        }
         
     }
 }

@@ -1,9 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using BlockchainNS;
+using Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS;
+using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
 using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
 using TransactionNS;
 using ZRD.Peer2Peer.TcpServerClient.Abstract;
@@ -73,7 +78,7 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
                 byte[] blockchainStateBuffer = Encoding.ASCII.GetBytes(this.node.Blockchain.ToJsonString());
                 stream.Write(blockchainStateBuffer, 0, blockchainStateBuffer.Length);
             }
-            if (receivedData.Equals("GET PEER_LIST"))
+            else if (receivedData.Equals("GET PEER_LIST"))
             {
                 // Send current peer list state for sync / merge / append on client peer side
                 string peerListString = System.IO.File.ReadAllText("local/Peers/Peers.json");
@@ -106,11 +111,35 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
             }
             else
             {
-                // Data received could not be parsed into object instance
-                // i.e. received data format does not match expected data formats
-                // Write back to peer and close connection
-                byte[] errBuffer = Encoding.ASCII.GetBytes("Data received by server does not match expected formats");
-                stream.Write(errBuffer, 0, errBuffer.Length);
+                // Check for incoming peer list update
+                bool isIncomingPeerList;
+                List<PeerDetails> peerDetailsList;
+                try
+                {
+                    peerDetailsList = JsonSerializer.Deserialize<List<PeerDetails>>(
+                        receivedData,
+                        options: new JsonSerializerOptions()
+                        {
+                            PropertyNameCaseInsensitive = true,
+                            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
+                        });
+                    isIncomingPeerList = true;
+                    // Merge / append / write new peer list to local Peers.json
+                    DiscoveryManager discoveryManager = new DiscoveryManager();
+                }
+                catch (Exception)
+                {
+                    isIncomingPeerList = false;
+                }
+
+                if (!isIncomingPeerList)
+                {
+                    // Data received could not be parsed into object instance
+                    // i.e. received data format does not match expected data formats
+                    // Write back to peer and close connection
+                    byte[] errBuffer = Encoding.ASCII.GetBytes("Data received by server does not match expected formats");
+                    stream.Write(errBuffer, 0, errBuffer.Length);   
+                }
             }
             
         }
