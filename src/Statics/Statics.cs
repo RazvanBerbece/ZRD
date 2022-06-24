@@ -96,11 +96,14 @@ namespace StaticsNS
 
             for (int i = 0; i < addr.Length; i++)
             {
-                // Get 192.168.x.x IP here and return it
-                string regexHashPattern = "192.168.*.*";
-                Regex hashExpression = new Regex(regexHashPattern, RegexOptions.Compiled);
-                MatchCollection hashMatches = hashExpression.Matches(addr[i].ToString());
-                if (hashMatches.Count != 0)
+                Console.WriteLine(addr[i].ToString());
+                // Get IPv4 IP here and return it: a.b.c.d, excluding 127.0.0.1
+                Regex expression = new Regex(
+                    @"^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$", 
+                    RegexOptions.Compiled
+                    );
+                var results = expression.Matches(addr[i].ToString());
+                if (results.Count != 0 && !addr[i].ToString().Equals("127.0.0.1"))
                 {
                     return addr[i];
                 }
