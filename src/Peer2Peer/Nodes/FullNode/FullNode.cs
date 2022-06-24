@@ -94,7 +94,15 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
                 
             }
         }
-
+        
+        /// <summary>
+        /// Searches for a suitable peer to download a full ZRD state copy from
+        /// Then establishes a TCP connection to the peer and asks for state data
+        /// The state data is then deserialized to a Blockchain instance, validated and then saved locally
+        /// The node Blockchain member is updated with the data from upstream 
+        /// </summary>
+        /// <exception cref="CryptographicException"></exception>
+        /// <exception cref="JsonException"></exception>
         public void DownloadBlockchainFromPeer()
         {
             // Discover a MINER or FULL peer to ask for a copy of the ZRD Blockchain
@@ -129,6 +137,9 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
             }
         }
         
+        /// <summary>
+        /// Starts the listener on PRIVATE_IP:PORT to accept incoming TCP connections
+        /// </summary>
         public void StartFullServer()
         {
             FullNodeTcpServer server = new FullNodeTcpServer();

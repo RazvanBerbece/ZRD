@@ -2,6 +2,10 @@ using System;
 
 namespace Peer2PeerNS.DiscoveryNS.PeerDetailsNS
 {
+    /// <summary>
+    /// Struct that documents the connectivity details of a peer on the ZRD network
+    /// Includes External public IP, public port and type of peer : FULL, MINER
+    /// </summary>
     public struct PeerDetails
     {
         public string ExtIp { get; set; } // remote address

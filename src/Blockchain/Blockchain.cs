@@ -17,21 +17,21 @@ namespace BlockchainNS
     /// </summary>
     public class Blockchain
     {
-
+        
+        // Data Models
         public Block GenesisBlock { get; set; }
         public LinkedList<Block> Chain { get; set; }
-        public int Difficulty { get; set; }
-
-        public int Reward { get; set; }
-
-        public List<Transaction> UnconfirmedTransactions { get; set; } // pool of transactions to be confirmed & mined into a new Block
-
-        public int BlockTime { get; set; }
-
-        public BlockchainWallet BlockchainWallet { get; set; }
-
-        private string filepathToState;
+        public BlockchainWallet BlockchainWallet { get; set; } // used to issue initial offering and mining rewards
         
+        // Configurable Settings
+        public int Difficulty { get; set; }
+        public int Reward { get; set; }
+        public int BlockTime { get; set; }
+        private string filepathToState; // ZRD.json blockchain full state will be saved here
+        
+        // Pool of transactions to be confirmed & mined into a new Block
+        public List<Transaction> UnconfirmedTransactions { get; set; }
+
         public Blockchain() { }
         
         /// <summary>
@@ -55,6 +55,7 @@ namespace BlockchainNS
             this.BlockchainWallet = blockchainWallet;
         }
         
+        // Constructor used for runtime instantiation 
         public Blockchain(Block genesisBlock, LinkedList<Block> chain, BlockchainWallet blockchainWallet, int difficulty, int blockTime, int reward, string filepathToState)
         {
             this.GenesisBlock = genesisBlock;
@@ -66,7 +67,15 @@ namespace BlockchainNS
             this.BlockchainWallet = blockchainWallet;
             this.filepathToState = filepathToState;
         }
-
+        
+        /// <summary>
+        /// Mines the passed Block parameter and adds it at the end of the chain
+        /// Adjusts difficulty based on the current instance setting of BlockTime and the passed
+        /// block mining time
+        /// Also saves the new Blockchain instance in filepathToState
+        /// </summary>
+        /// <param name="block">Block to be mined & added to chain</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public void AddBlock(Block block)
         {
 
@@ -78,7 +87,7 @@ namespace BlockchainNS
             block.Mine(difficulty: this.Difficulty);
             this.Chain.AddAfter(this.Chain.Last, block);
 
-            // Adjust the difficulty if the new block takes more time than the block time
+            // Adjust the difficulty if the new block mining process took more time than the setup block time
             if ((DateTime.Now - block.Timestamp).Seconds > this.BlockTime)
             {
                 this.Difficulty -= 1;
@@ -101,7 +110,11 @@ namespace BlockchainNS
                 Console.WriteLine(block.ToJsonString());
             }
         }
-
+        
+        /// <summary>
+        /// Serializes the current Blockchain instance to a JSON string
+        /// </summary>
+        /// <returns>JSON string which represents the Blockchain instance</returns>
         public string ToJsonString()
         {   
             // TODO: This can be improved using JsonSerializer.SerializeToUtf8Bytes and then saving bytes to file
@@ -169,7 +182,14 @@ namespace BlockchainNS
                 return null;
             }
         }
-
+        
+        /// <summary>
+        /// Checks that the Blockchain instance is valid by iterating through all the blocks and :
+        ///     - checking that the indexes are in the correct order
+        ///     - checking that the previous block hash and the current block's prevHash match
+        ///     - the hash of the current block matches the recalculated hash of the block
+        /// </summary>
+        /// <returns>true if current instance is valid, false otherwise</returns>
         public bool IsValid()
         {
             Block previousBlock = this.Chain.First.Value;
@@ -218,7 +238,16 @@ namespace BlockchainNS
 
             return true;
         }
-
+        
+        /// <summary>
+        /// If the passed transaction parameter is valid, not a duplicate in UnconfirmedTransactions
+        /// and all the unconfirmed transactions on the current chain are valid,
+        /// it's added to UnconfirmedTransactions. Also saves the new state locally.
+        /// </summary>
+        /// <param name="transaction">
+        /// Transaction to be added to UnconfirmedTransactions under current instance
+        /// </param>
+        /// <returns>true if </returns>
         public bool AddTransaction(Transaction transaction)
         {
             if (!transaction.IsValid(this))
@@ -241,10 +270,12 @@ namespace BlockchainNS
 
             return true;
         }
-
-        /**
-         * Get current balance (untransferred currency) for a given publicKey (user identifier on the blockchain)
-         */
+        
+        /// <summary>
+        /// Get current balance (untransferred currency) for a given publicKey (user identifier on the blockchain)
+        /// </summary>
+        /// <param name="publicKey">Wallet address to check transactions against</param>
+        /// <returns>Coin available on given address</returns>
         public int GetBalance(string publicKey)
         {
 

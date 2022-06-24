@@ -10,7 +10,7 @@ namespace MerkleTreeNS.MerkleNodeNS
 
         public MerkleNode? Left { get; set; }
         public MerkleNode? Right { get; set; }
-
+        
         public MerkleNode(string value, MerkleNode left, MerkleNode right)
         {
             if (value == "")

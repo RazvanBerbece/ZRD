@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -97,7 +96,8 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
         /// <summary>
         /// Loads and returns a list of all PeerDetails in Peers.json
         /// </summary>
-        /// <returns></returns>
+        /// <param name="filepath">Filepath where peer list is stored at</param>
+        /// <returns>List of PeerDetails read from filepath</returns>
         public List<PeerDetails> LoadPeerDetails(string filepath)
         {
             if (string.IsNullOrEmpty(filepath))
@@ -134,7 +134,7 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
         /// </summary>
         /// <param name="requiredPeerTypes">String representation of peer type(s) (e.g.: LIGHT, FULL, MINER, FULL MINER)</param>
         /// <param name="possiblePeers">List of PeerDetails structs</param>
-        /// <returns></returns>
+        /// <returns>PeerDetails suitable object to connect to</returns>
         public PeerDetails FindSuitablePeerInList(string requiredPeerTypes, List<PeerDetails> possiblePeers)
         {
             string[] types = requiredPeerTypes.Split(' ');
@@ -153,8 +153,20 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
             }
 
             return suitablePeer;
-        }
-
+        }   
+        
+        /// <summary>
+        /// Removes a PeerDetails object from the Peers.json filepath passed as parameter
+        /// Could be used in a scenario where :
+        ///     - Full Node spins up and listens for transactions & chains
+        ///     - After spinning up, the node PeerDetails are saved in Peers.json
+        ///     - When the Full Node goes down, the PeerDetails entry is removed from Peers.json
+        /// This scenario can be applied to miner nodes as well.
+        /// </summary>
+        /// <param name="hostname">IP in PeerDetails object</param>
+        /// <param name="port">Port in PeerDetails object</param>
+        /// <param name="filepath">Filepath to Peers.json file which contains the PeerDetails objects</param>
+        /// <returns>true if peer was removed from list, false otherwise</returns>
         public bool RemovePeerFromPeerListFile(string hostname, int port, string filepath)
         {
             // Load peer list
@@ -177,7 +189,13 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
 
             return false; // no element removed
         }
-
+        
+        /// <summary>
+        /// Writes a JSON string representation of the passed list of PeerDetails to a file
+        /// located at filepath
+        /// </summary>
+        /// <param name="peerList">List of PeerDetails objects to be written to filepath</param>
+        /// <param name="filepath">Storage location of peerList</param>
         public void WritePeerListToFile(List<PeerDetails> peerList, string filepath)
         {
             string jsonPeerList = JsonSerializer.Serialize(
@@ -195,7 +213,7 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
     }
     
     /// <summary>
-    /// Exception thrown when there is a duplicate PeerDetail struct in a List<PeerDetail>
+    /// Exception thrown when there is a duplicate PeerDetail struct in a List of PeerDetail
     /// </summary>
     public class DuplicatePeerDetailInListException : Exception { }
 }

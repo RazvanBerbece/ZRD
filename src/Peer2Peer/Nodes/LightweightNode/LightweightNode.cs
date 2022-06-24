@@ -28,11 +28,11 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
         /// <summary>
         /// Configures a lightweight node on the user machine
         /// Config consists of :
-        ///     - setting node IP address with EXT Public IP
+        ///     - setting node public IP address with EXT Public IP
         ///     - syncing local blockchain data with data from upstream
-        ///     - 
+        ///     - setting node private IP address with local IP
         /// </summary>
-        /// <returns></returns>
+        /// <returns>pre-configured instance of LightweightNode</returns>
         public static LightweightNode ConfigureNode()
         {
             LightweightNode node = new LightweightNode();
@@ -56,6 +56,12 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
             this.Wallet = userWallet;
         }
         
+        /// <summary>
+        /// Sends the passed transaction parameter as byte[] to a suitable peer
+        /// Also handles possible responses from peer
+        /// </summary>
+        /// <param name="transaction"></param>
+        /// <exception cref="Exception"></exception>
         public void SendTransactionToPeer(Transaction transaction)
         {
             if (this.Wallet == null)
