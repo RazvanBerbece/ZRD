@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using BlockchainNS;
+using Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS;
 using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
 using Peer2PeerNS.FullNodeTcpClientNS;
 using Peer2PeerNS.NodesNS.Abstract;
@@ -55,15 +56,19 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
             this.Wallet = userWallet;
         }
         
-        public void SendTransactionToPeer(Transaction transaction, PeerDetails peerDetails)
+        public void SendTransactionToPeer(Transaction transaction)
         {
             if (this.Wallet == null)
             {
                 throw new Exception("Lightweight node cannot send transaction before a wallet is configured");
             }
+            // Find suitable FULL node peer to send new transaction to
+            DiscoveryManager discoveryManager = new DiscoveryManager();
+            PeerDetails suitablePeerDetails = discoveryManager.FindSuitablePeerInList("FULL",
+                discoveryManager.LoadPeerDetails("local/Peers/Peers.json"));
             // Init TcpClient
             FullNodeTcpClient peer = new FullNodeTcpClient();
-            peer.Init(peerDetails.ExtIp, peerDetails.Port);
+            peer.Init(suitablePeerDetails.ExtIp, suitablePeerDetails.Port);
             // Connect to peer
             NetworkStream stream = peer.Connect();
             string peerResponse = peer.SendDataStringToPeer(transaction.ToJsonString(), stream);

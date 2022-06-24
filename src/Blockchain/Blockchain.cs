@@ -71,6 +71,9 @@ namespace BlockchainNS
                 this.Difficulty += 1;
                 // Console.WriteLine($"Adjusted difficulty to {this.difficulty}\n");
             }
+            
+            // Save new state with new unconfirmed transaction
+            SaveJsonStateToFile(this.ToJsonString(), "local/Blockchain/ZRD.json");
         }
 
         public void ViewChain()
@@ -198,21 +201,27 @@ namespace BlockchainNS
             return true;
         }
 
-        public void AddTransaction(Transaction transaction)
+        public bool AddTransaction(Transaction transaction)
         {
             if (!transaction.IsValid(this))
             {
-                return;
+                return false;
             }
             
             foreach (Transaction unconfirmedTransaction in this.UnconfirmedTransactions)
             {
                 if (unconfirmedTransaction.Hash == transaction.Hash || !unconfirmedTransaction.IsValid(this)) // transaction is already unconfirmed on chain or not valid
                 {
-                    return;
+                    return false;
                 }
             }
+            
             this.UnconfirmedTransactions.Add(transaction);
+            
+            // Save new state with new unconfirmed transaction
+            SaveJsonStateToFile(this.ToJsonString(), "local/Blockchain/ZRD.json");
+
+            return true;
         }
 
         /**
@@ -275,6 +284,9 @@ namespace BlockchainNS
                 );
 
             this.UnconfirmedTransactions.Clear();
+            
+            // Save new state with new unconfirmed transaction
+            SaveJsonStateToFile(this.ToJsonString(), "local/Blockchain/ZRD.json");
         }
 
         public static Blockchain CreateBlockchain(List<Transaction> initialCoinOfferings, BlockchainWallet blockchainWallet, int difficulty, int blockTime, int reward)
