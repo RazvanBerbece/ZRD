@@ -39,7 +39,8 @@ namespace ZRD
                 blockchainWallet: networkWallet,
                 difficulty: 3,
                 blockTime: 10,
-                reward: 420
+                reward: 420,
+                filepathToState: "local/Blockchain/ZRD.json"
             );
             Blockchain.SaveJsonStateToFile(blockchain.ToJsonString(), @"local/Blockchain/ZRD.json");
             */

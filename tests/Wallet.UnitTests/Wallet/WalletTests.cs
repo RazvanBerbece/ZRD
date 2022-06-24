@@ -92,7 +92,8 @@ namespace WalletTestsNS
                     blockchainWallet: this.networkWallet,
                     difficulty: 2,
                     blockTime: 5,
-                    reward: 420
+                    reward: 420,
+                    filepathToState: "TEST_ZRD.json"
                 );
 
             if (amount <= 0)

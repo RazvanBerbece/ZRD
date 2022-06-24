@@ -58,7 +58,8 @@ namespace BlockchainTestsNS
                 blockchainWallet: this.networkWallet,
                 difficulty: difficulty,
                 blockTime: blockTime,
-                reward: reward
+                reward: reward,
+                filepathToState: "TEST_ZRD.json"
                 );
 
             if (!expectedOutputResult)
@@ -87,7 +88,8 @@ namespace BlockchainTestsNS
                 blockchainWallet: this.networkWallet,
                 difficulty: 2,
                 blockTime: 10,
-                reward: 10
+                reward: 10,
+                filepathToState: "TEST_ZRD.json"
             );
 
             if (!testWithNullBlock)
@@ -135,7 +137,8 @@ namespace BlockchainTestsNS
                 blockchainWallet: this.networkWallet,
                 difficulty: 2,
                 blockTime: 10,
-                reward: 10
+                reward: 10,
+                filepathToState: "TEST_ZRD.json"
             );
 
             int balance;
@@ -176,7 +179,8 @@ namespace BlockchainTestsNS
                 blockchainWallet: this.networkWallet,
                 difficulty: 2,
                 blockTime: 10,
-                reward: 10
+                reward: 10,
+                filepathToState: "TEST_ZRD.json"
             );
 
             List<Transaction> randomTransactions;
@@ -267,7 +271,8 @@ namespace BlockchainTestsNS
                 blockchainWallet: this.networkWallet,
                 difficulty: 2,
                 blockTime: 10,
-                reward: 10
+                reward: 10,
+                filepathToState: "TEST_ZRD.json"
             );
             
             switch (transactionStatus)
@@ -330,7 +335,8 @@ namespace BlockchainTestsNS
                 blockchainWallet: this.networkWallet,
                 difficulty: 2,
                 blockTime: 10,
-                reward: 10
+                reward: 10,
+                filepathToState: "TEST_ZRD.json"
             );
             
             // Add unconfirmed transactions to Blockchain
@@ -399,7 +405,8 @@ namespace BlockchainTestsNS
                 blockchainWallet: this.networkWallet,
                 difficulty: 2,
                 blockTime: 10,
-                reward: 10
+                reward: 10,
+                filepathToState: "TEST_ZRD.json"
             );
             
             Blockchain.SaveJsonStateToFile(this.chain.ToJsonString(), @"TEST_ZRD.json");
@@ -425,7 +432,8 @@ namespace BlockchainTestsNS
                 blockchainWallet: this.networkWallet,
                 difficulty: 2,
                 blockTime: 10,
-                reward: 10
+                reward: 10,
+                filepathToState: "TEST_ZRD.json"
             );
             
             Blockchain.SaveJsonStateToFile(this.chain.ToJsonString(), @"TEST_ZRD.json");

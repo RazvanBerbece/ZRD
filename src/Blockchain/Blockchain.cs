@@ -5,6 +5,7 @@ using System.Text.Encodings.Web;
 using TransactionNS;
 using WalletNS;
 using System.Text.Json;
+using Newtonsoft.Json;
 using WalletNS.BlockchainWalletNS;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -29,6 +30,10 @@ namespace BlockchainNS
 
         public BlockchainWallet BlockchainWallet { get; set; }
 
+        private string filepathToState;
+        
+        public Blockchain() { }
+        
         /// <summary>
         /// Constructor for a <c>Blockchain</c> object.
         /// </summary>
@@ -38,6 +43,7 @@ namespace BlockchainNS
         /// <param name="difficulty">Amount of effort required to solve the computational problem.</param>
         /// <param name="blockTime">Estimated time (in seconds) it takes for a new block to be mined. Used to dynamically change the blockchain difficulty.</param>
         /// <param name="reward">Reward amount offered to miner that solves the computational problem and mines a new block with the unconfirmed transactions.</param>
+        [JsonConstructor]
         public Blockchain(Block genesisBlock, LinkedList<Block> chain, BlockchainWallet blockchainWallet, int difficulty, int blockTime, int reward)
         {
             this.GenesisBlock = genesisBlock;
@@ -47,6 +53,18 @@ namespace BlockchainNS
             this.Reward = reward;
             this.UnconfirmedTransactions = new List<Transaction> { };
             this.BlockchainWallet = blockchainWallet;
+        }
+        
+        public Blockchain(Block genesisBlock, LinkedList<Block> chain, BlockchainWallet blockchainWallet, int difficulty, int blockTime, int reward, string filepathToState)
+        {
+            this.GenesisBlock = genesisBlock;
+            this.Chain = chain;
+            this.Difficulty = difficulty;
+            this.BlockTime = blockTime;
+            this.Reward = reward;
+            this.UnconfirmedTransactions = new List<Transaction> { };
+            this.BlockchainWallet = blockchainWallet;
+            this.filepathToState = filepathToState;
         }
 
         public void AddBlock(Block block)
@@ -73,7 +91,7 @@ namespace BlockchainNS
             }
             
             // Save new state with new unconfirmed transaction
-            SaveJsonStateToFile(this.ToJsonString(), "local/Blockchain/ZRD.json");
+            SaveJsonStateToFile(this.ToJsonString(), filepathToState);
         }
 
         public void ViewChain()
@@ -219,7 +237,7 @@ namespace BlockchainNS
             this.UnconfirmedTransactions.Add(transaction);
             
             // Save new state with new unconfirmed transaction
-            SaveJsonStateToFile(this.ToJsonString(), "local/Blockchain/ZRD.json");
+            SaveJsonStateToFile(this.ToJsonString(), filepathToState);
 
             return true;
         }
@@ -286,10 +304,10 @@ namespace BlockchainNS
             this.UnconfirmedTransactions.Clear();
             
             // Save new state with new unconfirmed transaction
-            SaveJsonStateToFile(this.ToJsonString(), "local/Blockchain/ZRD.json");
+            SaveJsonStateToFile(this.ToJsonString(), filepathToState);
         }
 
-        public static Blockchain CreateBlockchain(List<Transaction> initialCoinOfferings, BlockchainWallet blockchainWallet, int difficulty, int blockTime, int reward)
+        public static Blockchain CreateBlockchain(List<Transaction> initialCoinOfferings, BlockchainWallet blockchainWallet, int difficulty, int blockTime, int reward, string filepathToState)
         {
             
             // Argument sanitising
@@ -318,7 +336,7 @@ namespace BlockchainNS
             LinkedList<Block> genesisChain = new LinkedList<Block> { };
             genesisChain.AddFirst(genesisBlock);
 
-            return new Blockchain(genesisBlock, genesisChain, blockchainWallet, difficulty, blockTime, reward);
+            return new Blockchain(genesisBlock, genesisChain, blockchainWallet, difficulty, blockTime, reward, filepathToState);
         }
 
     }
