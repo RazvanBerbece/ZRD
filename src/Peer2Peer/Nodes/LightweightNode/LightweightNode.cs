@@ -1,8 +1,12 @@
 using System;
 using System.Net;
+using System.Net.Sockets;
 using BlockchainNS;
+using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
+using Peer2PeerNS.FullNodeTcpClientNS;
 using Peer2PeerNS.NodesNS.Abstract;
 using StaticsNS;
+using TransactionNS;
 using WalletNS;
 
 namespace Peer2PeerNS.NodesNS.LightweightNodeNS
@@ -32,22 +36,39 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
         {
             LightweightNode node = new LightweightNode();
             node.SetPublicNatIpAddress(Statics.GetExternalPublicIpAddress());
+            node.SetPrivateIpAddress(Statics.GetLocalIpAddress());
             return node;
         }
         
-        public void SendBlockchainToPeer(string peerIpAddress, int port)
+        public void SendBlockchainToPeer(PeerDetails peerDetails)
         {
             throw new NotImplementedException();
         }
 
         public void SetBlockchain(Blockchain upstreamChain)
         {
-            throw new NotImplementedException();
+            this.Blockchain = upstreamChain;
         }
         
         public void SetWallet(Wallet userWallet)
         {
             this.Wallet = userWallet;
+        }
+        
+        public void SendTransactionToPeer(Transaction transaction, PeerDetails peerDetails)
+        {
+            if (this.Wallet == null)
+            {
+                throw new Exception("Lightweight node cannot send transaction before a wallet is configured");
+            }
+            // Init TcpClient
+            FullNodeTcpClient peer = new FullNodeTcpClient();
+            peer.Init(peerDetails.ExtIp, peerDetails.Port);
+            // Connect to peer
+            NetworkStream stream = peer.Connect();
+            string peerResponse = peer.SendDataStringToPeer(transaction.ToJsonString(), stream);
+            // Handle response from peer
+            // TODO
         }
 
         public void SetPrivateIpAddress(IPAddress newPrivateIpAddress)

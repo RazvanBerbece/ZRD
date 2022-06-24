@@ -63,11 +63,6 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
             this.Blockchain = upstreamBlockchain;
         }
 
-        public void SendBlockchainToPeer(string peerIpAddress, int port)
-        {
-            throw new NotImplementedException();
-        }
-        
         /// <summary>
         /// Iteratively attempts connections to peers and sends them the blockchain and the peerList
         /// TODO: Consider merging peerLists ??
