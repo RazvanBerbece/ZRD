@@ -26,7 +26,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assets" />
-    <Folder Include="src\Peer2Peer\Nodes\MinerNode" />
     <Folder Include="src\Peer2Peer\TcpServerClient\LightweightNode" />
     <Folder Include="src\Peer2Peer\TcpServerClient\MinerNode" />
     <Folder Include="tests\Transaction.UnitTests\" />
