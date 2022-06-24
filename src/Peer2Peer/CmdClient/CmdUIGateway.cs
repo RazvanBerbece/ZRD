@@ -39,17 +39,20 @@ namespace Peer2PeerNS.CmdClientNS.CmdUIGateway
                         try
                         {
                             int port = Int32.Parse(option);
-                            if (port is <= 0 or > 65535) { }
-                            else
+                            FullNodeOnboard.Run(fullNode, port);
+                            break;
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e is FormatException or ArgumentOutOfRangeException
+                                ? "   Given port is not valid. The port has to be a number between 1 and 65535.\n"
+                                : $"Error occured while setting up FullNode: {e}");
+                            if (e is not FormatException or ArgumentOutOfRangeException)
                             {
+                                int port = Int32.Parse(option);
                                 FullNodeOnboard.Run(fullNode, port);
-                                break;
                             }
                         }
-                        catch (Exception)
-                        {
-                            Console.WriteLine("   Given port is not valid. The port has to be a number between 1 and 65535.\n");
-                        }   
                     }
                     break;
                 case "3":

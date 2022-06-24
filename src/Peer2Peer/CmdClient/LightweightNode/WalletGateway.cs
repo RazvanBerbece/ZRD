@@ -7,20 +7,23 @@ namespace Peer2PeerNS.CmdClientNS.LightweightNodeNS.WalletGatewayNS
     {
         public static void Run(LightweightNode node)
         {
+    
             Console.WriteLine(
-                "\nZRD Wallet Gateway\n" +
-                "--------------------------------------------------------------------------------\n" +
-                $"Public Key : {node.Wallet.GetPublicKeyStringBase64()}\n" +
-                $"Wallet Name : {node.Wallet.GetWalletName()}\n" +
-                "--------------------------------------------------------------------------------\n" +
-                "Choose one of the following options to continue :\n" +
-                "\t1. Send Currency\n" +
-                "\t2. Get Balance\n" +
-                "\t3. Change Wallet Name\n" +
-                "\t0. Exit\n");
+                "============================================================\n" +
+                "=                  ZRD Blockchain - Wallet                 =\n" +
+                "============================================================\n" +
+                $"   Address : {node.Wallet.GetPublicKeyStringBase64()}\n" +
+                $"   Wallet Name : {node.Wallet.GetWalletName()}\n" +
+                // $"   Address : {node.Wallet.GetPublicKeyStringBase64()}\n" +
+                "============================================================\n" +
+                "   1. Send ZRD420 Coin\n" +
+                "   2. Receive ZRD420 Coin\n" +
+                "   3. Change Wallet Name\n" +
+                "   0. Exit\n" +
+                "============================================================\n");
             Console.Write("Option: ");
             var option = Console.ReadLine();
-            Console.Write("--------------------------------------------------------------------------------\n");
+            Console.Write("============================================================\n");
             while (true)
             {
                 switch (option)
@@ -28,6 +31,18 @@ namespace Peer2PeerNS.CmdClientNS.LightweightNodeNS.WalletGatewayNS
                     case "1":
                         break;
                     case "2":
+                        Console.WriteLine(
+                            "============================================================\n" +
+                            "=                  ZRD Blockchain - Wallet                 =\n" +
+                            "============================================================\n" +
+                            "   Other Wallets on the ZRD Blockchain can send you ZRD420  \n" +
+                            "   via the address below.\n" +
+                            "   Share your public address below to receive ZRD420.\n" +
+                            "============================================================\n" +
+                            "   Public Address:\n" +
+                            $"  {node.Wallet.GetPublicKeyStringBase64()}\n" +
+                            "============================================================\n"
+                        );
                         break;
                     case "3":
                         Console.Write("New Wallet Name : ");
@@ -43,16 +58,18 @@ namespace Peer2PeerNS.CmdClientNS.LightweightNodeNS.WalletGatewayNS
                         break;
                 }
                 Console.WriteLine(
-                    "\nZRD Wallet Gateway\n" +
-                    "--------------------------------------------------------------------------------\n" +
-                    $"Public Key : {node.Wallet.GetPublicKeyStringBase64()}\n" +
-                    $"Wallet Name : {node.Wallet.GetWalletName()}\n" +
-                    "--------------------------------------------------------------------------------\n" +
-                    "Choose one of the following options to continue :\n" +
-                    "\t1. Send Currency\n" +
-                    "\t2. Get Balance\n" +
-                    "\t3. Change Wallet Name\n" +
-                    "\t0. Exit\n");
+                    "============================================================\n" +
+                    "=                  ZRD Blockchain - Wallet                 =\n" +
+                    "============================================================\n" +
+                    $"   Address : {node.Wallet.GetPublicKeyStringBase64()}\n" +
+                    $"   Wallet Name : {node.Wallet.GetWalletName()}\n" +
+                    // $"   Address : {node.Wallet.GetPublicKeyStringBase64()}\n" +
+                    "============================================================\n" +
+                    "   1. Send ZRD420 Coin\n" +
+                    "   2. Receive ZRD420 Coin\n" +
+                    "   3. Change Wallet Name\n" +
+                    "   0. Exit\n" +
+                    "============================================================\n");
                 Console.Write("Option: ");
                 option = Console.ReadLine();
                 Console.Write("--------------------------------------------------------------------------------\n");

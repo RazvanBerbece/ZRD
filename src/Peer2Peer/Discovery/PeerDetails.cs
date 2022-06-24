@@ -1,3 +1,5 @@
+using System;
+
 namespace Peer2PeerNS.DiscoveryNS.PeerDetailsNS
 {
     public struct PeerDetails
@@ -8,23 +10,17 @@ namespace Peer2PeerNS.DiscoveryNS.PeerDetailsNS
 
         public PeerDetails(string extIp, int port, string type)
         {
+            if (string.IsNullOrEmpty(extIp) ||
+                port is < 1 or >= 65535 ||
+                (!type.Equals("FULL") && !type.Equals("MINER"))
+               )
+            {
+                throw new ArgumentException($"PeerDetails cannot be constructed with the provided details : {extIp}-{port}-{type}");
+            }
             this.ExtIp = extIp;
             this.Port = port;
             this.PeerType = type;
         }
 
-        public string GetExtIp()
-        {
-            return this.ExtIp;
-        }
-        public int GetPort()
-        {
-            return this.Port;
-        }
-        public string GetPeerType()
-        {
-            return this.PeerType;
-        }
-        
     }
 }

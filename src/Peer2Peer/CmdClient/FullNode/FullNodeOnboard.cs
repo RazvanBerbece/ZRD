@@ -9,8 +9,15 @@ namespace Peer2PeerNS.CmdClientNS.FullNodeNS
         public static void Run(FullNode node, int port)
         {
             // Standard port range for Full Nodes : 420-430
-            node.SetPort(port);
-            
+            try
+            {
+                node.SetPort(port);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                
+            }
+
             // Set Node blockchain instance to existing state in local/Blockchain/ZRD.json
             string intro = "You will first need to download a full copy of the blockchain from a peer node";
             bool loadedFromLocal = false;
@@ -20,6 +27,10 @@ namespace Peer2PeerNS.CmdClientNS.FullNodeNS
                 node.SetBlockchain(blockchainFromStateFile);
                 intro = "Successfully loaded ZRD state from local/Blockchain/ZRD.json";
                 loadedFromLocal = true;
+            }
+            else
+            {
+                Console.WriteLine("Failed to load ZRD state from local/Blockchain/ZRD.json. File could not be found.\n");
             }
 
             if (loadedFromLocal)

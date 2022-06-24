@@ -11,7 +11,6 @@ using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
 using Peer2PeerNS.FullNodeTcpClientNS;
 using Peer2PeerNS.FullNodeTcpServerNS;
 using StaticsNS;
-using WalletNS;
 using WalletNS.BlockchainWalletNS;
 using DiscoveryManager = Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS.DiscoveryManager;
 
@@ -28,9 +27,6 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
         private IPAddress privateIpAddress;
         private IPAddress publicNatIpAddress;
         private int port;
-        
-        // Peer Discovery
-        private List<PeerDetails> possiblePeers;
 
         private FullNode() { }
         
@@ -49,7 +45,7 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
             node.SetPublicNatIpAddress(Statics.GetExternalPublicIpAddress());
             try
             {
-                node.possiblePeers = new DiscoveryManager().LoadPeerDetails("local/Peers/Peers.json");
+                new DiscoveryManager().LoadPeerDetails("local/Peers/Peers.json");
             }
             catch (Exception e)
             {
@@ -69,7 +65,9 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
         /// </summary>
         public void Broadcast()
         {
-            foreach (PeerDetails peerItem in this.possiblePeers)
+            DiscoveryManager peerDiscovery = new DiscoveryManager();
+            List<PeerDetails> possiblePeers = peerDiscovery.LoadPeerDetails("local/Peers/Peers.json");
+            foreach (PeerDetails peerItem in possiblePeers)
             {
                 // Create connection to peer EXT NAT IP on their open port
                 FullNodeTcpClient peer = new FullNodeTcpClient();
@@ -83,7 +81,7 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
                 
                 // Send data - Peer list data 
                 string peerListJsonString = JsonSerializer.Serialize(
-                    this.possiblePeers.ToString(),
+                    possiblePeers.ToString(),
                     options: new JsonSerializerOptions()
                     {
                         WriteIndented = true,
@@ -107,7 +105,7 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
             // Use found peer details to connect to it and ask for blockchain copy
             // by sending "GET BLOCKCHAIN_FOR_INIT" operation
             FullNodeTcpClient peerClient = new FullNodeTcpClient();
-            peerClient.Init(suitablePeer.GetExtIp(), suitablePeer.GetPort());
+            peerClient.Init(suitablePeer.ExtIp, suitablePeer.Port);
             string response = peerClient.SendDataStringToPeer("GET BLOCKCHAIN_FOR_INIT", peerClient.Connect());
             
             // Handle response: Deserialize received JSON Blockchain to actual instance
@@ -173,6 +171,10 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
 
         public void SetPort(int newPort)
         {
+            if (newPort is < 1 or > 65535)
+            {
+                throw new ArgumentOutOfRangeException("Port number should be between 1 and 65535");
+            }
             this.port = newPort;
         }
 

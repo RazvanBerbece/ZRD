@@ -70,9 +70,9 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
             foreach (PeerDetails peerDetails in peerList)
             {
                 if (
-                    peerDetails.GetPort() == details.GetPort() &&
-                    peerDetails.GetExtIp() == details.GetExtIp() &&
-                    peerDetails.GetPort() == details.GetPort()
+                    peerDetails.Port == details.Port &&
+                    peerDetails.ExtIp == details.ExtIp &&
+                    peerDetails.PeerType.Equals(details.PeerType)
                 )
                 {
                     // Found duplicate peer entry, refuse it and return without storing

@@ -12,16 +12,18 @@ namespace ZRD.Peer2Peer.CmdClientNS.LightweightNodeNS
         public static void Run(LightweightNode node)
         {
             Console.WriteLine(
-                "\nWelcome to the ZRD Blockchain!\n" +
-                "You need to create a Wallet to be able to use the Blockchain capabilities.\n" +
-                $"EXT IP Address: {node.GetPublicNatIpAddressString()}\n" +
-                "--------------------------------------------------------------------------------\n" +
-                "Choose one of the following options to continue :\n" +
-                "\t1. Create Wallet\n" +
-                "\t2. Login into Wallet\n" +
-                "\t3. Run Full ZRD Node\n" +
-                "\t4. Run Miner ZRD Node\n" +
-                "\t0. Exit\n");
+                "============================================================\n" +
+                "=                  ZRD Blockchain - Onboard                =\n" +
+                "============================================================\n" +
+                "   Welcome to the ZRD Blockchain Wallet Onboarding!\n" +
+                "   You need to create a Wallet or login into one\n" +
+                "   to be able to use the Blockchain capabilities.\n" +
+                $"  EXT IP Address: {node.GetPublicNatIpAddressString()}\n" +
+                "============================================================\n" +
+                "   1. Create Wallet\n" +
+                "   2. Login into Wallet\n" +
+                "   0. Exit\n" +
+                "============================================================\n");
             Console.Write("Option: ");
             var option = Console.ReadLine();
             switch (option)
@@ -43,14 +45,18 @@ namespace ZRD.Peer2Peer.CmdClientNS.LightweightNodeNS
                     {
                         // local/Wallet/Wallet.json data file not found
                         Console.WriteLine(
-                            "\nThe Wallet config file was not found in the local/Wallet/ directory.\n" +
-                            "Create a Wallet or recover your previous Wallet.\n" +
-                            "--------------------------------------------------------------------------------\n" +
-                            "Choose one of the following options to continue :\n" +
-                            "\t1. Create Wallet\n" +
-                            "\t2. Recover Wallet\n" +
-                            "\t0. Exit\n");
-                        Console.Write("Option: ");
+                            "============================================================\n" +
+                            "=                  ZRD Blockchain - Onboard                =\n" +
+                            "============================================================\n" +
+                            "   The Wallet config file was not found \n" +
+                            "   in the local/Wallet/ directory.\n" +
+                            "   Create a Wallet or recover your previous Wallet.\n" +
+                            "============================================================\n" +
+                            "   1. Create Wallet\n" +
+                            "   2. Recover Wallet\n" +
+                            "   0. Exit\n" +
+                            "============================================================\n");
+                            Console.Write("Option: ");
                         option = Console.ReadLine();
                         switch (option)
                         {
@@ -69,10 +75,6 @@ namespace ZRD.Peer2Peer.CmdClientNS.LightweightNodeNS
                                 break;
                         }
                     }
-                    break;
-                case "3":
-                    break;
-                case "4":
                     break;
                 case "0":
                     Environment.Exit(1);

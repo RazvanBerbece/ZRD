@@ -1,6 +1,5 @@
 using System.Net;
 using BlockchainNS;
-using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
 
 namespace Peer2PeerNS.NodesNS.Abstract
 {

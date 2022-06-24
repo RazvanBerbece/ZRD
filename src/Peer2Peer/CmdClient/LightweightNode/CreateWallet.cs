@@ -10,14 +10,17 @@ namespace Peer2PeerNS.CmdClientNS.LightweightNodeNS
         public static void Run(LightweightNode node)
         {
             Console.WriteLine(
-                "\nZRD Wallet Creation\n" +
-                "--------------------------------------------------------------------------------\n" +
-                "Choose one of the following options to continue :\n" +
-                "\t1. Generate Key Pair\n" +
-                "\t0. Exit\n");
+                "============================================================\n" +
+                "=              ZRD Blockchain - Wallet Creation            =\n" +
+                "============================================================\n" +
+                "   Choose one of the options below to continue.\n" +
+                "============================================================\n" +
+                "   1. Generate Key Pair\n" +
+                "   0. Exit\n" +
+                "============================================================\n");
             Console.Write("Option: ");
             var option = Console.ReadLine();
-            Console.Write("--------------------------------------------------------------------------------\n");
+            Console.Write("============================================================\n");
             switch (option)
             {
                 case "1":
@@ -25,7 +28,7 @@ namespace Peer2PeerNS.CmdClientNS.LightweightNodeNS
                     Console.WriteLine(
                         "Your secure wallet has been created with the generated RSA 1024-bit keypair.\n" +
                         "The keys below should be securely stored.\n\n" +
-                        $"Wallet Public Key : {userWallet.GetPublicKeyStringBase64()}\n" +
+                        $"Wallet Public Key (Address) : {userWallet.GetPublicKeyStringBase64()}\n" +
                         $"Wallet Private Key : {userWallet.GetPrivateKeyStringBase64()}");
                     // Set node wallet data
                     node.SetWallet(userWallet);
