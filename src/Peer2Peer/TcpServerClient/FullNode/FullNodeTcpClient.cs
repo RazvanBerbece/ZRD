@@ -36,6 +36,7 @@ namespace Peer2PeerNS.FullNodeTcpClientNS
 
         public void Close()
         {
+            this.peer.GetStream().Close();
             this.peer.Close();
         }
     }

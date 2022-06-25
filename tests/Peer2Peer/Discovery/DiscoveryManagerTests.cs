@@ -300,7 +300,7 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerTestsNS
             
             // Merge lists
             List<PeerDetails> mergedList3 = DiscoveryManager.MergePeerLists(peerList5, peerList6);
-            
+
             // Assert on list length, objects, etc.
             Assert.That(mergedList3.Count, Is.EqualTo(7));
             

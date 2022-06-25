@@ -1,5 +1,6 @@
 using System;
 using BlockchainNS;
+using Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS;
 using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
 
 namespace Peer2PeerNS.CmdClientNS.FullNodeNS
@@ -24,6 +25,14 @@ namespace Peer2PeerNS.CmdClientNS.FullNodeNS
                 node.SetBlockchain(blockchainFromStateFile);
                 intro = "Successfully loaded ZRD state from local/Blockchain/ZRD.json";
                 loadedFromLocal = true;
+                try
+                {
+                    node.StoreFullNodeDetailsInPeersList();
+                }
+                catch (DuplicatePeerDetailInListException)
+                {
+                    Console.WriteLine("Current node networking config is already in Peers.json file");
+                }
             }
             else
             {

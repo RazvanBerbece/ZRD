@@ -111,12 +111,12 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
             }
             else
             {
-                // Check for incoming peer list update
                 bool isIncomingPeerList;
-                List<PeerDetails> peerDetailsList;
                 try
                 {
-                    peerDetailsList = JsonSerializer.Deserialize<List<PeerDetails>>(
+                    DiscoveryManager discoveryManager = new DiscoveryManager();
+                    // Check for incoming peer list update
+                    List<PeerDetails> upstreamPeerDetailsList = JsonSerializer.Deserialize<List<PeerDetails>>(
                         receivedData,
                         options: new JsonSerializerOptions()
                         {
@@ -124,8 +124,15 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
                             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
                         });
                     isIncomingPeerList = true;
+                    // Send local peer list to connected peer to merge as well
+                    string localPeerDetails = System.IO.File.ReadAllText("local/Peers/Peers.json");
+                    byte[] localPeerListBuffer = Encoding.ASCII.GetBytes(localPeerDetails);
+                    stream.Write(localPeerListBuffer, 0, localPeerListBuffer.Length);
                     // Merge / append / write new peer list to local Peers.json
-                    DiscoveryManager discoveryManager = new DiscoveryManager();
+                    List<PeerDetails> mergedList = DiscoveryManager.MergePeerLists(upstreamPeerDetailsList,
+                        discoveryManager.LoadPeerDetails("local/Peers/Peers.json"));
+                    discoveryManager.WritePeerListToFile(mergedList, "local/Peers/Peers.json");
+                    
                 }
                 catch (Exception)
                 {

@@ -1,4 +1,5 @@
 using System;
+using Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS;
 using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
 
 namespace Peer2PeerNS.CmdClientNS.FullNodeNS
@@ -12,7 +13,14 @@ namespace Peer2PeerNS.CmdClientNS.FullNodeNS
                 "Looking for a peer to download a full ZRD copy of the Blockchain from ...\n" +
                 "--------------------------------------------------------------------------------\n");
             node.DownloadBlockchainFromPeer();
-            node.StoreFullNodeDetailsInPeersList();
+            try
+            {
+                node.StoreFullNodeDetailsInPeersList();
+            }
+            catch (DuplicatePeerDetailInListException)
+            {
+                Console.WriteLine("Current node networking config is already in Peers.json file");
+            }
         }
     }
 }

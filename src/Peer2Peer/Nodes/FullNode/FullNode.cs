@@ -61,40 +61,82 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
 
         /// <summary>
         /// Iteratively attempts connections to peers and sends them the blockchain and the peerList
-        /// TODO: Consider merging peerLists ??
+        /// Runs in a loop that never exits
         /// </summary>
         public void Broadcast()
         {
-            DiscoveryManager peerDiscovery = new DiscoveryManager();
-            List<PeerDetails> possiblePeers = peerDiscovery.LoadPeerDetails("local/Peers/Peers.json");
-            foreach (PeerDetails peerItem in possiblePeers)
+            // Broadcast every 10 seconds
+            DateTime lastBroadcast = System.DateTime.Now;
+            while (true)
             {
-                // Create connection to peer EXT NAT IP on their open port
-                FullNodeTcpClient peer = new FullNodeTcpClient();
-                peer.Init(peerItem.ExtIp, peerItem.Port);
-                NetworkStream peerStream = peer.Connect();
                 
-                // Send data - Blockchain data
-                string blockchainBroadcastReceivedData = peer.SendDataStringToPeer(this.Blockchain.ToJsonString(), peerStream);
-                // Handle response - Blockchain data
-                // TODO ?
+                if (lastBroadcast.AddSeconds(10) > System.DateTime.Now)
+                    continue;
                 
-                // Send data - Peer list data 
-                string peerListJsonString = JsonSerializer.Serialize(
-                    possiblePeers.ToString(),
-                    options: new JsonSerializerOptions()
+                DiscoveryManager peerDiscovery = new DiscoveryManager();
+                List<PeerDetails> possiblePeers = peerDiscovery.LoadPeerDetails("local/Peers/Peers.json");
+                foreach (PeerDetails peerItem in possiblePeers)
+                {
+
+                    if (
+                        peerItem.Port == this.port &&
+                        peerItem.ExtIp.Equals(Statics.GetExternalPublicIpAddress().ToString()) &&
+                        peerItem.PeerType.Equals("FULL")
+                    )
                     {
-                        WriteIndented = true,
-                        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
+                        // This machine; do not attempt broadcast and continue
+                        continue;
                     }
-                );
-                string peerListBroadcastReceivedData = peer.SendDataStringToPeer(peerListJsonString, peerStream);
-                // Handle response - Peer list data
-                // TODO ?
+                    
+                    // Create connection to peer EXT NAT IP on their open port
+                    FullNodeTcpClient peer = new FullNodeTcpClient();
+                    peer.Init(peerItem.ExtIp, peerItem.Port);
+                    NetworkStream peerStream = peer.Connect();
+                    Console.WriteLine($"Connected to {peerItem.ExtIp}:{peerItem.Port}");
                 
-                // Close connection
-                peer.Close();
+                    // Send data - Blockchain data
+                    // string blockchainBroadcastReceivedData = peer.SendDataStringToPeer(this.Blockchain.ToJsonString(), peerStream);
+                    // Handle response - Blockchain data
+                    // TODO ?
                 
+                    // Send data - Peer list data 
+                    string peerListJsonString = JsonSerializer.Serialize(
+                        possiblePeers,
+                        options: new JsonSerializerOptions()
+                        {
+                            WriteIndented = true,
+                            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
+                        }
+                    );
+                    string peerListBroadcastReceivedData = peer.SendDataStringToPeer(peerListJsonString, peerStream);
+                    Console.WriteLine($"Received : {peerListBroadcastReceivedData}");
+                    // Close connection
+                    peer.Close();
+                    Console.WriteLine($"Broadcasted peer list data to {peerItem.ExtIp}:{peerItem.Port}");
+                    // Handle response - Peer list data
+                    try
+                    {
+                        // Check whether current node received a peer list to merge into local list
+                        List<PeerDetails> upstreamPeerDetailsList = JsonSerializer.Deserialize<List<PeerDetails>>(
+                            peerListBroadcastReceivedData,
+                            options: new JsonSerializerOptions()
+                            {
+                                PropertyNameCaseInsensitive = true,
+                                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
+                            });
+                        // Merge / append / write new peer list to local Peers.json
+                        DiscoveryManager discoveryManager = new DiscoveryManager();
+                        List<PeerDetails> mergedList = DiscoveryManager.MergePeerLists(upstreamPeerDetailsList,
+                            discoveryManager.LoadPeerDetails("local/Peers/Peers.json"));
+                        discoveryManager.WritePeerListToFile(mergedList, "local/Peers/Peers.json");
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Peer List Broadcast Error: {e}");
+                    }
+                    
+                }
+                lastBroadcast = System.DateTime.Now;
             }
         }
         
@@ -204,7 +246,7 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
                 this.port, 
                 "FULL", 
                 "local/Peers/Peers.json"
-                );
+            );
         }
 
     }

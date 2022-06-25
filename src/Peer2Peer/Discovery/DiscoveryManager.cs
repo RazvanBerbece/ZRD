@@ -223,7 +223,14 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
         /// <returns>New list instance of PeerDetails with objects from both lists</returns>
         public static List<PeerDetails> MergePeerLists(List<PeerDetails> list1, List<PeerDetails> list2)
         {
-            throw new NotImplementedException();
+            List<PeerDetails> unionList = new List<PeerDetails>();
+            unionList.AddRange(list1);
+            unionList.AddRange(list2);
+            List<PeerDetails> mergedList = unionList 
+                .GroupBy(d => new {d.Port,d.ExtIp})
+                .Select(g => g.First())
+                .ToList();
+            return mergedList;
         }
 
     }
@@ -232,4 +239,5 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
     /// Exception thrown when there is a duplicate PeerDetail struct in a List of PeerDetail
     /// </summary>
     public class DuplicatePeerDetailInListException : Exception { }
+    
 }
