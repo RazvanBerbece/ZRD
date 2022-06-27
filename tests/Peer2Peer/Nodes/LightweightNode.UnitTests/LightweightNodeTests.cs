@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Peer2PeerNS.NodesNS.LightweightNodeNS;
 using NUnit.Framework;
 using StaticsNS;
@@ -14,6 +15,15 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeTestsNS
         public void OneTimeSetUp()
         {
             TestContext.Progress.WriteLine("-- Testing LightweightNode --\n");
+        }
+
+        [TearDown]
+        public void TeadDown()
+        {
+            if (File.Exists("TEST_WALLET_PARAMS.xml"))
+            {
+                File.Delete("TEST_WALLET_PARAMS.xml");
+            }
         }
 
         [Test]
@@ -55,7 +65,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeTestsNS
             }
             else
             {
-                Wallet wallet = new Wallet(1024);
+                Wallet wallet = new Wallet(1024, "TEST_WALLET_PARAMS.xml");
                 node.SetWallet(wallet);
                 Assert.That(node.Wallet != default, Is.True);
             }

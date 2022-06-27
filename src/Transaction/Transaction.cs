@@ -67,7 +67,7 @@ namespace TransactionNS
                 // Create instance of RSACryptoServiceProvider using the
                 // key from RSAParameters
                 try
-                {
+                {   
                     RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
                     rsa.ImportParameters(wallet.GetKeyPairParams());
 
@@ -76,7 +76,7 @@ namespace TransactionNS
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Error occured in SignTransaction(): {e.Message}\n");
+                    Console.WriteLine($"Error occured in SignTransaction(): {e}\n");
                     return;
                 }
             }
@@ -137,8 +137,8 @@ namespace TransactionNS
             for (int i = 0; i < numberOfTransactions; i++)
             {
                 // Generate wallets to simulate party identifiers
-                Wallet senderWallet = new Wallet(1024);
-                Wallet receiverWallet = new Wallet(1024);
+                Wallet senderWallet = new Wallet(1024, "GEN_SENDER.xml");
+                Wallet receiverWallet = new Wallet(1024, "GEN_RECEIVER.xml");
 
                 Transaction newTransaction = new Transaction(
                     senderWallet.GetPublicKeyStringBase64(),

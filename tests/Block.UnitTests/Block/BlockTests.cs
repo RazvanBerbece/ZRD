@@ -38,8 +38,8 @@ namespace BlockTestsNS
         {
             
             // Setup wallets
-            networkWallet = new BlockchainWallet(1024);
-            walletA = new Wallet(1024);
+            networkWallet = new BlockchainWallet(1024, "NETWORK_WALLET_PARAMS.xml");
+            walletA = new Wallet(1024, "USER_WALLET_PARAMS_1.xml");
 
             randomUnsignedTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 10, false);
             emptyList = new List<Transaction> { };
@@ -110,6 +110,19 @@ namespace BlockTestsNS
             );
             genericValidatedBlock.CalculateHash();
 
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (File.Exists("NETWORK_WALLET_PARAMS.xml"))
+            {
+                File.Delete("NETWORK_WALLET_PARAMS.xml");
+            }
+            if (File.Exists("USER_WALLET_PARAMS_1.xml"))
+            {
+                File.Delete("USER_WALLET_PARAMS_1.xml");
+            }
         }
 
         [Test]

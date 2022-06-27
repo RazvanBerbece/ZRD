@@ -18,30 +18,61 @@ namespace WalletTestsNS
         private BlockchainWallet networkWallet; // used for rewards, first mint, etc.
         private Wallet walletA; // main wallet
         private Wallet walletB; // secondary wallet
-
+        
         [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            TestContext.Progress.WriteLine("-- Testing Wallet --\n");
+        }
+        
+        [SetUp]
         public void Setup()
         {
             TestContext.Progress.WriteLine("-- Testing Wallet --\n");
-            this.networkWallet = new BlockchainWallet(1024);
-            this.walletA = new Wallet(1024);
-            this.walletB = new Wallet(1024);
+            this.networkWallet = new BlockchainWallet(1024, "TEST_NETWORK_WALLET.xml");
+            this.walletA = new Wallet(1024, "TEST_USER_WALLET_1.xml");
+            this.walletB = new Wallet(1024, "TEST_USER_WALLET_2.xml");
         }
 
         [TearDown]
         public void TearDown()
         {
+            if(File.Exists(@"TEST_ZRD.json"))
+            {
+                File.Delete(@"TEST_ZRD.json");
+            }
             if(File.Exists(@"TEST_WALLET.json"))
             {
                 File.Delete(@"TEST_WALLET.json");
             }
+            if(File.Exists(@"TEST_NETWORK_WALLET.xml"))
+            {
+                File.Delete(@"TEST_NETWORK_WALLET.xml");
+            }
+            if(File.Exists(@"TEST_USER_WALLET_1.xml"))
+            {
+                File.Delete(@"TEST_USER_WALLET_1.xml");
+            }
+            if(File.Exists(@"TEST_USER_WALLET_2.xml"))
+            {
+                File.Delete(@"TEST_USER_WALLET_2.xml");
+            }
         }
 
         [Test]
-        public void Wallet_CanConstruct()
+        public void Wallet_CanConstruct_WithKeySize()
         {
             Assert.IsNotEmpty(this.walletA.PublicKey);
             Assert.IsNotEmpty(this.walletA.GetPrivateKeyStringBase64());
+            Assert.IsNotEmpty(System.IO.File.ReadAllText("TEST_USER_WALLET_1.xml"));
+        }
+        
+        [Test]
+        public void Wallet_CanConstruct_WithBase64String_AndXml()
+        {
+            Wallet testWallet = Wallet.DeserializeWalletFromJsonFile("../../../tests/Wallet.UnitTests/Wallet/Wallet.json", "../../../tests/Wallet.UnitTests/Wallet/Params/RSAConfig.xml");
+            Assert.IsNotEmpty(testWallet.PublicKey);
+            Assert.IsNotEmpty(testWallet.GetPrivateKeyStringBase64());
         }
 
         [Test]

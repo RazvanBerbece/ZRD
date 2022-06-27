@@ -37,7 +37,7 @@ namespace ZRD.Peer2Peer.CmdClientNS.LightweightNodeNS
                     {
                         // Create Wallet object with existing pair and name from file
                         Wallet loggedOnWallet =
-                            Wallet.DeserializeWalletFromJsonFile(@"../../../local/Wallet/Wallet.json");
+                            Wallet.DeserializeWalletFromJsonFile("local/Wallet/Wallet.json");
                         node.SetWallet(loggedOnWallet);
                         WalletGateway.Run(node);
                     }

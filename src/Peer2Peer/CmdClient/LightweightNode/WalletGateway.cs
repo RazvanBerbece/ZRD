@@ -17,7 +17,7 @@ namespace Peer2PeerNS.CmdClientNS.LightweightNodeNS.WalletGatewayNS
                 "============================================================\n" +
                 $"   Address : {node.Wallet.GetPublicKeyStringBase64()}\n" +
                 $"   Wallet Name : {node.Wallet.GetWalletName()}\n" +
-                // $"   Address : {node.Wallet.GetPublicKeyStringBase64()}\n" +
+                $"   Available ZRD420 : {node.GetWalletBalanceFromPeer()}\n" +
                 "============================================================\n" +
                 "   1. Send ZRD420 Coin\n" +
                 "   2. Receive ZRD420 Coin\n" +
@@ -41,21 +41,19 @@ namespace Peer2PeerNS.CmdClientNS.LightweightNodeNS.WalletGatewayNS
                             "============================================================\n"
                         );
                         string remoteWalletAddress;
-                        int transactionAmount;
                         Console.Write(" Wallet Address: ");
                         remoteWalletAddress = Console.ReadLine();
+                        int transactionAmount;
                         Console.Write(" Amount (ZRD420): ");
                         while (true)
                         {
-                            try
+                            string input = Console.ReadLine();
+                            if(!Int32.TryParse(input, out transactionAmount))
                             {
-                                transactionAmount = Int32.Parse(Console.ReadLine());
-                                break;
+                                Console.WriteLine(" Amount of ZRD420 for transaction cannot be 0, smaller than 0 or 2,147,483,647");
+                                Console.Write(" Amount (ZRD420): ");
                             }
-                            catch (Exception)
-                            {
-                                Console.WriteLine($"    Transaction amount cannot be negative or greater than {int.MaxValue}\n");
-                            }
+                            break;
                         }
                         Console.Write("============================================================\n");
                         Console.Write($"Sending coin to {remoteWalletAddress} ...\n");
@@ -66,13 +64,14 @@ namespace Peer2PeerNS.CmdClientNS.LightweightNodeNS.WalletGatewayNS
                             remoteWalletAddress,
                             transactionAmount
                             );
+                        transaction.SignTransaction(node.Wallet);
                         // Send transaction to peer full node - to be added in mempool
                         node.SendTransactionToPeer(transaction);
                         break;
                     case "2":
                         Console.WriteLine(
                             "============================================================\n" +
-                            "=                  ZRD Blockchain - Receive Coin           =\n" +
+                            "=                ZRD Blockchain - Receive Coin             =\n" +
                             "============================================================\n" +
                             "   Other Wallets on the ZRD Blockchain can send you ZRD420  \n" +
                             "   via the address below.\n" +
@@ -87,7 +86,7 @@ namespace Peer2PeerNS.CmdClientNS.LightweightNodeNS.WalletGatewayNS
                         Console.Write("New Wallet Name : ");
                         var name = Console.ReadLine();
                         node.Wallet.SetWalletName(name);
-                        node.Wallet.SaveToJsonFile(@"../../../local/Wallet/Wallet.json", node.Wallet.GetJsonString());
+                        node.Wallet.SaveToJsonFile(@"local/Wallet/Wallet.json", node.Wallet.GetJsonString());
                         break;
                     case "0":
                         Environment.Exit(1);
@@ -102,7 +101,7 @@ namespace Peer2PeerNS.CmdClientNS.LightweightNodeNS.WalletGatewayNS
                     "============================================================\n" +
                     $"   Address : {node.Wallet.GetPublicKeyStringBase64()}\n" +
                     $"   Wallet Name : {node.Wallet.GetWalletName()}\n" +
-                    // $"   Address : {node.Wallet.GetPublicKeyStringBase64()}\n" +
+                    $"   Available ZRD420 : {node.GetWalletBalanceFromPeer()}\n" +
                     "============================================================\n" +
                     "   1. Send ZRD420 Coin\n" +
                     "   2. Receive ZRD420 Coin\n" +

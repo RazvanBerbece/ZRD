@@ -135,8 +135,9 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
         /// </summary>
         /// <param name="requiredPeerTypes">String representation of peer type(s) (e.g.: LIGHT, FULL, MINER, FULL MINER)</param>
         /// <param name="possiblePeers">List of PeerDetails structs</param>
+        /// <param name="isLightweightNode">Whether the caller is a wallet - this helps with connecting to server peers on same EXT IP</param>
         /// <returns>PeerDetails suitable object to connect to</returns>
-        public PeerDetails FindSuitablePeerInList(string requiredPeerTypes, List<PeerDetails> possiblePeers)
+        public PeerDetails FindSuitablePeerInList(string requiredPeerTypes, List<PeerDetails> possiblePeers, bool isLightweightNode)
         {
             string[] types = requiredPeerTypes.Split(' ');
             
@@ -146,7 +147,11 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
                 // If the current peer in list has a suitable type
                 // and if the current peer in list is NOT a node running on the same Ext Public IP
                 // Then continue
-                if (types.Contains(peer.PeerType) && !peer.ExtIp.Equals(Statics.GetExternalPublicIpAddress().ToString()))
+                if (
+                    (types.Contains(peer.PeerType) && 
+                    !peer.ExtIp.Equals(Statics.GetExternalPublicIpAddress().ToString())) ||
+                    isLightweightNode
+                    )
                 {
                     // Check that a connection can be made to peer
                     // TODO
@@ -155,7 +160,10 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
                     break;
                 }
             }
-
+            if (string.IsNullOrEmpty(suitablePeer.ExtIp))
+            {
+                throw new PeerNotFoundInListException();
+            }
             return suitablePeer;
         }   
         
@@ -234,7 +242,9 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
         }
 
     }
-    
+
+    public class PeerNotFoundInListException : Exception { }
+
     /// <summary>
     /// Exception thrown when there is a duplicate PeerDetail struct in a List of PeerDetail
     /// </summary>

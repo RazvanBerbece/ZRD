@@ -404,3 +404,5 @@ ZRD.json
 Wallet.json
 InitialOfferings.json
 NetworkWallet.json
+RSAConfig.xml
+InitialWallets/

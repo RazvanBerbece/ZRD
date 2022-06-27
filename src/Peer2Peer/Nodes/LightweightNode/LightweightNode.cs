@@ -29,7 +29,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
         /// Configures a lightweight node on the user machine
         /// Config consists of :
         ///     - setting node public IP address with EXT Public IP
-        ///     - syncing local blockchain data with data from upstream
+        ///     - syncing local blockchain data with data from upstream TODO: Consider this
         ///     - setting node private IP address with local IP
         /// </summary>
         /// <returns>pre-configured instance of LightweightNode</returns>
@@ -71,15 +71,58 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
             // Find suitable FULL node peer to send new transaction to
             DiscoveryManager discoveryManager = new DiscoveryManager();
             PeerDetails suitablePeerDetails = discoveryManager.FindSuitablePeerInList("FULL",
-                discoveryManager.LoadPeerDetails("local/Peers/Peers.json"));
+                discoveryManager.LoadPeerDetails("local/Peers/Peers.json"), true);
             // Init TcpClient
             FullNodeTcpClient peer = new FullNodeTcpClient();
             peer.Init(suitablePeerDetails.ExtIp, suitablePeerDetails.Port);
             // Connect to peer
             NetworkStream stream = peer.Connect();
-            string peerResponse = peer.SendDataStringToPeer(transaction.ToJsonString(), stream);
+            var peerResponse = peer.SendDataStringToPeer(transaction.ToJsonString(), stream);
             // Handle response from peer
-            // TODO
+            if (peerResponse.Equals("Transaction successfully added to peer mempool"))
+            {
+                // send success
+                Console.WriteLine(peerResponse);
+            }
+            else
+            {
+                // send failure
+                Console.WriteLine($"Transaction not added to mempool: {peerResponse}");
+            }
+        }
+
+        public int GetWalletBalanceFromPeer()
+        {
+            if (this.Wallet == null)
+            {
+                throw new Exception("Lightweight node cannot send transaction before a wallet is configured");
+            }
+            // Find suitable FULL node peer to get wallet balance from
+            // Will most of the time try the first ever FULL node in the peer list 
+            DiscoveryManager discoveryManager = new DiscoveryManager();
+            try
+            {
+                PeerDetails suitablePeerDetails = discoveryManager.FindSuitablePeerInList("FULL",
+                    discoveryManager.LoadPeerDetails("local/Peers/Peers.json"), true);
+                // Init TcpClient
+                FullNodeTcpClient peer = new FullNodeTcpClient();
+                peer.Init(suitablePeerDetails.ExtIp, suitablePeerDetails.Port);
+                // Connect to peer
+                NetworkStream stream = peer.Connect();
+                dynamic peerResponse = peer.SendDataStringToPeer($"GET BALANCE {this.Wallet.GetPublicKeyStringBase64()}", stream);
+                peer.Close();
+                // Handle response from peer
+                if (peerResponse == null)
+                {
+                    return -1;
+                }
+                return peerResponse;
+            }
+            catch (PeerNotFoundInListException)
+            {
+                Console.WriteLine("A suitable FULL node peer was not found to get wallet balance from");
+                return -1;
+            }
         }
 
         public void SetPrivateIpAddress(IPAddress newPrivateIpAddress)

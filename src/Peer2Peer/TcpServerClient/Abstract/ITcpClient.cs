@@ -8,7 +8,7 @@ namespace ZRD.Peer2Peer.TcpServerClient.Abstract
     {
         public void Init(string dest, int port);
         public NetworkStream Connect();
-        public string SendDataStringToPeer(string data, NetworkStream stream);
+        public dynamic SendDataStringToPeer(string data, NetworkStream stream);
         public void Close();
     }
 }

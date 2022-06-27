@@ -33,7 +33,7 @@ namespace Peer2PeerNS.CmdClientNS.LightweightNodeNS
                     // Set node wallet data
                     node.SetWallet(userWallet);
                     // Save wallet details locally
-                    userWallet.SaveToJsonFile(@"../../../local/Wallet/Wallet.json", userWallet.GetJsonString());
+                    userWallet.SaveToJsonFile(@"local/Wallet/Wallet.json", userWallet.GetJsonString());
                     // TODO: Download initial Blockchain data from upstream
                     WalletGateway.Run(node);
                     break;

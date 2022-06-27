@@ -153,7 +153,7 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
             // Discover a MINER or FULL peer to ask for a copy of the ZRD Blockchain
             DiscoveryManager peerDiscovery = new DiscoveryManager();
             List<PeerDetails> possiblePeers = peerDiscovery.LoadPeerDetails("local/Peers/Peers.json");
-            PeerDetails suitablePeer = peerDiscovery.FindSuitablePeerInList("FULL MINER", possiblePeers);
+            PeerDetails suitablePeer = peerDiscovery.FindSuitablePeerInList("FULL MINER", possiblePeers, false);
             
             // Use found peer details to connect to it and ask for blockchain copy
             // by sending "GET BLOCKCHAIN_FOR_INIT" operation

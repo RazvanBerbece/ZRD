@@ -28,9 +28,26 @@ namespace TransactionTestsNS
             TestContext.Progress.WriteLine("-- Testing Transaction --\n");
             this.list = new List<Transaction> { };
             this.watch = new System.Diagnostics.Stopwatch();
-            this.networkWallet = new BlockchainWallet(1024);
-            this.walletA = new Wallet(1024);
-            this.walletB = new Wallet(1024);
+            this.networkWallet = new BlockchainWallet(1024, "NETWORK_WALLET_PARAMS.xml");
+            this.walletA = new Wallet(1024, "TEST_WALLET_A_PARAMS.xml");
+            this.walletB = new Wallet(1024, "TEST_WALLET_B_PARAMS.xml");
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (File.Exists("TEST_WALLET_PARAMS.xml"))
+            {
+                File.Delete("TEST_WALLET_PARAMS.xml");
+            }
+            if (File.Exists("TEST_WALLET_A_PARAMS.xml"))
+            {
+                File.Delete("TEST_WALLET_A_PARAMS.xml");
+            }
+            if (File.Exists("TEST_WALLET_B_PARAMS.xml"))
+            {
+                File.Delete("TEST_WALLET_B_PARAMS.xml");
+            }
         }
 
         [TestCase("senderKey", "receiverKey", int.MinValue)]
@@ -148,7 +165,7 @@ namespace TransactionTestsNS
         public void Transaction_CanBeSigned(int signatureSize)
         {
             // Setup test wallet
-            Wallet wallet = new Wallet(signatureSize);
+            Wallet wallet = new Wallet(signatureSize, "TEST_WALLET_PARAMS.xml");
 
             // Setup transaction to be signed
             Transaction transaction = new Transaction(wallet.GetPublicKeyStringBase64(), "receiverPublicKey", 9999);

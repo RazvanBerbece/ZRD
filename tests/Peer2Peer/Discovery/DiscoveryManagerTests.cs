@@ -115,7 +115,7 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerTestsNS
             {
                 try
                 {
-                    discoveryManager.FindSuitablePeerInList(type, possiblePeers);
+                    discoveryManager.FindSuitablePeerInList(type, possiblePeers, false);
                     Assert.Fail("Discovery Manager should not find peers with null or empty types");
                 }
                 catch (Exception)
@@ -125,7 +125,7 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerTestsNS
             }
             else
             {
-                PeerDetails suitablePeer = discoveryManager.FindSuitablePeerInList(type, possiblePeers);
+                PeerDetails suitablePeer = discoveryManager.FindSuitablePeerInList(type, possiblePeers, false);
                 Assert.That(type.Split(" ").Contains(suitablePeer.PeerType), Is.True);
             }
         }

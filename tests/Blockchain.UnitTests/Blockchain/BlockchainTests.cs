@@ -28,8 +28,8 @@ namespace BlockchainTestsNS
         [SetUp]
         public void Setup()
         {
-            networkWallet = new BlockchainWallet(1024);
-            testWallet = new Wallet(1024);
+            networkWallet = new BlockchainWallet(1024, "TEST_NETWORK_WALLET_PARAMS.xml");
+            testWallet = new Wallet(1024, "TEST_WALLET_PARAMS.xml");
         }
 
         [TearDown]
@@ -38,6 +38,14 @@ namespace BlockchainTestsNS
             if(File.Exists(@"TEST_ZRD.json"))
             {
                 File.Delete(@"TEST_ZRD.json");
+            }
+            if(File.Exists(@"TEST_NETWORK_WALLET_PARAMS.xml"))
+            {
+                File.Delete(@"TEST_NETWORK_WALLET_PARAMS.xml");
+            }
+            if(File.Exists(@"TEST_WALLET_PARAMS.xml"))
+            {
+                File.Delete(@"TEST_WALLET_PARAMS.xml");
             }
         }
 
