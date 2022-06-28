@@ -242,15 +242,6 @@ namespace TransactionTestsNS
                 Console.Write(warning.ToString());
                 Assert.Pass();
             }
-            catch (NotImplementedException e)
-            {
-                WarningException warning = new WarningException(
-                    $"Transaction code threw {e.GetType()}: {e.Message}\n" +
-                    $"This is expected considering the TestCase params and it should pass as it is the correct behaviour when constructing a Transaction.\n"
-                    );
-                Console.Write(warning.ToString());
-                Assert.Fail();
-            }
 
         }
 
@@ -271,7 +262,7 @@ namespace TransactionTestsNS
             expectedTransaction.SignTransaction(this.walletA);
             
             // Get JSON transaction string from file and deserialize
-            string jsonString = File.ReadAllText("../../../tests/Transaction.UnitTests/Transaction/ExpectedJsonString.txt");
+            string jsonString = File.ReadAllText("../../../tests/Transaction/Transaction.UnitTests/ExpectedJsonString.txt");
             Transaction actualTransaction = Transaction.JsonStringToTransactionInstance(jsonString);
             
             // Assert that fields match

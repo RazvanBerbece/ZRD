@@ -28,7 +28,6 @@ namespace WalletTestsNS
         [SetUp]
         public void Setup()
         {
-            TestContext.Progress.WriteLine("-- Testing Wallet --\n");
             this.networkWallet = new BlockchainWallet(1024, "TEST_NETWORK_WALLET.xml");
             this.walletA = new Wallet(1024, "TEST_USER_WALLET_1.xml");
             this.walletB = new Wallet(1024, "TEST_USER_WALLET_2.xml");
@@ -70,9 +69,21 @@ namespace WalletTestsNS
         [Test]
         public void Wallet_CanConstruct_WithBase64String_AndXml()
         {
+            // Test constructor from deserialization
             Wallet testWallet = Wallet.DeserializeWalletFromJsonFile("../../../tests/Wallet.UnitTests/Wallet/Wallet.json", "../../../tests/Wallet.UnitTests/Wallet/Params/RSAConfig.xml");
             Assert.IsNotEmpty(testWallet.PublicKey);
             Assert.IsNotEmpty(testWallet.GetPrivateKeyStringBase64());
+            
+            // Test constructor with hardcoded params
+            Wallet testWallet2 = new Wallet(
+                "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3EMJeuHfbgDrG0qxWPumhScTLE5oOFQOmV9TJjgncLSyk1CoE/nCUGfVv9RLP7IHCIBM3g19iMu5qFU5016O9/C2qv2kpNetbHQDmC2Fg+XeY2oTqE13SD1VgF9LxLJrnH75WKv9i+GTi6toAFm1bcoP+l7MMwIjSh9Sb06kapQIDAQAB",
+                "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBALcQwl64d9uAOsbSrFY+6aFJxMsTmg4VA6ZX1MmOCdwtLKTUKgT+cJQZ9W/1Es/sgcIgEzeDX2Iy7moVTnTXo738Laq/aSk161sdAOYLYWD5d5jahOoTXdIPVWAX0vEsmucfvlYq/2L4ZOLq2gAWbVtyg/6XswzAiNKH1JvTqRqlAgMBAAECgYBvu4rmxTBiiKFXOL525W8zQhMa35vnfGv92x3E5yyddfUJpXUAF0wfGLj03F/fCDsqgOk5uLU++lcJ6Hc6WWNWSIcQop9j5rS/ggWUfU9llAzadbb1irTpM3gmX0n/2xE8xcAg9cgy9TX462AdrtZ7Jo6NSu8QDXfJEkEvIxRoAQJBAOyTtErLWwqiRD5yhFWmf25qwJVUwntq3/+o3bBIspWynB1RyqwOyioYL0WvHr8vFGVwx9QjAZK9MeLzAy1CjQ0CQQDGGF46JVdYl+XGxE4H1HZpI+TzkPP5KX/vGh3nBpBFsnua0KYvNsmQmQBvwl/Pvc3UFBxi658REsDwLpeZRU35AkAi5H4Y8flRjjFGjJlcEJyG6pPQ8plknpS/HmbkEzTTw24nHOMpkVzb7Ik8W+HLDOSTOZkffrJCtEjhUjpLuJ8ZAkEArmQ/d9LtzVmT+GNTCoOZZsApy979WYmWTglg78SQeDtDo6wx0PjbhAeeIcUtkfZXYG//+XnSxDYNUqTB4zXnCQJBAMG+ID2BiA9zNKDOanIeSF0wOTLreppS32TghnzuH/cQeuqen+Mpa0J+AHl3Wv8ceGnCikIvugUUyi64MY3erec=",
+                "ZRD Wallet",
+                "../../../tests/Wallet.UnitTests/Wallet/Params/RSAConfig.xml"
+                );
+            Assert.IsNotEmpty(testWallet2.PublicKey);
+            Assert.IsNotEmpty(testWallet2.GetPrivateKeyStringBase64());
+            Assert.IsNotNull(testWallet2.GetKeyPairParams());
         }
 
         [Test]
