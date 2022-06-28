@@ -9,6 +9,9 @@ using BlockchainNS;
 using Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS;
 using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
 using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
+using Peer2PeerNS.TcpServerClientNS.FullNodeNS.EnumsNS.TcpDirectionEnumNS;
+using Peer2PeerNS.TcpServerClientNS.FullNodeNS.StructsNS.PeerCommLogStructNS;
+using StaticsNS;
 using TransactionNS;
 using ZRD.Peer2Peer.TcpServerClient.Abstract;
 
@@ -64,8 +67,10 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
             int readBytes = stream.Read(buffer, 0, peer.ReceiveBufferSize);
             
             // Convert data from buffer to string
-            string receivedData = Encoding.ASCII.GetString(buffer, 0, readBytes);
-            Console.WriteLine("Received : " + receivedData);
+            string receivedData = Encoding.Default.GetString(buffer, 0, readBytes);
+            // Log TCP IN details
+            LogPeerCommunication(peer, receivedData, DateTime.Now, TcpDirectionEnum.In);
+            // Console.WriteLine("Received : " + receivedData);
 
             string[] opTokens = receivedData.Split(" ");
             if (opTokens[0].Equals("GET"))
@@ -98,12 +103,18 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
                 //      1. Lightweight node connecting to send new Transaction to be added to mempool + validation
                 //      2. Miner node connecting to send new Blockchain state after new block was mined + validation
                 //      3. Any other node connecting to request peer list updates TODO
-                if (Blockchain.JsonStringToBlockchainInstance(receivedData) is Blockchain upstreamBlockchain)
+                Blockchain chainFromClientPeer = Blockchain.JsonStringToBlockchainInstance(receivedData);
+                Transaction transactionFromClientPeer = Transaction.JsonStringToTransactionInstance(receivedData);
+                if (chainFromClientPeer != null)
                 {
+                    Console.WriteLine("-- DESERIALIZING BLOCKCHAIN --");
+                    Blockchain blockchain = Blockchain.JsonStringToBlockchainInstance(receivedData);
                     // TODO
                 }
-                else if (Transaction.JsonStringToTransactionInstance(receivedData) is Transaction transaction)
+                else if (transactionFromClientPeer != null)
                 {
+                    Console.WriteLine("-- DESERIALIZING TRANSACTION --");
+                    Transaction transaction = Transaction.JsonStringToTransactionInstance(receivedData);
                     // Add new transaction to mempool, status will be true if transaction is valid 
                     // and if it was successfully added to mempool
                     bool addStatus = this.node.Blockchain.AddTransaction(transaction);
@@ -182,10 +193,58 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
         {
             this.node = newFullNode;
         }
-
-        public static string GetPeerPublicIp(TcpClient peer)
+        
+        /// <summary>
+        /// Logs a comm session between the server peer and the client peer to a default filepath in local/
+        /// </summary>
+        /// <param name="peer">Peer which the node communicates to</param>
+        /// <param name="data">Data in/out for comm</param>
+        /// <param name="timestamp">Timestamp when comm happened</param>
+        private void LogPeerCommunication(TcpClient peer, string data, DateTime timestamp, TcpDirectionEnum direction)
         {
-            var peerEndpoint = peer.Client.LocalEndPoint as IPEndPoint;
+            // Create logs directory under local/ if not existing
+            System.IO.Directory.CreateDirectory("local/logs"); 
+            
+            string logFilepath = "local/logs/TCPServer.logs";
+            PeerCommLogStruct logObject;
+            switch ((ushort)direction)
+            {
+                case 0:
+                    // TCP IN
+                    logObject = new PeerCommLogStruct(
+                        GetPeerPublicIp(peer),
+                        Statics.GetExternalPublicIpAddress().ToString(),
+                        timestamp,
+                        data,
+                        direction
+                    );
+                    System.IO.File.AppendAllText(logFilepath, logObject.ToJsonString());
+                    System.IO.File.AppendAllText(
+                        logFilepath, 
+                        "\n---------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
+                    );
+                    break;
+                case 1:
+                    // TCP OUT
+                    logObject = new PeerCommLogStruct(
+                        Statics.GetExternalPublicIpAddress().ToString(),
+                        GetPeerPublicIp(peer),
+                        timestamp,
+                        data,
+                        direction
+                    );
+                    System.IO.File.AppendAllText(logFilepath, logObject.ToJsonString());
+                    System.IO.File.AppendAllText(
+                        logFilepath, 
+                        "\n---------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
+                    );
+                    break;
+            }
+        }
+
+        private static string GetPeerPublicIp(TcpClient peer)
+        {
+            var peerEndpoint = peer.Client.RemoteEndPoint as IPEndPoint;
             string localAddress = peerEndpoint.Address.ToString();
             return localAddress;
         }

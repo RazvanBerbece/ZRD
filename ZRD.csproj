@@ -28,8 +28,8 @@
     <Folder Include="assets" />
     <Folder Include="src\Peer2Peer\TcpServerClient\LightweightNode" />
     <Folder Include="src\Peer2Peer\TcpServerClient\MinerNode" />
-    <Folder Include="tests\Transaction.UnitTests\" />
-    <Folder Include="tests\Transaction.UnitTests\Transaction\" />
+    <Folder Include="tests\Transaction\" />
+    <Folder Include="tests\Transaction\Transaction.UnitTests\" />
     <Folder Include="src\Wallet\" />
     <Folder Include="tests\Wallet.UnitTests\" />
     <Folder Include="tests\Wallet.UnitTests\Wallet\" />

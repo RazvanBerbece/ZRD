@@ -3,7 +3,6 @@ using BlockNS;
 using System.Collections.Generic;
 using System.Text.Encodings.Web;
 using TransactionNS;
-using WalletNS;
 using System.Text.Json;
 using Newtonsoft.Json;
 using WalletNS.BlockchainWalletNS;

@@ -406,3 +406,4 @@ InitialOfferings.json
 NetworkWallet.json
 RSAConfig.xml
 InitialWallets/
+TCPServer.logs
