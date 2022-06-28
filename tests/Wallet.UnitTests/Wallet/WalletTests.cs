@@ -234,7 +234,7 @@ namespace WalletTestsNS
         public void Static_Wallet_CanDeserializeWalletFromJsonFile()
         {
             this.walletA.SaveToJsonFile(@"TEST_WALLET.json", this.walletA.GetJsonString());
-            Wallet importedWallet = Wallet.DeserializeWalletFromJsonFile(@"TEST_WALLET.json");
+            Wallet importedWallet = Wallet.DeserializeWalletFromJsonFile(@"TEST_WALLET.json", "TEST_USER_WALLET_1.xml");
             
             Assert.That(this.walletA.GetJsonString().Equals(importedWallet.GetJsonString()), Is.True);
         }
