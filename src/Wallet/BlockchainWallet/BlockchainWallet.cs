@@ -26,6 +26,7 @@ namespace WalletNS.BlockchainWalletNS
             this.filepathToRsaXml = filepathToRsaXml;
             this.KeyPair = rsa.ExportParameters(true);
             this.WalletName = "ZRD Network Wallet";
+            Wallet.SaveRsaConfigToLocal(this.filepathToRsaXml, rsa);
         }
         
         [JsonConstructor]

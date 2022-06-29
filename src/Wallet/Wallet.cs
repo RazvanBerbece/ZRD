@@ -70,7 +70,7 @@ namespace WalletNS
 
         public Wallet() { }
 
-        private static void SaveRsaConfigToLocal(string filepath, RSACryptoServiceProvider rsa)
+        public static void SaveRsaConfigToLocal(string filepath, RSACryptoServiceProvider rsa)
         {
             if (string.IsNullOrEmpty(filepath))
             {

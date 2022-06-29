@@ -35,17 +35,24 @@ namespace BlockchainTestsNS
         [TearDown]
         public void TearDown()
         {
-            if(File.Exists(@"TEST_ZRD.json"))
+            try
             {
-                File.Delete(@"TEST_ZRD.json");
+                if(File.Exists(@"TEST_ZRD.json"))
+                {
+                    File.Delete(@"TEST_ZRD.json");
+                }
+                if(File.Exists(@"TEST_NETWORK_WALLET_PARAMS.xml"))
+                {
+                    File.Delete(@"TEST_NETWORK_WALLET_PARAMS.xml");
+                }
+                if(File.Exists(@"TEST_WALLET_PARAMS.xml"))
+                {
+                    File.Delete(@"TEST_WALLET_PARAMS.xml");
+                }
             }
-            if(File.Exists(@"TEST_NETWORK_WALLET_PARAMS.xml"))
+            catch (Exception)
             {
-                File.Delete(@"TEST_NETWORK_WALLET_PARAMS.xml");
-            }
-            if(File.Exists(@"TEST_WALLET_PARAMS.xml"))
-            {
-                File.Delete(@"TEST_WALLET_PARAMS.xml");
+                // ignored
             }
         }
 

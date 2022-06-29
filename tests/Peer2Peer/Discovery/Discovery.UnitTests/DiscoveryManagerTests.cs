@@ -6,7 +6,7 @@ using NUnit.Framework;
 using Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS;
 using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
 
-namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerTestsNS
+namespace Peer2PeerNS.DiscoveryNS.Discovery.UnitTests.DiscoveryManagerTestsNS
 {
     public class DiscoveryManagerTests
     {
@@ -24,15 +24,11 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerTestsNS
                 @"TEST_PEERS_DUPLICATE.json"
             };
             foreach (string filepath in testPeerFilepaths)
-            {
-                try
+            { 
+                if(File.Exists(filepath))
                 {
-                    if(File.Exists(filepath))
-                    {
-                        File.Delete(filepath);
-                    }
+                    File.Delete(filepath);
                 }
-                catch (FileNotFoundException) { }
             }
         }
 
