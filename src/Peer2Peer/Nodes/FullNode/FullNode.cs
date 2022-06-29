@@ -38,14 +38,14 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
         ///     - loading up peer list from Peers.json
         /// </summary>
         /// <returns></returns>
-        public static FullNode ConfigureNode()
+        public static FullNode ConfigureNode(string filepathToPeerList = "local/Peers/peers.json")
         {
             FullNode node = new FullNode();
             node.SetPrivateIpAddress(Statics.GetLocalIpAddress());
             node.SetPublicNatIpAddress(Statics.GetExternalPublicIpAddress());
             try
             {
-                new DiscoveryManager().LoadPeerDetails("local/Peers/Peers.json");
+                new DiscoveryManager().LoadPeerDetails(filepathToPeerList);
             }
             catch (Exception e)
             {

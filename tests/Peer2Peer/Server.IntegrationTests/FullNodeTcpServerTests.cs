@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net.Sockets;
 using NUnit.Framework;
 using Peer2PeerNS.FullNodeTcpServerNS;
@@ -15,8 +16,22 @@ namespace Peer2PeerNS.ServerNS.FullNodeTcpServerTestsNS
         public void OneTimeSetUp()
         {
             TestContext.Progress.WriteLine("-- Testing FullNodeTcpServer --\n");
-            this.node = FullNode.ConfigureNode();
-        } 
+        }
+        
+        [SetUp]
+        public void SetUp()
+        {
+            this.node = FullNode.ConfigureNode("TEST_PEER_LIST_1.json");
+        }
+        
+        [TearDown]
+        public void TearDown()
+        {
+            if (File.Exists("TEST_PEER_LIST_1.json"))
+            {
+                File.Delete("TEST_PEER_LIST_1.json");
+            }
+        }
 
         [TestCase(-1)]
         [TestCase(0)]
