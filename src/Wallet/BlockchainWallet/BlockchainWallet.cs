@@ -78,7 +78,8 @@ namespace WalletNS.BlockchainWalletNS
             Wallet commonWallet = new Wallet(
                 this.GetPublicKeyStringBase64(),
                 this.GetPrivateKeyStringBase64(),
-                this.WalletName
+                this.WalletName,
+                this.filepathToRsaXml
                     );
             return commonWallet;
         }
