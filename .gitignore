@@ -400,10 +400,10 @@ FodyWeavers.xsd
 # Custom Ignores
 .DS_Store
 .idea/
-ZRD.json
-Wallet.json
+local/Blockchain/ZRD.json
+local/Wallet/Wallet.json
 InitialOfferings.json
-NetworkWallet.json
-RSAConfig.xml
-InitialWallets/
+local/Wallet/NetworkWallet.json
+local/Wallet/Params/RSAConfig.xml
+local/Wallet/InitialWallets
 TCPServer.logs
