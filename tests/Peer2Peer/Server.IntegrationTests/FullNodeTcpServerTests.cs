@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 using NUnit.Framework;
+using Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS;
 using Peer2PeerNS.FullNodeTcpServerNS;
 using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
 
@@ -21,6 +22,8 @@ namespace Peer2PeerNS.ServerNS.FullNodeTcpServerTestsNS
         [SetUp]
         public void SetUp()
         {
+            DiscoveryManager dmng = new DiscoveryManager();
+            dmng.StoreExtNatIpAndPortToFile("82.26.1.87", 420, "FULL", "TEST_PEER_LIST_1.json");
             this.node = FullNode.ConfigureNode("TEST_PEER_LIST_1.json");
         }
         

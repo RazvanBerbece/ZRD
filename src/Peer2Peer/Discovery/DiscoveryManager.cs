@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -48,8 +49,12 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
             // Create struct with passed details
             PeerDetails details = new PeerDetails(extNatIp, port, nodeType);
             // Deserialize data from Peers json file & add new record in
-            List<PeerDetails> peerList = LoadPeerDetails(filepath);
-            if (peerList == null)
+            List<PeerDetails> peerList;
+            if (File.Exists(filepath))
+            {
+                peerList = LoadPeerDetails(filepath); 
+            }
+            else
             {
                 // No peers were found in the list, so this is the first peer to be added
                 List<PeerDetails> initList = new List<PeerDetails> { };
@@ -66,6 +71,7 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
                 System.IO.File.WriteAllText(filepath, peerDetails);
                 return;
             }
+            
             // Sanity check for duplicate entries in list, duplicates are not allowed
             foreach (PeerDetails peerDetails in peerList)
             {
