@@ -4,6 +4,7 @@ using NUnit.Framework;
 using Peer2PeerNS.FullNodeTcpClientNS;
 using Peer2PeerNS.FullNodeTcpServerNS;
 using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
+using Peer2PeerNS.TcpServerClientNS.FullNodeNS.EnumsNS.DataOutTypeNS;
 
 namespace Peer2PeerNS.ClientNS.FullNodeTcpClientTestsNS
 {
@@ -108,7 +109,7 @@ namespace Peer2PeerNS.ClientNS.FullNodeTcpClientTestsNS
                 FullNodeTcpClient peer = new FullNodeTcpClient();
                 peer.Init(PeerHost, server.port);
                 NetworkStream stream = peer.Connect();
-                string received = peer.SendDataStringToPeer(data, stream);
+                string received = peer.SendDataStringToPeer(data, stream, DataOutType.PeerListRequest);
             
                 // Assert received data
                 Assert.That(string.IsNullOrEmpty(received), Is.False);

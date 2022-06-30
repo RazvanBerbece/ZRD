@@ -2,6 +2,7 @@ using System;
 using System.Buffers.Binary;
 using System.Net.Sockets;
 using System.Text;
+using Peer2PeerNS.TcpServerClientNS.FullNodeNS.EnumsNS.DataOutTypeNS;
 using ZRD.Peer2Peer.TcpServerClient.Abstract;
 
 namespace Peer2PeerNS.FullNodeTcpClientNS
@@ -22,7 +23,7 @@ namespace Peer2PeerNS.FullNodeTcpClientNS
             return stream;
         }
 
-        public dynamic SendDataStringToPeer(string data, NetworkStream stream)
+        public dynamic SendDataStringToPeer(string data, NetworkStream stream, DataOutType type)
         {
             // Convert string to byte array
             byte[] bytesToSend = Encoding.ASCII.GetBytes(data);
@@ -35,22 +36,29 @@ namespace Peer2PeerNS.FullNodeTcpClientNS
             dynamic receivedData;
             try
             {
-                receivedData = BitConverter.ToInt32(bytesToRead);
-                return receivedData;
+                switch (type)
+                {
+                    case DataOutType.Transaction:
+                        receivedData = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
+                        return receivedData;
+                    case DataOutType.WalletBalanceRequest:
+                        receivedData = BitConverter.ToInt32(bytesToRead);
+                        return receivedData;
+                    case DataOutType.PeerListPush:
+                        receivedData = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
+                        return receivedData;
+                    case DataOutType.BlockchainInitRequest:
+                        receivedData = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
+                        return receivedData;
+                    default:
+                        return null;
+                }
             }
             catch (Exception)
             {
-                try
-                {
-                    receivedData = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
-                    return receivedData;
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
+                Console.WriteLine("Exception caught in SendDataStringToPeer: {e}");
+                return null;
             }
-            
         }
 
         public void Close()

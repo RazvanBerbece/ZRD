@@ -10,6 +10,7 @@ using Peer2PeerNS.NodesNS.Abstract;
 using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
 using Peer2PeerNS.FullNodeTcpClientNS;
 using Peer2PeerNS.FullNodeTcpServerNS;
+using Peer2PeerNS.TcpServerClientNS.FullNodeNS.EnumsNS.DataOutTypeNS;
 using StaticsNS;
 using WalletNS.BlockchainWalletNS;
 using DiscoveryManager = Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS.DiscoveryManager;
@@ -54,9 +55,9 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
             return node;
         }
         
-        public void SetBlockchain(Blockchain upstreamBlockchain)
+        public void SetBlockchain(Blockchain chain)
         {
-            this.Blockchain = upstreamBlockchain;
+            this.Blockchain = chain;
         }
 
         /// <summary>
@@ -108,7 +109,7 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
                             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
                         }
                     );
-                    string peerListBroadcastReceivedData = peer.SendDataStringToPeer(peerListJsonString, peerStream);
+                    string peerListBroadcastReceivedData = peer.SendDataStringToPeer(peerListJsonString, peerStream, DataOutType.PeerListPush);
                     Console.WriteLine($"Received : {peerListBroadcastReceivedData}");
                     // Close connection
                     peer.Close();
@@ -159,7 +160,7 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
             // by sending "GET BLOCKCHAIN_FOR_INIT" operation
             FullNodeTcpClient peerClient = new FullNodeTcpClient();
             peerClient.Init(suitablePeer.ExtIp, suitablePeer.Port);
-            string response = peerClient.SendDataStringToPeer("GET BLOCKCHAIN_FOR_INIT", peerClient.Connect());
+            string response = peerClient.SendDataStringToPeer("GET BLOCKCHAIN_FOR_INIT", peerClient.Connect(), DataOutType.BlockchainInitRequest);
             
             // Handle response: Deserialize received JSON Blockchain to actual instance
             Blockchain upstreamBlockchain = Blockchain.JsonStringToBlockchainInstance(response);

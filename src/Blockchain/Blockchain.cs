@@ -14,6 +14,7 @@ namespace BlockchainNS
     /// Class that defines the properties and methods of a generic blockchain.
     /// Supports the genesis block, a configurable difficulty, TTM (time-to-mine), adding blocks, etc.
     /// </summary>
+    [JsonObject(ItemRequired = Required.Always)]
     public class Blockchain
     {
         
@@ -142,13 +143,11 @@ namespace BlockchainNS
         {
             try
             {
-                Blockchain chain = JsonSerializer.Deserialize<Blockchain>(
+                var jsonSettings = new JsonSerializerSettings();
+                jsonSettings.MissingMemberHandling = MissingMemberHandling.Error;
+                Blockchain chain = JsonConvert.DeserializeObject<Blockchain>(
                     blockchainJsonString,
-                    options: new JsonSerializerOptions()
-                    {
-                        PropertyNameCaseInsensitive = true,
-                        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
-                    });
+                    jsonSettings);
                 return chain;
             }
             catch (Exception)
@@ -335,6 +334,11 @@ namespace BlockchainNS
             
             // Save new state with new unconfirmed transaction
             SaveJsonStateToFile(this.ToJsonString(), filepathToState);
+        }
+
+        public void SetFilepathToState(string filepath)
+        {
+            this.filepathToState = filepath;
         }
 
         public static Blockchain CreateBlockchain(List<Transaction> initialCoinOfferings, BlockchainWallet blockchainWallet, int difficulty, int blockTime, int reward, string filepathToState)

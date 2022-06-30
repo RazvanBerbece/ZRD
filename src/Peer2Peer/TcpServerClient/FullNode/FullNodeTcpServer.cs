@@ -105,18 +105,14 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
                 //      1. Lightweight node connecting to send new Transaction to be added to mempool + validation
                 //      2. Miner node connecting to send new Blockchain state after new block was mined + validation
                 //      3. Any other node connecting to request peer list updates TODO
-                Blockchain chainFromClientPeer = Blockchain.JsonStringToBlockchainInstance(receivedData);
-                Transaction transactionFromClientPeer = Transaction.JsonStringToTransactionInstance(receivedData);
-                if (chainFromClientPeer != null)
+                if (Blockchain.JsonStringToBlockchainInstance(receivedData) is { } chain)
                 {
                     Console.WriteLine("-- DESERIALIZING BLOCKCHAIN --");
-                    Blockchain blockchain = Blockchain.JsonStringToBlockchainInstance(receivedData);
                     // TODO
                 }
-                else if (transactionFromClientPeer != null)
+                else if (Transaction.JsonStringToTransactionInstance(receivedData) is { } transaction)
                 {
                     Console.WriteLine("-- DESERIALIZING TRANSACTION --");
-                    Transaction transaction = Transaction.JsonStringToTransactionInstance(receivedData);
                     // Add new transaction to mempool, status will be true if transaction is valid 
                     // and if it was successfully added to mempool
                     bool addStatus = this.node.Blockchain.AddTransaction(transaction);

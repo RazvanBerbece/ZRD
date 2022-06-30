@@ -5,10 +5,14 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using Newtonsoft.Json;
 using WalletNS;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace TransactionNS
 {
+    
+    [JsonObject(ItemRequired = Required.Always)]
     public class Transaction
     {
 
@@ -172,13 +176,11 @@ namespace TransactionNS
         {
             try
             {
-                Transaction transaction = JsonSerializer.Deserialize<Transaction>(
+                var jsonSettings = new JsonSerializerSettings();
+                jsonSettings.MissingMemberHandling = MissingMemberHandling.Error;
+                Transaction transaction = JsonConvert.DeserializeObject<Transaction>(
                     transactionJsonString,
-                    options: new JsonSerializerOptions()
-                    {
-                        PropertyNameCaseInsensitive = true,
-                        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
-                    });
+                    jsonSettings);
                 return transaction;
             }
             catch (Exception)

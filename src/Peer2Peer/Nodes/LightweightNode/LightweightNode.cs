@@ -6,6 +6,7 @@ using Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS;
 using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
 using Peer2PeerNS.FullNodeTcpClientNS;
 using Peer2PeerNS.NodesNS.Abstract;
+using Peer2PeerNS.TcpServerClientNS.FullNodeNS.EnumsNS.DataOutTypeNS;
 using StaticsNS;
 using TransactionNS;
 using WalletNS;
@@ -77,7 +78,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
             peer.Init(suitablePeerDetails.ExtIp, suitablePeerDetails.Port);
             // Connect to peer
             NetworkStream stream = peer.Connect();
-            var peerResponse = peer.SendDataStringToPeer(transaction.ToJsonString(), stream);
+            var peerResponse = peer.SendDataStringToPeer(transaction.ToJsonString(), stream, DataOutType.Transaction);
             // Handle response from peer
             if (peerResponse.Equals("Transaction successfully added to peer mempool"))
             {
@@ -109,7 +110,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS
                 peer.Init(suitablePeerDetails.ExtIp, suitablePeerDetails.Port);
                 // Connect to peer
                 NetworkStream stream = peer.Connect();
-                dynamic peerResponse = peer.SendDataStringToPeer($"GET BALANCE {this.Wallet.GetPublicKeyStringBase64()}", stream);
+                dynamic peerResponse = peer.SendDataStringToPeer($"GET BALANCE {this.Wallet.GetPublicKeyStringBase64()}", stream, DataOutType.WalletBalanceRequest);
                 peer.Close();
                 // Handle response from peer
                 if (peerResponse == null)

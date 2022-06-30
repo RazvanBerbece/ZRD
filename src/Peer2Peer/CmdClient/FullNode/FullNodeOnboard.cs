@@ -22,6 +22,7 @@ namespace Peer2PeerNS.CmdClientNS.FullNodeNS
             Blockchain blockchainFromStateFile = Blockchain.FileJsonStringToBlockchainInstance("local/Blockchain/ZRD.json");
             if (blockchainFromStateFile != null)
             {
+                blockchainFromStateFile.SetFilepathToState("local/Blockchain/ZRD.json");
                 node.SetBlockchain(blockchainFromStateFile);
                 intro = "Successfully loaded ZRD state from local/Blockchain/ZRD.json";
                 loadedFromLocal = true;
