@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using TransactionNS;
 using System;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
@@ -114,6 +115,26 @@ namespace StaticsNS
         public static string Base64Encode(string plainText) {
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
             return System.Convert.ToBase64String(plainTextBytes);
+        }
+
+        public static bool CanPingHost(string host, int timeoutInMs)
+        {
+            Ping myPing = new Ping();
+            PingReply reply;
+            try
+            {
+                reply = myPing.Send(host, timeoutInMs);
+                if (reply.Status == IPStatus.Success)
+                {
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error occured while pinging {host} : {e}");
+                return false;
+            }
+            return false;
         }
 
     }

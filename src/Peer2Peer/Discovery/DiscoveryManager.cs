@@ -160,10 +160,12 @@ namespace Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS
                     )
                 {
                     // Check that a connection can be made to peer
-                    // TODO
-                    // Found suitable peer, update variable and break loop
-                    suitablePeer = peer;
-                    break;
+                    if (Statics.CanPingHost(peer.ExtIp, 1000))
+                    {
+                        // Found suitable peer, update variable and break loop
+                        suitablePeer = peer;
+                        break;
+                    }
                 }
             }
             if (string.IsNullOrEmpty(suitablePeer.ExtIp))
