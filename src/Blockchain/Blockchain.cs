@@ -208,7 +208,7 @@ namespace BlockchainNS
                     {
                         return false;
                     }
-                    
+
                     previousBlock = this.GenesisBlock;
                     continue;
                 }

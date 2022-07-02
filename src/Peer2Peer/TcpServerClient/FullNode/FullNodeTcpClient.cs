@@ -50,6 +50,9 @@ namespace Peer2PeerNS.FullNodeTcpClientNS
                     case DataOutType.BlockchainInitRequest:
                         receivedData = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
                         return receivedData;
+                    case DataOutType.BlockchainPush:
+                        receivedData = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
+                        return receivedData;
                     default:
                         return null;
                 }

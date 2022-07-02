@@ -12,6 +12,7 @@ using Peer2PeerNS.FullNodeTcpClientNS;
 using Peer2PeerNS.FullNodeTcpServerNS;
 using Peer2PeerNS.TcpServerClientNS.FullNodeNS.EnumsNS.DataOutTypeNS;
 using StaticsNS;
+using TransactionNS;
 using WalletNS.BlockchainWalletNS;
 using DiscoveryManager = Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS.DiscoveryManager;
 
@@ -89,18 +90,39 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
                         continue;
                     }
                     
-                    // Create connection to peer EXT NAT IP on their open port
+                    // Create connection to peer EXT NAT IP on their open port if pingable
+                    // move to next possible peer if not
+                    if (!Statics.CanPingHost(peerItem.ExtIp, 1000)) continue;
+                    
                     FullNodeTcpClient peer = new FullNodeTcpClient();
                     peer.Init(peerItem.ExtIp, peerItem.Port);
                     NetworkStream peerStream = peer.Connect();
                     Console.WriteLine($"Connected to {peerItem.ExtIp}:{peerItem.Port}");
                 
-                    // Send data - Blockchain data
-                    // string blockchainBroadcastReceivedData = peer.SendDataStringToPeer(this.Blockchain.ToJsonString(), peerStream);
+                    // SEND DATA - BLOCKCHAIN DATA
+                    string blockchainBroadcastReceivedData = peer.SendDataStringToPeer(
+                        this.Blockchain.ToJsonString(), 
+                        peerStream, 
+                        DataOutType.BlockchainPush
+                        );
                     // Handle response - Blockchain data
-                    // TODO ?
-                
-                    // Send data - Peer list data 
+                    Blockchain remoteBlockchain = Blockchain.JsonStringToBlockchainInstance(blockchainBroadcastReceivedData);
+                    if (remoteBlockchain != null)
+                    {
+                        if (remoteBlockchain.IsValid())
+                        {
+                            // Blockchain received from upstream is valid
+                            // It holds the merged mempool and is the longest out of the two
+                            SetBlockchain(remoteBlockchain);
+                            Console.WriteLine($"Broadcasted Blockchain and set local from {peerItem.ExtIp}:{peerItem.Port}");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Broadcasted Blockchain to {peerItem.ExtIp}:{peerItem.Port} but kept local");
+                    }
+
+                    // SEND DATA - PEER LIST DATA
                     string peerListJsonString = JsonSerializer.Serialize(
                         possiblePeers,
                         options: new JsonSerializerOptions()
@@ -168,8 +190,15 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
             {
                 if (upstreamBlockchain.IsValid())
                 {
+                    // Update Blockchain instance
                     SetBlockchain(upstreamBlockchain);
-                    SetWallet(upstreamBlockchain.BlockchainWallet);
+                    // Update Blockchain Wallet with a newly configured instance from the config file
+                    BlockchainWallet blockchainWallet = new BlockchainWallet(
+                        this.Blockchain.BlockchainWallet.GetPublicKeyStringBase64(),
+                        this.Blockchain.BlockchainWallet.WalletName
+                    );
+                    this.Blockchain.BlockchainWallet = blockchainWallet;
+                    SetWallet(blockchainWallet);
                     Blockchain.SaveJsonStateToFile(this.Blockchain.ToJsonString(), "local/Blockchain/ZRD.json");
                 }
                 else
@@ -193,7 +222,7 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
             server.RunServer(this.port);
         }
         
-        public void SetWallet(BlockchainWallet newWallet)
+        private void SetWallet(BlockchainWallet newWallet)
         {
             this.NetworkWallet = newWallet;
         }

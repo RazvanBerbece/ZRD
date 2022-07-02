@@ -403,7 +403,8 @@ FodyWeavers.xsd
 local/Blockchain/ZRD.json
 local/Wallet/Wallet.json
 InitialOfferings.json
-local/Wallet/NetworkWallet.json
+local/Wallet/NetworkWallet/NetworkWallet.json
+local/Wallet/NetworkWallet/Params/RSAConfig.xml
 local/Wallet/Params/RSAConfig.xml
 local/Wallet/InitialWallets
 TCPServer.logs

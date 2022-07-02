@@ -50,7 +50,7 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
             TcpClient externalPeer = this.listener.AcceptTcpClient();
             return externalPeer;
         }
-        
+
         /// <summary>
         /// For a given peer, read data from network stream,
         /// handle it based on the expected type passed as parameter.
@@ -103,12 +103,17 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
             {
                 // Handle data by iteratively deserializing through the possible scenarios :
                 //      1. Lightweight node connecting to send new Transaction to be added to mempool + validation
-                //      2. Miner node connecting to send new Blockchain state after new block was mined + validation
-                //      3. Any other node connecting to request peer list updates TODO
-                if (Blockchain.JsonStringToBlockchainInstance(receivedData) is { } chain)
+                //      2. Miner node connecting to send new Block after new block was mined + validation
+                //      3. Full node connecting to send Blockchain nas part of broadcasting
+                //      4. Any other node connecting to request peer list updates TODO
+                if (Blockchain.JsonStringToBlockchainInstance(receivedData) is { } remoteBlockchain)
                 {
                     Console.WriteLine("-- DESERIALIZING BLOCKCHAIN --");
-                    // TODO
+                    bool shouldUpdatePeer = ResolveBlockchainMerge(this.node.Blockchain, remoteBlockchain);
+                    // Write new blockchain to stream
+                    byte[] blockchainStateBuffer = Encoding.ASCII.GetBytes(this.node.Blockchain.ToJsonString());
+                    stream.Write(blockchainStateBuffer, 0, blockchainStateBuffer.Length);
+                    LogPeerCommunication(peer, this.node.Blockchain.ToJsonString(), DateTime.Now, TcpDirectionEnum.Out);
                 }
                 else if (Transaction.JsonStringToTransactionInstance(receivedData) is { } transaction)
                 {
@@ -138,6 +143,7 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
                     bool isIncomingPeerList;
                     try
                     {
+                        Console.WriteLine("-- DESERIALIZING INCOMING PEER LIST --");
                         DiscoveryManager discoveryManager = new DiscoveryManager();
                         // Check for incoming peer list update
                         List<PeerDetails> upstreamPeerDetailsList = JsonSerializer.Deserialize<List<PeerDetails>>(
@@ -148,16 +154,15 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
                                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
                             });
                         isIncomingPeerList = true;
+                        // Merge / append / write new peer list to local Peers.json
+                        List<PeerDetails> mergedList = DiscoveryManager.MergePeerLists(upstreamPeerDetailsList,
+                            discoveryManager.LoadPeerDetails("local/Peers/Peers.json"));
+                        discoveryManager.WritePeerListToFile(mergedList, "local/Peers/Peers.json");
                         // Send local peer list to connected peer to merge as well
                         string localPeerDetails = System.IO.File.ReadAllText("local/Peers/Peers.json");
                         byte[] localPeerListBuffer = Encoding.ASCII.GetBytes(localPeerDetails);
                         stream.Write(localPeerListBuffer, 0, localPeerListBuffer.Length);
                         LogPeerCommunication(peer, localPeerDetails, DateTime.Now, TcpDirectionEnum.Out);
-                        // Merge / append / write new peer list to local Peers.json
-                        List<PeerDetails> mergedList = DiscoveryManager.MergePeerLists(upstreamPeerDetailsList,
-                            discoveryManager.LoadPeerDetails("local/Peers/Peers.json"));
-                        discoveryManager.WritePeerListToFile(mergedList, "local/Peers/Peers.json");
-                    
                     }
                     catch (Exception)
                     {
@@ -195,6 +200,43 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
         public void SetFullNode(FullNode newFullNode)
         {
             this.node = newFullNode;
+        }
+        
+        /// <summary>
+        /// Resolves the blockchain sync discussion between two peers by :
+        ///     - Accepting the longer one, if valid
+        ///     - Merging the local mempool with the upstream one's valid & unique transactions
+        /// Mutates the node Blockchain if remote Blockchain is preferred
+        /// </summary>
+        /// <param name="localBlockchain"></param>
+        /// <param name="remoteBlockchain"></param>
+        /// <returns>1 if peer needs to be updated with new Blockchain, 0 otherwise</returns>
+        private bool ResolveBlockchainMerge(Blockchain localBlockchain, Blockchain remoteBlockchain)
+        {
+            if (remoteBlockchain.Chain.Count <= localBlockchain.Chain.Count) return false;
+            // Check that upstream Blockchain is valid
+            if (remoteBlockchain.IsValid())
+            {
+                // Resolve unvalidated transactions & Use remote Blockchain for local
+                List<Transaction> mergedTransactions = new List<Transaction>() { };
+                // Add local mempool to final list of unvalidated transactions
+                mergedTransactions.AddRange(localBlockchain.UnconfirmedTransactions);
+                // Add valid transactions from remote mempool into local one
+                foreach (Transaction transaction in remoteBlockchain.UnconfirmedTransactions)
+                {
+                    // If upstream mempool transaction is valid and NOT a duplicate in local
+                    if (transaction.IsValid(remoteBlockchain) && !mergedTransactions.Contains(transaction))
+                    {
+                        mergedTransactions.Add(transaction);
+                    }
+                }
+                // Sync local
+                this.node.SetBlockchain(remoteBlockchain);
+                this.node.Blockchain.UnconfirmedTransactions = mergedTransactions;
+                return true;
+            }
+
+            return false;
         }
         
         /// <summary>

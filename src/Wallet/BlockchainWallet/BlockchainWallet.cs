@@ -18,7 +18,7 @@ namespace WalletNS.BlockchainWalletNS
         
         public BlockchainWallet() { }
         
-        public BlockchainWallet(int keySize, string filepathToRsaXml = "local/Wallet/Params/RSAConfig.xml")
+        public BlockchainWallet(int keySize, string filepathToRsaXml = "local/Wallet/NetworkWallet/Params/RSAConfig.xml")
         {
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(keySize);
             this.PublicKey = rsa.ExportSubjectPublicKeyInfo();
@@ -30,7 +30,29 @@ namespace WalletNS.BlockchainWalletNS
         }
         
         [JsonConstructor]
-        public BlockchainWallet(string publicKey, string privateKey, string walletName, string filepathToRsaXml = "local/Wallet/Params/RSAConfig.xml")
+        public BlockchainWallet(string publicKey, string walletName, string filepathToRsaXml = "local/Wallet/NetworkWallet/Params/RSAConfig.xml")
+        {
+            this.PublicKey = Convert.FromBase64String(publicKey);
+            this.filepathToRsaXml = filepathToRsaXml;
+            
+            // Create RSAParameters from RSA config in RSAConfig.xml
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+            try
+            {
+                string rsaConfigString = System.IO.File.ReadAllText(this.filepathToRsaXml);
+                rsa.FromXmlString(rsaConfigString);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"BlockchainWallet setup configuring...");
+            }
+            this.KeyPair = rsa.ExportParameters(true);
+            this.PrivateKey = rsa.ExportPkcs8PrivateKey();
+
+            this.WalletName = walletName;
+        }
+        
+        public BlockchainWallet(string publicKey, string privateKey, string walletName, string filepathToRsaXml = "local/Wallet/NetworkWallet/Params/RSAConfig.xml")
         {
             this.PublicKey = Convert.FromBase64String(publicKey);
             this.PrivateKey = Convert.FromBase64String(privateKey);
@@ -47,8 +69,6 @@ namespace WalletNS.BlockchainWalletNS
             {
                 Console.WriteLine($"Error occured while loading wallet params: {e}");
             }
-            // rsa.ImportSubjectPublicKeyInfo(this.PublicKey, out _);
-            // rsa.ImportPkcs8PrivateKey(this.PrivateKey, out _);
             this.KeyPair = rsa.ExportParameters(true);
 
             this.WalletName = walletName;
@@ -72,6 +92,24 @@ namespace WalletNS.BlockchainWalletNS
         public RSAParameters GetKeyPairParams()
         {
             return this.KeyPair;
+        }
+
+        public void Reconfigure(string newFilepathToRsaXml)
+        {
+            this.filepathToRsaXml = newFilepathToRsaXml;
+            
+            // Create RSAParameters from RSA config in RSAConfig.xml
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+            try
+            {
+                string rsaConfigString = System.IO.File.ReadAllText(this.filepathToRsaXml);
+                rsa.FromXmlString(rsaConfigString);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error occured while loading wallet params: {e}");
+            }
+            this.KeyPair = rsa.ExportParameters(true);
         }
 
         public Wallet GetCommonWallet()

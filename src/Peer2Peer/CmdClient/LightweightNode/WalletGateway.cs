@@ -1,6 +1,4 @@
 using System;
-using Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS;
-using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
 using Peer2PeerNS.NodesNS.LightweightNodeNS;
 using TransactionNS;
 
