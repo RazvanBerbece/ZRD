@@ -42,7 +42,7 @@ namespace WalletNS.BlockchainWalletNS
                 string rsaConfigString = System.IO.File.ReadAllText(this.filepathToRsaXml);
                 rsa.FromXmlString(rsaConfigString);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine($"BlockchainWallet setup configuring...");
             }

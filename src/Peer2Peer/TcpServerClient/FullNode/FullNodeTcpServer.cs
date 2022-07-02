@@ -110,10 +110,13 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
                 {
                     Console.WriteLine("-- DESERIALIZING BLOCKCHAIN --");
                     bool shouldUpdatePeer = ResolveBlockchainMerge(this.node.Blockchain, remoteBlockchain);
-                    // Write new blockchain to stream
-                    byte[] blockchainStateBuffer = Encoding.ASCII.GetBytes(this.node.Blockchain.ToJsonString());
-                    stream.Write(blockchainStateBuffer, 0, blockchainStateBuffer.Length);
-                    LogPeerCommunication(peer, this.node.Blockchain.ToJsonString(), DateTime.Now, TcpDirectionEnum.Out);
+                    if (shouldUpdatePeer)
+                    {
+                        // Write new blockchain to stream
+                        byte[] blockchainStateBuffer = Encoding.ASCII.GetBytes(this.node.Blockchain.ToJsonString());
+                        stream.Write(blockchainStateBuffer, 0, blockchainStateBuffer.Length);
+                        LogPeerCommunication(peer, this.node.Blockchain.ToJsonString(), DateTime.Now, TcpDirectionEnum.Out);   
+                    }
                 }
                 else if (Transaction.JsonStringToTransactionInstance(receivedData) is { } transaction)
                 {
@@ -220,12 +223,13 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
                 // Resolve unvalidated transactions & Use remote Blockchain for local
                 List<Transaction> mergedTransactions = new List<Transaction>() { };
                 // Add local mempool to final list of unvalidated transactions
+                bool localMempoolIsInitiallyEmpty = localBlockchain.UnconfirmedTransactions.Count == 0;
                 mergedTransactions.AddRange(localBlockchain.UnconfirmedTransactions);
                 // Add valid transactions from remote mempool into local one
                 foreach (Transaction transaction in remoteBlockchain.UnconfirmedTransactions)
                 {
                     // If upstream mempool transaction is valid and NOT a duplicate in local
-                    if (transaction.IsValid(remoteBlockchain) && !mergedTransactions.Contains(transaction))
+                    if (transaction.IsValid(localBlockchain) && !mergedTransactions.Contains(transaction))
                     {
                         mergedTransactions.Add(transaction);
                     }
@@ -233,6 +237,12 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
                 // Sync local
                 this.node.SetBlockchain(remoteBlockchain);
                 this.node.Blockchain.UnconfirmedTransactions = mergedTransactions;
+
+                if (localMempoolIsInitiallyEmpty)
+                {
+                    return false;
+                }
+                
                 return true;
             }
 

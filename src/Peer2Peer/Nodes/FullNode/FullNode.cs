@@ -67,12 +67,12 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
         /// </summary>
         public void Broadcast()
         {
-            // Broadcast every 10 seconds
+            // Broadcast to ALL possible peers every 2 seconds
             DateTime lastBroadcast = System.DateTime.Now;
             while (true)
             {
                 
-                if (lastBroadcast.AddSeconds(10) > System.DateTime.Now)
+                if (lastBroadcast.AddSeconds(2) > System.DateTime.Now)
                     continue;
                 
                 DiscoveryManager peerDiscovery = new DiscoveryManager();
@@ -81,9 +81,8 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
                 {
 
                     if (
-                        peerItem.Port == this.port &&
-                        peerItem.ExtIp.Equals(Statics.GetExternalPublicIpAddress().ToString()) &&
-                        peerItem.PeerType.Equals("FULL")
+                        (peerItem.Port == this.port && peerItem.ExtIp.Equals(Statics.GetExternalPublicIpAddress().ToString()) && peerItem.PeerType.Equals("FULL")) ||
+                        (peerItem.ExtIp.Equals(Statics.GetLocalIpAddress().ToString()) && peerItem.Port == this.port && peerItem.PeerType.Equals("FULL"))
                     )
                     {
                         // This machine; do not attempt broadcast and continue
@@ -114,6 +113,7 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
                             // Blockchain received from upstream is valid
                             // It holds the merged mempool and is the longest out of the two
                             SetBlockchain(remoteBlockchain);
+                            Blockchain.SaveJsonStateToFile(this.Blockchain.ToJsonString(), "local/Blockchain/ZRD.json");
                             Console.WriteLine($"Broadcasted Blockchain and set local from {peerItem.ExtIp}:{peerItem.Port}");
                         }
                     }
@@ -133,8 +133,6 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
                     );
                     string peerListBroadcastReceivedData = peer.SendDataStringToPeer(peerListJsonString, peerStream, DataOutType.PeerListPush);
                     Console.WriteLine($"Received : {peerListBroadcastReceivedData}");
-                    // Close connection
-                    peer.Close();
                     Console.WriteLine($"Broadcasted peer list data to {peerItem.ExtIp}:{peerItem.Port}");
                     // Handle response - Peer list data
                     try
@@ -152,12 +150,13 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
                         List<PeerDetails> mergedList = DiscoveryManager.MergePeerLists(upstreamPeerDetailsList,
                             discoveryManager.LoadPeerDetails("local/Peers/Peers.json"));
                         discoveryManager.WritePeerListToFile(mergedList, "local/Peers/Peers.json");
+                        peer.Close();
                     }
                     catch (Exception e)
                     {
                         Console.WriteLine($"Peer List Broadcast Error: {e}");
+                        peer.Close();
                     }
-                    
                 }
                 lastBroadcast = System.DateTime.Now;
             }
@@ -190,15 +189,19 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
             {
                 if (upstreamBlockchain.IsValid())
                 {
-                    // Update Blockchain instance
+                    
+                    // Update Blockchain instance with upstream state
                     SetBlockchain(upstreamBlockchain);
-                    // Update Blockchain Wallet with a newly configured instance from the config file
+                    
+                    // Update Blockchain Wallet with a newly configured instance
+                    // from the config file and the upstream state
                     BlockchainWallet blockchainWallet = new BlockchainWallet(
                         this.Blockchain.BlockchainWallet.GetPublicKeyStringBase64(),
                         this.Blockchain.BlockchainWallet.WalletName
                     );
                     this.Blockchain.BlockchainWallet = blockchainWallet;
                     SetWallet(blockchainWallet);
+                    
                     Blockchain.SaveJsonStateToFile(this.Blockchain.ToJsonString(), "local/Blockchain/ZRD.json");
                 }
                 else

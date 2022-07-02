@@ -3,5 +3,10 @@
     "ExtIp": "172.16.1.57",
     "Port": 420,
     "PeerType": "FULL"
+  },
+  {
+    "ExtIp": "172.16.1.57",
+    "Port": 425,
+    "PeerType": "FULL"
   }
 ]
