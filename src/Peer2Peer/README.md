@@ -39,6 +39,13 @@ As a result, a range of solutions were found :
 - Virtual Machines
 - Laptops in local network
 
+### Testing with ngrok
+Publish `localhost:<port>` on the ngrok network and have it publicly accessible (i.e. port forward from `tcp.ngrok:xxxxx` to `localhost:<port>`)
+
+![ngrok Configuration](../../assets/img/ngrok_session.png)
+
 # Resources
 1. https://en.wikipedia.org/wiki/Hole_punching_%28networking%29
 2. https://www.c-sharpcorner.com/article/building-a-blockchain-in-net-core-p2p-network/
+3. https://ngrok.com/docs/secure-tunnels#tcp-remote-addr
+4. https://www.hackeracademy.org/how-to-setup-ngrok-for-port-forwarding-without-router/

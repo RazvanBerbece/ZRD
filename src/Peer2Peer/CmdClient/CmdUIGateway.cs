@@ -1,6 +1,7 @@
 using System;
-using Peer2Peer.NodesNS.MinerNodeNS;
+using Peer2PeerNS.NodesNS.MinerNodeNS.MinerNodeNS;
 using Peer2PeerNS.CmdClientNS.FullNodeNS;
+using Peer2PeerNS.CmdClientNS.MinerWalletOnboardNS;
 using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
 using Peer2PeerNS.NodesNS.LightweightNodeNS;
 using ZRD.Peer2Peer.CmdClientNS.LightweightNodeNS;
@@ -56,7 +57,28 @@ namespace Peer2PeerNS.CmdClientNS.CmdUIGateway
                     }
                     break;
                 case "3":
-                    // TODO: Miner node UI
+                    while (true)
+                    {
+                        Console.Write("   Open miner node instance on port: ");
+                        option = Console.ReadLine();
+                        try
+                        {
+                            int port = Int32.Parse(option);
+                            MinerWalletOnboard.Run(minerNode, port);
+                            break;
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e is FormatException or ArgumentOutOfRangeException
+                                ? "   Given port is not valid. The port has to be a number between 1 and 65535.\n"
+                                : $"Error occured while setting up FullNode: {e}");
+                            if (e is not FormatException or ArgumentOutOfRangeException)
+                            {
+                                int port = Int32.Parse(option);
+                                MinerWalletOnboard.Run(minerNode, port);
+                            }
+                        }
+                    }
                     break;
                 case "0":
                     Environment.Exit(1);

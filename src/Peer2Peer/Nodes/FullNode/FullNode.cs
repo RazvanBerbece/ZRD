@@ -12,7 +12,6 @@ using Peer2PeerNS.FullNodeTcpClientNS;
 using Peer2PeerNS.FullNodeTcpServerNS;
 using Peer2PeerNS.TcpServerClientNS.FullNodeNS.EnumsNS.DataOutTypeNS;
 using StaticsNS;
-using TransactionNS;
 using WalletNS.BlockchainWalletNS;
 using DiscoveryManager = Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS.DiscoveryManager;
 

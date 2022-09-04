@@ -1,7 +1,7 @@
-﻿using Peer2Peer.NodesNS.MinerNodeNS;
-using Peer2PeerNS.CmdClientNS.CmdUIGateway;
+﻿using Peer2PeerNS.CmdClientNS.CmdUIGateway;
 using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
 using Peer2PeerNS.NodesNS.LightweightNodeNS;
+using Peer2PeerNS.NodesNS.MinerNodeNS.MinerNodeNS;
 
 namespace ZRD
 {

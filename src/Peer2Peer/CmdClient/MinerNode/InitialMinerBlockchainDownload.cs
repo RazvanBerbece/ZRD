@@ -1,12 +1,12 @@
 using System;
 using Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS;
-using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
+using Peer2PeerNS.NodesNS.MinerNodeNS.MinerNodeNS;
 
-namespace Peer2PeerNS.CmdClientNS.FullNodeNS
+namespace Peer2PeerNS.CmdClientNS.InitialMinerBlockchainDownloadNS
 {
-    public static class InitialBlockchainDownload
+    public static class InitialMinerBlockchainDownload
     {
-        public static void Run(FullNode node)
+        public static void Run(MinerNode node)
         {
             Console.WriteLine(
                 "============================================================\n" +
