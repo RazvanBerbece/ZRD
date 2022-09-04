@@ -35,7 +35,8 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
             this.port = portToOpen;
             try
             {
-                this.listener = new TcpListener(IPAddress.Parse(this.node.GetPrivateIpAddressString()), this.port);
+                IPAddress ipAddress = Dns.GetHostEntry("localhost").AddressList[0];
+                this.listener = new TcpListener(ipAddress, this.port);
                 this.listener.Start();
             }
             catch (Exception e)

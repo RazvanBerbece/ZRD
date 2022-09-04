@@ -8,9 +8,11 @@ namespace Peer2PeerNS.CmdClientNS.FullNodeNS
         public static void Run(FullNode node, int port)
         {
             Console.WriteLine(
-                "\nZRD Full Node Server\n" +
-                $"Opening {node.GetPrivateIpAddressString()}:{port} for new Transactions and Blockchain syncs ...\n" +
-                "--------------------------------------------------------------------------------\n");
+                "============================================================\n" +
+                "=     ZRD Blockchain - Full Node Blockchain Sync Server    =\n" +
+                "============================================================\n" +
+                $"  Opening {node.GetPrivateIpAddressString()}:{port} for new Transactions and Blockchain syncs ...\n" +
+                "========================================================================================================================\n");
             node.StartFullServer();
         }
     }
