@@ -19,7 +19,7 @@ namespace Peer2PeerNS.CmdClientNS.FullNodeNS
             // Set Node blockchain instance to existing state in local/Blockchain/ZRD.json
             string intro = "You will first need to download a full copy of the blockchain from a peer node";
             bool loadedFromLocal = false;
-            Blockchain blockchainFromStateFile = Blockchain.FileJsonStringToBlockchainInstance("local/Blockchain/ZRD.json");
+            Blockchain blockchainFromStateFile = Blockchain.FileDataToBlockchainInstance("local/Blockchain/ZRD.json");
             if (blockchainFromStateFile != null)
             {
                 blockchainFromStateFile.SetFilepathToState("local/Blockchain/ZRD.json");

@@ -144,7 +144,7 @@ namespace Peer2PeerNS.NodesNS.MinerNodeNS.MinerNodeNS
                     
                     // Update Blockchain instance with upstream state
                     SetBlockchain(upstreamBlockchain);
-                    
+
                     // Update Blockchain Wallet with a newly configured instance
                     // from the config file and the upstream state
                     BlockchainWallet blockchainWallet = new BlockchainWallet(
@@ -153,7 +153,7 @@ namespace Peer2PeerNS.NodesNS.MinerNodeNS.MinerNodeNS
                     );
                     Blockchain.BlockchainWallet = blockchainWallet;
                     SetBlockchainWallet(blockchainWallet);
-                    
+
                     Blockchain.SaveJsonStateToFile(Blockchain.ToJsonString(), "local/Blockchain/ZRD.json");
                 }
                 else

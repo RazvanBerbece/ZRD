@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using Peer2PeerNS.CmdClientNS.CreateMinerWalletNS;
-using Peer2PeerNS.CmdClientNS.MinerGatewayNS;
 using Peer2PeerNS.CmdClientNS.MinerNodeOnboardNS;
 using Peer2PeerNS.NodesNS.MinerNodeNS.MinerNodeNS;
 using WalletNS;

@@ -1,27 +1,12 @@
 [
   {
-    "ExtIp": "4.tcp.ngrok.io",
+    "ExtIp": "127.0.0.1",
     "Port": 420,
     "PeerType": "FULL"
   },
   {
-    "ExtIp": "0.tcp.ngrok.io",
-    "Port": 18967,
-    "PeerType": "MINER"
-  },
-  {
-    "ExtIp": "188.240.175.98",
+    "ExtIp": "127.0.0.1",
     "Port": 425,
     "PeerType": "MINER"
-  },
-  {
-    "ExtIp": "86.16.161.164",
-    "Port": 420,
-    "PeerType": "MINER"
-  },
-  {
-    "ExtIp": "86.16.161.164",
-    "Port": 425,
-    "PeerType": "FULL"
   }
 ]

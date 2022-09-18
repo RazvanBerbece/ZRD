@@ -139,7 +139,7 @@ namespace BlockchainNS
             System.IO.File.WriteAllText(filepath, jsonBlockchainString);
         }
         
-        public static Blockchain JsonStringToBlockchainInstance(string blockchainJsonString)
+        public static Blockchain JsonStringToBlockchainInstance(string blockchainJsonString, bool useDefaultStateStorePath = true)
         {
             try
             {
@@ -149,6 +149,11 @@ namespace BlockchainNS
                 Blockchain chain = JsonConvert.DeserializeObject<Blockchain>(
                     blockchainJsonString,
                     jsonSettings);
+
+                if (useDefaultStateStorePath)
+                {
+                    chain.SetFilepathToState("local/Blockchain/ZRD.json");
+                }
                 
                 return chain;
             }
@@ -163,7 +168,7 @@ namespace BlockchainNS
         /// and deserializes it into a Blockchain object instance
         /// </summary>
         /// <param name="blockchainJsonFilePath">Filepath to JSON file containing Blockchain data (blocks, transactions, etc.)</param>
-        public static Blockchain FileJsonStringToBlockchainInstance(string blockchainJsonFilePath)
+        public static Blockchain FileDataToBlockchainInstance(string blockchainJsonFilePath, bool useDefaultStateStorePath = true)
         {
             try
             {
@@ -175,6 +180,12 @@ namespace BlockchainNS
                         PropertyNameCaseInsensitive = true,
                         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // this specifies that specific symbols like '/' don't get encoded in unicode
                     });
+                
+                if (useDefaultStateStorePath)
+                {
+                    chain!.SetFilepathToState("local/Blockchain/ZRD.json");
+                }
+
                 return chain;
             }
             catch (Exception)
@@ -284,7 +295,7 @@ namespace BlockchainNS
                 return -1;
             }
             
-            int balance = 0;
+            var balance = 0;
 
             foreach (Block block in this.Chain)
             {
@@ -313,7 +324,7 @@ namespace BlockchainNS
         public void MineUnconfirmedTransactions(string minerPublicKey) 
         {
 
-            Transaction rewardTransaction = new Transaction(
+            var rewardTransaction = new Transaction(
                 this.BlockchainWallet.GetPublicKeyStringBase64(),
                 minerPublicKey,
                 this.Reward
@@ -321,7 +332,7 @@ namespace BlockchainNS
             rewardTransaction.SignTransaction(this.BlockchainWallet.GetCommonWallet());
             this.AddTransaction(rewardTransaction);
 
-            List<Transaction> transactionsCopy = new List<Transaction> { };
+            var transactionsCopy = new List<Transaction> { };
             transactionsCopy.AddRange(this.UnconfirmedTransactions);
 
             this.AddBlock(

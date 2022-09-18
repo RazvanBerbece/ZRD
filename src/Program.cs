@@ -46,9 +46,10 @@ namespace ZRD
             */
 
             // Create initial nodes
-            LightweightNode lightweightNode = LightweightNode.ConfigureNode();
-            FullNode fullNode = FullNode.ConfigureNode();
-            MinerNode minerNode = MinerNode.ConfigureNode();
+            // TODO: Separate in different executables to have dedicated clients 
+            var lightweightNode = LightweightNode.ConfigureNode();
+            var fullNode = FullNode.ConfigureNode();
+            var minerNode = MinerNode.ConfigureNode();
 
             // CmdUIGateway - Entry Point to Terminal Blockchain Clients
             CmdUIGateway.Run(lightweightNode, fullNode, minerNode);

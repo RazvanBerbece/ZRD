@@ -191,7 +191,7 @@ namespace Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS
                     
                     // Update Blockchain instance with upstream state
                     SetBlockchain(upstreamBlockchain);
-                    
+
                     // Update Blockchain Wallet with a newly configured instance
                     // from the config file and the upstream state
                     BlockchainWallet blockchainWallet = new BlockchainWallet(

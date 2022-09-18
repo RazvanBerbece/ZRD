@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Security.Cryptography;
 using Newtonsoft.Json;
 using WalletNS.Abstract;
@@ -14,7 +15,9 @@ namespace WalletNS.BlockchainWalletNS
         private byte[] PrivateKey { get; set; }
         private RSAParameters KeyPair { get; set; }
         
-        private string _filepathToRsaXml;
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+        [DefaultValue("local/Wallet/NetworkWallet/Params/RSAConfig.xml")]
+        private string FilepathToRsaXml { get; set; }
         
         public BlockchainWallet() { }
         
@@ -27,25 +30,25 @@ namespace WalletNS.BlockchainWalletNS
             };
             PublicKey = rsa.ExportSubjectPublicKeyInfo();
             PrivateKey = rsa.ExportPkcs8PrivateKey();
-            _filepathToRsaXml = filepathToRsaXml;
+            FilepathToRsaXml = filepathToRsaXml;
             KeyPair = rsa.ExportParameters(true);
             WalletName = "ZRD Network Wallet";
             
             System.IO.Directory.CreateDirectory("local/Wallet/NetworkWallet/Params");
-            Wallet.SaveRsaConfigToLocal(_filepathToRsaXml, rsa);
+            Wallet.SaveRsaConfigToLocal(FilepathToRsaXml, rsa);
         }
         
         [JsonConstructor]
         public BlockchainWallet(string publicKey, string walletName, string filepathToRsaXml = "local/Wallet/NetworkWallet/Params/RSAConfig.xml")
         {
             PublicKey = Convert.FromBase64String(publicKey);
-            _filepathToRsaXml = filepathToRsaXml;
+            FilepathToRsaXml = filepathToRsaXml;
             
             // Create RSAParameters from RSA config in RSAConfig.xml
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+            var rsa = new RSACryptoServiceProvider();
             try
             {
-                string rsaConfigString = System.IO.File.ReadAllText(_filepathToRsaXml);
+                var rsaConfigString = System.IO.File.ReadAllText(FilepathToRsaXml);
                 rsa.FromXmlString(rsaConfigString);
             }
             catch (Exception e)
@@ -62,13 +65,13 @@ namespace WalletNS.BlockchainWalletNS
         {
             PublicKey = Convert.FromBase64String(publicKey);
             PrivateKey = Convert.FromBase64String(privateKey);
-            _filepathToRsaXml = filepathToRsaXml;
+            FilepathToRsaXml = filepathToRsaXml;
             
             // Create RSAParameters from RSA config in RSAConfig.xml
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+            var rsa = new RSACryptoServiceProvider();
             try
             {
-                string rsaConfigString = System.IO.File.ReadAllText(_filepathToRsaXml);
+                var rsaConfigString = System.IO.File.ReadAllText(FilepathToRsaXml);
                 rsa.FromXmlString(rsaConfigString);
             }
             catch (Exception e)
@@ -102,13 +105,13 @@ namespace WalletNS.BlockchainWalletNS
 
         public void Reconfigure(string newFilepathToRsaXml)
         {
-            _filepathToRsaXml = newFilepathToRsaXml;
+            FilepathToRsaXml = newFilepathToRsaXml;
             
             // Create RSAParameters from RSA config in RSAConfig.xml
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
             try
             {
-                string rsaConfigString = System.IO.File.ReadAllText(_filepathToRsaXml);
+                var rsaConfigString = System.IO.File.ReadAllText(FilepathToRsaXml);
                 rsa.FromXmlString(rsaConfigString);
             }
             catch (Exception e)
@@ -120,12 +123,11 @@ namespace WalletNS.BlockchainWalletNS
 
         public Wallet GetCommonWallet()
         {
-            Wallet commonWallet = new Wallet(
+            var commonWallet = new Wallet(
                 GetPublicKeyStringBase64(),
                 GetPrivateKeyStringBase64(),
                 WalletName,
-                _filepathToRsaXml
-                    );
+                FilepathToRsaXml);
             return commonWallet;
         }
 
