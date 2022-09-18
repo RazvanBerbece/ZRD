@@ -10,6 +10,7 @@ using TransactionNS;
 using System;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
@@ -135,6 +136,14 @@ namespace StaticsNS
                 return false;
             }
             return false;
+        }
+        
+        
+        public static string GetPeerPublicIp(TcpClient peer)
+        {
+            var peerEndpoint = peer.Client.RemoteEndPoint as IPEndPoint;
+            var localAddress = peerEndpoint!.Address.ToString();
+            return localAddress;
         }
 
     }

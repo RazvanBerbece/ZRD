@@ -27,8 +27,8 @@
   <ItemGroup>
     <Folder Include="assets" />
     <Folder Include="local\Wallet\MinerWallet\Params" />
-    <Folder Include="src\Peer2Peer\TcpServerClient\LightweightNode" />
-    <Folder Include="src\Peer2Peer\TcpServerClient\MinerNode" />
+    <Folder Include="src\Peer2Peer\TcpConnectivity\LightweightNode" />
+    <Folder Include="src\Peer2Peer\TcpConnectivity\Utils" />
     <Folder Include="tests\Accceptance" />
     <Folder Include="tests\Integration" />
     <Folder Include="src\Wallet\" />

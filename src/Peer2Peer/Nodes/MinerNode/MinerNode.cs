@@ -12,6 +12,7 @@ using Peer2PeerNS.TcpServerClientNS.FullNodeNS.EnumsNS.DataOutTypeNS;
 using StaticsNS;
 using WalletNS;
 using WalletNS.BlockchainWalletNS;
+using ZRD.Peer2Peer.TcpConnectivity.MinerNode;
 
 namespace Peer2PeerNS.NodesNS.MinerNodeNS.MinerNodeNS
 {
@@ -24,9 +25,9 @@ namespace Peer2PeerNS.NodesNS.MinerNodeNS.MinerNodeNS
         public Wallet MinerWallet;
         
         // Networking
-        private IPAddress privateIpAddress;
-        private IPAddress publicNatIpAddress;
-        private int port;
+        private IPAddress _privateIpAddress;
+        private IPAddress _publicNatIpAddress;
+        private int _port;
 
         private MinerNode() { }
         
@@ -48,30 +49,30 @@ namespace Peer2PeerNS.NodesNS.MinerNodeNS.MinerNodeNS
         
         public void SetPrivateIpAddress(IPAddress newPrivateIpAddress)
         {
-            this.privateIpAddress = newPrivateIpAddress;
+            _privateIpAddress = newPrivateIpAddress;
         }
         
         public void SetPublicNatIpAddress(IPAddress newPublicNatIpAddress)
         {
-            this.publicNatIpAddress = newPublicNatIpAddress;
+            _publicNatIpAddress = newPublicNatIpAddress;
         }
         
         public string GetPrivateIpAddressString()
         {
-            if (this.privateIpAddress == null || string.IsNullOrEmpty(this.privateIpAddress.ToString()))
+            if (_privateIpAddress == null || string.IsNullOrEmpty(_privateIpAddress.ToString()))
             {
                 return "";
             }
-            return this.privateIpAddress.ToString();
+            return _privateIpAddress.ToString();
         }
         
         public string GetPublicNatIpAddressString()
         {
-            if (this.publicNatIpAddress == null || string.IsNullOrEmpty(this.publicNatIpAddress.ToString()))
+            if (_publicNatIpAddress == null || string.IsNullOrEmpty(_publicNatIpAddress.ToString()))
             {
                 return "";
             }
-            return this.publicNatIpAddress.ToString();
+            return _publicNatIpAddress.ToString();
         }
 
         public void SetPort(int newPort)
@@ -80,34 +81,34 @@ namespace Peer2PeerNS.NodesNS.MinerNodeNS.MinerNodeNS
             {
                 throw new ArgumentOutOfRangeException("Port number should be between 1 and 65535");
             }
-            this.port = newPort;
+            _port = newPort;
         }
         
         public void SetBlockchain(Blockchain chain)
         {
-            this.Blockchain = chain;
+            Blockchain = chain;
         }
         
         private void SetBlockchainWallet(BlockchainWallet newWallet)
         {
-            this.NetworkWallet = newWallet;
+            NetworkWallet = newWallet;
         }
         
         public void SetMinerWallet(Wallet newWallet)
         {
-            this.MinerWallet = newWallet;
+            MinerWallet = newWallet;
         }
         
         /// <summary>
         /// Adds current node connection details (ext NAT IP, open port, node type)
         /// to the list of potential peers
         /// </summary>
-        public void StoreFullNodeDetailsInPeersList()
+        public void StoreMinerNodeDetailsInPeersList()
         {
             DiscoveryManager peerDiscovery = new DiscoveryManager();
             peerDiscovery.StoreExtNatIpAndPortToFile(
-                this.publicNatIpAddress.ToString(), 
-                this.port, 
+                _publicNatIpAddress.ToString(), 
+                _port, 
                 "MINER", 
                 "local/Peers/Peers.json"
             );
@@ -147,13 +148,13 @@ namespace Peer2PeerNS.NodesNS.MinerNodeNS.MinerNodeNS
                     // Update Blockchain Wallet with a newly configured instance
                     // from the config file and the upstream state
                     BlockchainWallet blockchainWallet = new BlockchainWallet(
-                        this.Blockchain.BlockchainWallet.GetPublicKeyStringBase64(),
-                        this.Blockchain.BlockchainWallet.WalletName
+                        Blockchain.BlockchainWallet.GetPublicKeyStringBase64(),
+                        Blockchain.BlockchainWallet.WalletName
                     );
-                    this.Blockchain.BlockchainWallet = blockchainWallet;
+                    Blockchain.BlockchainWallet = blockchainWallet;
                     SetBlockchainWallet(blockchainWallet);
                     
-                    Blockchain.SaveJsonStateToFile(this.Blockchain.ToJsonString(), "local/Blockchain/ZRD.json");
+                    Blockchain.SaveJsonStateToFile(Blockchain.ToJsonString(), "local/Blockchain/ZRD.json");
                 }
                 else
                 {
@@ -163,6 +164,35 @@ namespace Peer2PeerNS.NodesNS.MinerNodeNS.MinerNodeNS
             else
             {
                 throw new JsonException("Blockchain JSON string from peer could not be deserialized");
+            }
+        }
+
+        public void GetBlockchainsFromPeers()
+        {
+            try
+            {
+                var server = new MinerNodeTcpServer().OpenListenerOnPort(_port, this);
+                while (true)
+                {
+                    var prevMempoolCount = this.Blockchain.UnconfirmedTransactions.Count;
+                    server
+                        .AcceptIncomingConnections()
+                        .HandleIncomingData()
+                        .CloseConnection();
+                    
+                    // Check if there are any new unvalidated transactions to mine
+                    var currentMempoolCount = this.Blockchain.UnconfirmedTransactions.Count;
+                    if (currentMempoolCount > prevMempoolCount)
+                    {
+                        // Mine transactions
+                        Blockchain.MineUnconfirmedTransactions(MinerWallet.GetPublicKeyStringBase64());
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
         

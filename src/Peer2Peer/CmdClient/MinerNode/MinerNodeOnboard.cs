@@ -30,7 +30,7 @@ namespace Peer2PeerNS.CmdClientNS.MinerNodeOnboardNS
                 loadedFromLocal = true;
                 try
                 {
-                    node.StoreFullNodeDetailsInPeersList();
+                    node.StoreMinerNodeDetailsInPeersList();
                 }
                 catch (DuplicatePeerDetailInListException)
                 {
@@ -50,11 +50,11 @@ namespace Peer2PeerNS.CmdClientNS.MinerNodeOnboardNS
                     "============================================================\n" +
                     $"  {intro}\n" +
                     "   You can set up the Miner node to receive new transactions for the mempool" +
-                    " and broadcast the new Blockchain state outbound to peers.\n" +
+                    " or broadcast the new Blockchain state outbound to peers.\n" +
                     "==================================================================================\n" +
                     "   Choose one of the following options to continue :\n" +
-                    "       2. Set up Transaction mining & Broadcasting\n" +
-                    "       3. Set up Transaction mempool & Blockchain sync server\n" +
+                    "       2. Set up Node Broadcasting Client\n" +
+                    "       3. Set up Transaction mempool mining & Blockchain sync server\n" +
                     "       0. Exit\n");   
             }
             else
@@ -96,7 +96,7 @@ namespace Peer2PeerNS.CmdClientNS.MinerNodeOnboardNS
                         // Broadcast.Run(node);
                         break;
                     case "3":
-                        // FullNodeServer.Run(node, port);
+                        node.GetBlockchainsFromPeers();
                         break;
                     case "0":
                         Environment.Exit(1);
@@ -114,12 +114,12 @@ namespace Peer2PeerNS.CmdClientNS.MinerNodeOnboardNS
                         "============================================================\n" +
                         $"  {intro}\n" +
                         "   You can set up the Miner node to receive new transactions for the mempool" +
-                        " and broadcast the new Blockchain state outbound to peers.\n" +
+                        " or broadcast the new Blockchain state outbound to peers.\n" +
                         "==================================================================================\n" +
                         "   Choose one of the following options to continue :\n" +
-                        "       2. Set up Transaction mining & Broadcasting\n" +
-                        "       3. Set up Transaction mempool & Blockchain sync server\n" +
-                        "       0. Exit\n");   
+                        "       2. Set up Node Broadcasting Client\n" +
+                        "       3. Set up Transaction mempool mining & Blockchain sync server\n" +
+                        "       0. Exit\n");    
                 }
                 else
                 {

@@ -17,7 +17,7 @@ namespace Peer2PeerNS.CmdClientNS.InitialMinerBlockchainDownloadNS
             node.DownloadBlockchainFromPeer();
             try
             {
-                node.StoreFullNodeDetailsInPeersList();
+                node.StoreMinerNodeDetailsInPeersList();
             }
             catch (DuplicatePeerDetailInListException)
             {

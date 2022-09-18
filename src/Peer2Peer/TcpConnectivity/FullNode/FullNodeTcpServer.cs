@@ -9,8 +9,8 @@ using BlockchainNS;
 using Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS;
 using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
 using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
+using Peer2PeerNS.TcpConnectivity.PeerCommLogStructNS;
 using Peer2PeerNS.TcpServerClientNS.FullNodeNS.EnumsNS.TcpDirectionEnumNS;
-using Peer2PeerNS.TcpServerClientNS.FullNodeNS.StructsNS.PeerCommLogStructNS;
 using StaticsNS;
 using TransactionNS;
 using ZRD.Peer2Peer.TcpServerClient.Abstract;
@@ -69,7 +69,7 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
             // Convert data from buffer to string
             string receivedData = Encoding.Default.GetString(buffer, 0, readBytes);
             // Log TCP IN details
-            LogPeerCommunication(peer, receivedData, DateTime.Now, TcpDirectionEnum.In);
+            PeerCommLogStruct.LogPeerCommunication(peer, receivedData, DateTime.Now, TcpDirectionEnum.In);
             // Console.WriteLine("Received : " + receivedData);
 
             string[] opTokens = receivedData.Split(" ");
@@ -82,21 +82,24 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
                         // Send current blockchain instance for init on client peer side
                         byte[] blockchainStateBuffer = Encoding.ASCII.GetBytes(this.node.Blockchain.ToJsonString());
                         stream.Write(blockchainStateBuffer, 0, blockchainStateBuffer.Length);
-                        LogPeerCommunication(peer, this.node.Blockchain.ToJsonString(), DateTime.Now, TcpDirectionEnum.Out);
+                        
+                        PeerCommLogStruct.LogPeerCommunication(peer, this.node.Blockchain.ToJsonString(), DateTime.Now, TcpDirectionEnum.Out);
                         break;
                     case "PEER_LIST":
                         // Send current peer list state for sync / merge / append on client peer side
                         string peerListString = System.IO.File.ReadAllText("local/Peers/Peers.json");
                         byte[] peerListBuffer = Encoding.ASCII.GetBytes(peerListString);
                         stream.Write(peerListBuffer, 0, peerListBuffer.Length);
-                        LogPeerCommunication(peer, peerListString, DateTime.Now, TcpDirectionEnum.Out);
+                        
+                        PeerCommLogStruct.LogPeerCommunication(peer, peerListString, DateTime.Now, TcpDirectionEnum.Out);
                         break;
                     case "BALANCE":
                         string walletAddress = opTokens[2];
                         int walletAmount = this.node.Blockchain.GetBalance(walletAddress);
                         byte[] amountBuffer = BitConverter.GetBytes(walletAmount);
                         stream.Write(amountBuffer, 0, amountBuffer.Length);
-                        LogPeerCommunication(peer, walletAmount.ToString(), DateTime.Now, TcpDirectionEnum.Out);
+                        
+                        PeerCommLogStruct.LogPeerCommunication(peer, walletAmount.ToString(), DateTime.Now, TcpDirectionEnum.Out);
                         break;
                 }
             }
@@ -116,7 +119,8 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
                         // Write new blockchain to stream
                         byte[] blockchainStateBuffer = Encoding.ASCII.GetBytes(this.node.Blockchain.ToJsonString());
                         stream.Write(blockchainStateBuffer, 0, blockchainStateBuffer.Length);
-                        LogPeerCommunication(peer, this.node.Blockchain.ToJsonString(), DateTime.Now, TcpDirectionEnum.Out);   
+                        
+                        PeerCommLogStruct.LogPeerCommunication(peer, this.node.Blockchain.ToJsonString(), DateTime.Now, TcpDirectionEnum.Out);   
                     }
                 }
                 else if (Transaction.JsonStringToTransactionInstance(receivedData) is { } transaction)
@@ -131,7 +135,8 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
                         string successMessage = "Transaction successfully added to peer mempool";
                         byte[] successMessageBuffer = Encoding.ASCII.GetBytes(successMessage);
                         stream.Write(successMessageBuffer, 0, successMessageBuffer.Length);
-                        LogPeerCommunication(peer, successMessage, DateTime.Now, TcpDirectionEnum.Out);
+                        
+                        PeerCommLogStruct.LogPeerCommunication(peer, successMessage, DateTime.Now, TcpDirectionEnum.Out);
                     }
                     else
                     {
@@ -139,7 +144,8 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
                         string errMessage = "Transaction received by peer is not valid against the ZRD Blockchain";
                         byte[] errMessageBuffer = Encoding.ASCII.GetBytes(errMessage);
                         stream.Write(errMessageBuffer, 0, errMessageBuffer.Length);
-                        LogPeerCommunication(peer, errMessage, DateTime.Now, TcpDirectionEnum.Out);
+                        
+                        PeerCommLogStruct.LogPeerCommunication(peer, errMessage, DateTime.Now, TcpDirectionEnum.Out);
                     }
                 }
                 else
@@ -166,7 +172,8 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
                         string localPeerDetails = System.IO.File.ReadAllText("local/Peers/Peers.json");
                         byte[] localPeerListBuffer = Encoding.ASCII.GetBytes(localPeerDetails);
                         stream.Write(localPeerListBuffer, 0, localPeerListBuffer.Length);
-                        LogPeerCommunication(peer, localPeerDetails, DateTime.Now, TcpDirectionEnum.Out);
+                        
+                        PeerCommLogStruct.LogPeerCommunication(peer, localPeerDetails, DateTime.Now, TcpDirectionEnum.Out);
                     }
                     catch (Exception)
                     {
@@ -180,8 +187,9 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
                         // Write back to peer and close connection
                         string errMessage = "Data received by server does not match expected formats";
                         byte[] errBuffer = Encoding.ASCII.GetBytes(errMessage);
-                        stream.Write(errBuffer, 0, errBuffer.Length);   
-                        LogPeerCommunication(peer, errMessage, DateTime.Now, TcpDirectionEnum.Out);
+                        stream.Write(errBuffer, 0, errBuffer.Length);
+                        
+                        PeerCommLogStruct.LogPeerCommunication(peer, errMessage, DateTime.Now, TcpDirectionEnum.Out);
                     }
                 }
             }
@@ -249,62 +257,7 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
 
             return false;
         }
-        
-        /// <summary>
-        /// Logs a comm session between the server peer and the client peer to a default filepath in local/
-        /// </summary>
-        /// <param name="peer">Peer which the node communicates to</param>
-        /// <param name="data">Data in/out for comm</param>
-        /// <param name="timestamp">Timestamp when comm happened</param>
-        private void LogPeerCommunication(TcpClient peer, string data, DateTime timestamp, TcpDirectionEnum direction)
-        {
-            // Create logs directory under local/ if not existing
-            System.IO.Directory.CreateDirectory("local/logs"); 
-            
-            string logFilepath = "local/logs/TCPServer.logs";
-            PeerCommLogStruct logObject;
-            switch ((ushort)direction)
-            {
-                case 0:
-                    // TCP IN
-                    logObject = new PeerCommLogStruct(
-                        GetPeerPublicIp(peer),
-                        Statics.GetExternalPublicIpAddress().ToString(),
-                        timestamp,
-                        data,
-                        direction
-                    );
-                    System.IO.File.AppendAllText(logFilepath, logObject.ToJsonString());
-                    System.IO.File.AppendAllText(
-                        logFilepath, 
-                        "\n---------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
-                    );
-                    break;
-                case 1:
-                    // TCP OUT
-                    logObject = new PeerCommLogStruct(
-                        Statics.GetExternalPublicIpAddress().ToString(),
-                        GetPeerPublicIp(peer),
-                        timestamp,
-                        data,
-                        direction
-                    );
-                    System.IO.File.AppendAllText(logFilepath, logObject.ToJsonString());
-                    System.IO.File.AppendAllText(
-                        logFilepath, 
-                        "\n---------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
-                    );
-                    break;
-            }
-        }
 
-        private static string GetPeerPublicIp(TcpClient peer)
-        {
-            var peerEndpoint = peer.Client.RemoteEndPoint as IPEndPoint;
-            string localAddress = peerEndpoint.Address.ToString();
-            return localAddress;
-        }
-        
         public void RunServer(int portToOpen)
         {
             try
@@ -313,7 +266,7 @@ namespace Peer2PeerNS.FullNodeTcpServerNS
                 while (true)
                 {
                     TcpClient peer = AcceptConnection();
-                    Console.WriteLine($"Accepted incoming connection from {GetPeerPublicIp(peer)}");
+                    Console.WriteLine($"Accepted incoming connection from {Statics.GetPeerPublicIp(peer)}");
                     HandleDataFromPeer(peer);
                     peer.Close();
                 }
