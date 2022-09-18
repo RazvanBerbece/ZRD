@@ -48,7 +48,7 @@ namespace Peer2PeerNS.TcpConnectivity.PeerCommLogStructNS
             // Create logs directory under local/ if not existing
             System.IO.Directory.CreateDirectory("local/logs"); 
             
-            string logFilepath = "local/logs/TCPServer.logs";
+            string logFilepath = "local/logs/tcp.logs";
             PeerCommLogStruct logObject;
             switch ((ushort)direction)
             {

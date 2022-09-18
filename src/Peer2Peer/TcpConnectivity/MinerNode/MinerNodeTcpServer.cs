@@ -8,7 +8,6 @@ using System.Text.Json;
 using BlockchainNS;
 using Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS;
 using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
-using Peer2PeerNS.NodesNS.MinerNodeNS.MinerNodeNS;
 using Peer2PeerNS.TcpConnectivity.PeerCommLogStructNS;
 using Peer2PeerNS.TcpServerClientNS.FullNodeNS.EnumsNS.TcpDirectionEnumNS;
 using TransactionNS;
@@ -95,11 +94,11 @@ public class MinerNodeTcpServer
             if (Blockchain.JsonStringToBlockchainInstance(receivedData) is { } remoteBlockchain)
             {
                 Console.WriteLine("-- DESERIALIZING BLOCKCHAIN --");
-                bool shouldUpdatePeer = ResolveBlockchainMerge(this._node.Blockchain, remoteBlockchain);
+                var shouldUpdatePeer = ResolveBlockchainMerge(this._node.Blockchain, remoteBlockchain);
                 if (shouldUpdatePeer)
                 {
                     // Write new blockchain to stream
-                    byte[] blockchainStateBuffer = Encoding.ASCII.GetBytes(this._node.Blockchain.ToJsonString());
+                    var blockchainStateBuffer = Encoding.ASCII.GetBytes(this._node.Blockchain.ToJsonString());
                     stream.Write(blockchainStateBuffer, 0, blockchainStateBuffer.Length);
 
                     PeerCommLogStruct.LogPeerCommunication(_externalPeer, this._node.Blockchain.ToJsonString(), DateTime.Now, TcpDirectionEnum.Out);
@@ -111,9 +110,9 @@ public class MinerNodeTcpServer
                 try
                 {
                     Console.WriteLine("-- DESERIALIZING INCOMING PEER LIST --");
-                    DiscoveryManager discoveryManager = new DiscoveryManager();
+                    var discoveryManager = new DiscoveryManager();
                     // Check for incoming peer list update
-                    List<PeerDetails> upstreamPeerDetailsList = JsonSerializer.Deserialize<List<PeerDetails>>(
+                    var upstreamPeerDetailsList = JsonSerializer.Deserialize<List<PeerDetails>>(
                         receivedData,
                         options: new JsonSerializerOptions()
                         {
@@ -123,12 +122,12 @@ public class MinerNodeTcpServer
                         });
                     isIncomingPeerList = true;
                     // Merge / append / write new peer list to local Peers.json
-                    List<PeerDetails> mergedList = DiscoveryManager.MergePeerLists(upstreamPeerDetailsList,
+                    var mergedList = DiscoveryManager.MergePeerLists(upstreamPeerDetailsList,
                         discoveryManager.LoadPeerDetails("local/Peers/Peers.json"));
                     discoveryManager.WritePeerListToFile(mergedList, "local/Peers/Peers.json");
                     // Send local peer list to connected peer to merge as well
-                    string localPeerDetails = System.IO.File.ReadAllText("local/Peers/Peers.json");
-                    byte[] localPeerListBuffer = Encoding.ASCII.GetBytes(localPeerDetails);
+                    var localPeerDetails = System.IO.File.ReadAllText("local/Peers/Peers.json");
+                    var localPeerListBuffer = Encoding.ASCII.GetBytes(localPeerDetails);
                     stream.Write(localPeerListBuffer, 0, localPeerListBuffer.Length);
 
                     PeerCommLogStruct.LogPeerCommunication(_externalPeer, localPeerDetails, DateTime.Now, TcpDirectionEnum.Out);
@@ -143,8 +142,8 @@ public class MinerNodeTcpServer
                     // Data received could not be parsed into object instance
                     // i.e. received data format does not match expected data formats
                     // Write back to peer and close connection
-                    string errMessage = "Data received by server does not match expected formats";
-                    byte[] errBuffer = Encoding.ASCII.GetBytes(errMessage);
+                    var errMessage = "Data received by server does not match expected formats";
+                    var errBuffer = Encoding.ASCII.GetBytes(errMessage);
                     stream.Write(errBuffer, 0, errBuffer.Length);
 
                     PeerCommLogStruct.LogPeerCommunication(_externalPeer, errMessage, DateTime.Now, TcpDirectionEnum.Out);
@@ -171,13 +170,13 @@ public class MinerNodeTcpServer
     /// <returns>true if peer needs to be updated with new Blockchain, false otherwise</returns>
     private bool ResolveBlockchainMerge(Blockchain localBlockchain, Blockchain remoteBlockchain)
     {
-        if (remoteBlockchain.Chain.Count <= localBlockchain.Chain.Count) return false;
+        if (remoteBlockchain.Chain.Count < localBlockchain.Chain.Count) return false;
         // Check that upstream Blockchain is valid
         if (!remoteBlockchain.IsValid()) return false;
         // Resolve unvalidated transactions & Use remote Blockchain for local
         var mergedTransactions = new List<Transaction>() { };
         // Add local mempool to final list of unvalidated transactions
-        bool localMempoolIsEmpty = localBlockchain.UnconfirmedTransactions.Count == 0;
+        var localMempoolIsEmpty = localBlockchain.UnconfirmedTransactions.Count == 0;
         if (!localMempoolIsEmpty)
         {
             mergedTransactions.AddRange(localBlockchain.UnconfirmedTransactions);   

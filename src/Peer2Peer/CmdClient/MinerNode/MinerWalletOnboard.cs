@@ -37,7 +37,7 @@ namespace Peer2PeerNS.CmdClientNS.MinerWalletOnboardNS
                     {
                         // Create Wallet object with existing pair and name from file
                         Wallet loggedOnWallet =
-                            Wallet.DeserializeWalletFromJsonFile("local/Wallet/MinerWallet/Wallet.json");
+                            Wallet.DeserializeWalletFromJsonFile("local/Wallet/Wallet.json");
                         node.SetMinerWallet(loggedOnWallet);
                         MinerNodeOnboard.Run(node, port);
                     }

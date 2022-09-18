@@ -27,7 +27,7 @@ namespace Peer2PeerNS.CmdClientNS.CreateMinerWalletNS
             switch (option)
             {
                 case "1":
-                    Wallet userWallet = new Wallet(1024, "local/Wallet/MinerWallet/Params/RSAConfig.xml");
+                    Wallet userWallet = new Wallet(1024);
                     Console.WriteLine(
                         "Your secure wallet has been created with the generated RSA 1024-bit keypair.\n" +
                         "The keys below should be securely stored.\n\n" +
@@ -36,7 +36,7 @@ namespace Peer2PeerNS.CmdClientNS.CreateMinerWalletNS
                     // Set node wallet data
                     node.SetMinerWallet(userWallet);
                     // Save wallet details locally
-                    userWallet.SaveToJsonFile("local/Wallet/MinerWallet/Wallet.json", userWallet.GetJsonString());
+                    userWallet.SaveToJsonFile("local/Wallet/Wallet.json", userWallet.GetJsonString());
                     // TODO: Download initial Blockchain data from upstream
                     MinerNodeOnboard.Run(node, port);
                     break;

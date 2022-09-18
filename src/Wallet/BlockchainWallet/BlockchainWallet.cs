@@ -14,111 +14,117 @@ namespace WalletNS.BlockchainWalletNS
         private byte[] PrivateKey { get; set; }
         private RSAParameters KeyPair { get; set; }
         
-        private string filepathToRsaXml;
+        private string _filepathToRsaXml;
         
         public BlockchainWallet() { }
         
         public BlockchainWallet(int keySize, string filepathToRsaXml = "local/Wallet/NetworkWallet/Params/RSAConfig.xml")
         {
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(keySize);
-            this.PublicKey = rsa.ExportSubjectPublicKeyInfo();
-            this.PrivateKey = rsa.ExportPkcs8PrivateKey();
-            this.filepathToRsaXml = filepathToRsaXml;
-            this.KeyPair = rsa.ExportParameters(true);
-            this.WalletName = "ZRD Network Wallet";
-            Wallet.SaveRsaConfigToLocal(this.filepathToRsaXml, rsa);
+            var rsa = new RSACryptoServiceProvider
+            {
+                KeySize = keySize,
+                PersistKeyInCsp = false
+            };
+            PublicKey = rsa.ExportSubjectPublicKeyInfo();
+            PrivateKey = rsa.ExportPkcs8PrivateKey();
+            _filepathToRsaXml = filepathToRsaXml;
+            KeyPair = rsa.ExportParameters(true);
+            WalletName = "ZRD Network Wallet";
+            
+            System.IO.Directory.CreateDirectory("local/Wallet/NetworkWallet/Params");
+            Wallet.SaveRsaConfigToLocal(_filepathToRsaXml, rsa);
         }
         
         [JsonConstructor]
         public BlockchainWallet(string publicKey, string walletName, string filepathToRsaXml = "local/Wallet/NetworkWallet/Params/RSAConfig.xml")
         {
-            this.PublicKey = Convert.FromBase64String(publicKey);
-            this.filepathToRsaXml = filepathToRsaXml;
+            PublicKey = Convert.FromBase64String(publicKey);
+            _filepathToRsaXml = filepathToRsaXml;
             
             // Create RSAParameters from RSA config in RSAConfig.xml
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
             try
             {
-                string rsaConfigString = System.IO.File.ReadAllText(this.filepathToRsaXml);
+                string rsaConfigString = System.IO.File.ReadAllText(_filepathToRsaXml);
                 rsa.FromXmlString(rsaConfigString);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                Console.WriteLine($"BlockchainWallet setup configuring...");
+                Console.WriteLine($"BlockchainWallet setup failed with error: {e}");
             }
-            this.KeyPair = rsa.ExportParameters(true);
-            this.PrivateKey = rsa.ExportPkcs8PrivateKey();
+            KeyPair = rsa.ExportParameters(true);
+            PrivateKey = rsa.ExportPkcs8PrivateKey();
 
-            this.WalletName = walletName;
+            WalletName = walletName;
         }
         
         public BlockchainWallet(string publicKey, string privateKey, string walletName, string filepathToRsaXml = "local/Wallet/NetworkWallet/Params/RSAConfig.xml")
         {
-            this.PublicKey = Convert.FromBase64String(publicKey);
-            this.PrivateKey = Convert.FromBase64String(privateKey);
-            this.filepathToRsaXml = filepathToRsaXml;
+            PublicKey = Convert.FromBase64String(publicKey);
+            PrivateKey = Convert.FromBase64String(privateKey);
+            _filepathToRsaXml = filepathToRsaXml;
             
             // Create RSAParameters from RSA config in RSAConfig.xml
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
             try
             {
-                string rsaConfigString = System.IO.File.ReadAllText(this.filepathToRsaXml);
+                string rsaConfigString = System.IO.File.ReadAllText(_filepathToRsaXml);
                 rsa.FromXmlString(rsaConfigString);
             }
             catch (Exception e)
             {
                 Console.WriteLine($"Error occured while loading wallet params: {e}");
             }
-            this.KeyPair = rsa.ExportParameters(true);
+            KeyPair = rsa.ExportParameters(true);
 
-            this.WalletName = walletName;
+            WalletName = walletName;
         }
         
         public string GetPublicKeyStringBase64()
         {
-            return Convert.ToBase64String(this.PublicKey);
+            return Convert.ToBase64String(PublicKey);
         }
         
         public string GetPrivateKeyStringBase64()
         {
-            return Convert.ToBase64String(this.PrivateKey);
+            return Convert.ToBase64String(PrivateKey);
         }
         
         public byte[] GetPrivateKeyBytesArray()
         {
-            return this.PrivateKey;
+            return PrivateKey;
         }
         
         public RSAParameters GetKeyPairParams()
         {
-            return this.KeyPair;
+            return KeyPair;
         }
 
         public void Reconfigure(string newFilepathToRsaXml)
         {
-            this.filepathToRsaXml = newFilepathToRsaXml;
+            _filepathToRsaXml = newFilepathToRsaXml;
             
             // Create RSAParameters from RSA config in RSAConfig.xml
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
             try
             {
-                string rsaConfigString = System.IO.File.ReadAllText(this.filepathToRsaXml);
+                string rsaConfigString = System.IO.File.ReadAllText(_filepathToRsaXml);
                 rsa.FromXmlString(rsaConfigString);
             }
             catch (Exception e)
             {
                 Console.WriteLine($"Error occured while loading wallet params: {e}");
             }
-            this.KeyPair = rsa.ExportParameters(true);
+            KeyPair = rsa.ExportParameters(true);
         }
 
         public Wallet GetCommonWallet()
         {
             Wallet commonWallet = new Wallet(
-                this.GetPublicKeyStringBase64(),
-                this.GetPrivateKeyStringBase64(),
-                this.WalletName,
-                this.filepathToRsaXml
+                GetPublicKeyStringBase64(),
+                GetPrivateKeyStringBase64(),
+                WalletName,
+                _filepathToRsaXml
                     );
             return commonWallet;
         }

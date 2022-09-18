@@ -39,6 +39,8 @@ namespace WalletNS
             this.filepathToRsaXml = filepathToRsaXml;
             this.KeyPair = rsa.ExportParameters(true);
             this.WalletName = "ZRD Wallet";
+            
+            System.IO.Directory.CreateDirectory("local/Wallet/Params");
             SaveRsaConfigToLocal(this.filepathToRsaXml, rsa);
         }
         

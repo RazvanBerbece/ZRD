@@ -96,6 +96,13 @@ namespace Peer2PeerNS.CmdClientNS.MinerNodeOnboardNS
                         // Broadcast.Run(node);
                         break;
                     case "3":
+                        Console.WriteLine(
+                            "=              ZRD Blockchain - Miner Node Server          =\n" +
+                            "============================================================\n" +
+                            $"   Listening on port {port} for incoming Blockchain connections...\n" +
+                            "==================================================================================\n" +
+                            "   Press CTRL+C to stop the server.\n" +
+                            "==================================================================================\n"); 
                         node.GetBlockchainsFromPeers();
                         break;
                     case "0":

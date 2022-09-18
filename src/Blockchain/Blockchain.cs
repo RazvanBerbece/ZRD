@@ -27,7 +27,7 @@ namespace BlockchainNS
         public int Difficulty { get; set; }
         public int Reward { get; set; }
         public int BlockTime { get; set; }
-        private string filepathToState; // ZRD.json blockchain full state will be saved here
+        private string _filepathToState; // ZRD.json blockchain full state will be saved here
         
         // Pool of transactions to be confirmed & mined into a new Block
         public List<Transaction> UnconfirmedTransactions { get; set; }
@@ -65,14 +65,14 @@ namespace BlockchainNS
             this.Reward = reward;
             this.UnconfirmedTransactions = new List<Transaction> { };
             this.BlockchainWallet = blockchainWallet;
-            this.filepathToState = filepathToState;
+            this._filepathToState = filepathToState;
         }
         
         /// <summary>
         /// Mines the passed Block parameter and adds it at the end of the chain
         /// Adjusts difficulty based on the current instance setting of BlockTime and the passed
         /// block mining time
-        /// Also saves the new Blockchain instance in filepathToState
+        /// Also saves the new Blockchain instance in _filepathToState
         /// </summary>
         /// <param name="block">Block to be mined & added to chain</param>
         /// <exception cref="ArgumentNullException"></exception>
@@ -100,7 +100,7 @@ namespace BlockchainNS
             }
             
             // Save new state with new unconfirmed transaction
-            SaveJsonStateToFile(this.ToJsonString(), filepathToState);
+            SaveJsonStateToFile(this.ToJsonString(), _filepathToState);
         }
 
         public void ViewChain()
@@ -145,9 +145,11 @@ namespace BlockchainNS
             {
                 var jsonSettings = new JsonSerializerSettings();
                 jsonSettings.MissingMemberHandling = MissingMemberHandling.Error;
+                
                 Blockchain chain = JsonConvert.DeserializeObject<Blockchain>(
                     blockchainJsonString,
                     jsonSettings);
+                
                 return chain;
             }
             catch (Exception)
@@ -264,7 +266,7 @@ namespace BlockchainNS
             this.UnconfirmedTransactions.Add(transaction);
             
             // Save new state with new unconfirmed transaction
-            SaveJsonStateToFile(this.ToJsonString(), filepathToState);
+            SaveJsonStateToFile(this.ToJsonString(), _filepathToState);
 
             return true;
         }
@@ -333,12 +335,12 @@ namespace BlockchainNS
             this.UnconfirmedTransactions.Clear();
             
             // Save new state with new unconfirmed transaction
-            SaveJsonStateToFile(this.ToJsonString(), filepathToState);
+            SaveJsonStateToFile(this.ToJsonString(), _filepathToState);
         }
 
         public void SetFilepathToState(string filepath)
         {
-            this.filepathToState = filepath;
+            this._filepathToState = filepath;
         }
 
         public static Blockchain CreateBlockchain(List<Transaction> initialCoinOfferings, BlockchainWallet blockchainWallet, int difficulty, int blockTime, int reward, string filepathToState)
