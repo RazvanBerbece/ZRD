@@ -15,10 +15,13 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v2
-      - uses: actions/setup-dotnet@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-dotnet@v2.1.0
         with:
-            dotnet-version: '5.0.x'
+            dotnet-version: '6.x.x'
+
+      - name: Run 'dotnet restore'
+        run: dotnet restore
 
       - name: Run 'dotnet build'
         id: dotnet-build

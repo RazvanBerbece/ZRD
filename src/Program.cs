@@ -1,9 +1,7 @@
-﻿using BlockNS;
-using System;
-using System.Collections.Generic;
-using TransactionNS;
-using BlockchainNS;
-using WalletNS;
+﻿using Peer2PeerNS.CmdClientNS.CmdUIGateway;
+using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
+using Peer2PeerNS.NodesNS.LightweightNodeNS;
+using Peer2PeerNS.NodesNS.MinerNodeNS.MinerNodeNS;
 
 namespace ZRD
 {
@@ -11,51 +9,50 @@ namespace ZRD
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Running ZRD blockchain.\n");
-            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-
-            // Create network wallet & first user wallet
-            Wallet networkWallet = new Wallet(keySize: 1024);
-            Wallet antonioWallet = new Wallet(keySize: 1024);
-
-            Console.WriteLine($"Antonio's Wallet with publicKey: {antonioWallet.GetPublicKeyStringBase64()}\n");
-
-            // Create Blockchain instance
+            /*
+             
+             THIS SHOULD BE RUN WHEN THE BLOCKCHAIN IS DEPLOYED IN LIVE THE FIRST TIME
+             
+            // Create network wallet
+            Wallet networkWallet = new Wallet(publicKey, privateKey, "ZRD Network Wallet");
+            
+            // Create first users wallets & set up
+            Wallet antonioWallet = new Wallet(publicKey, privateKey, "Antonio's Wallet");
+            Wallet annaWallet = new Wallet(publicKey, privateKey, "Anna's Wallet");
+            Wallet marcoWallet = new Wallet(publicKey, privateKey, "Marco's Wallet");
+            Wallet petruWallet = new Wallet(publicKey, privateKey, "Petru's Wallet");
+            
+            // Create Blockchain instance with initial coin offerings
+            List<Transaction> initialCoinOfferings = new List<Transaction>()
+            {
+                new Transaction(networkWallet.GetPublicKeyStringBase64(), antonioWallet.GetPublicKeyStringBase64(),
+                    antonioWallet.InitialOfferings),
+                new Transaction(networkWallet.GetPublicKeyStringBase64(), annaWallet.GetPublicKeyStringBase64(),
+                    annaWallet.InitialOfferings),
+                new Transaction(networkWallet.GetPublicKeyStringBase64(), marcoWallet.GetPublicKeyStringBase64(),
+                    marcoWallet.InitialOfferings),
+                new Transaction(networkWallet.GetPublicKeyStringBase64(), petruWallet.GetPublicKeyStringBase64(),
+                    petruWallet.InitialOfferings), 
+            };
             Blockchain blockchain = Blockchain.CreateBlockchain(
-                firstMint: new Transaction(networkWallet.GetPublicKeyStringBase64(), antonioWallet.GetPublicKeyStringBase64(), 1000000),
+                initialCoinOfferings: initialCoinOfferings,
                 blockchainWallet: networkWallet,
-                difficulty: 2,
-                blockTime: 5,
-                reward: 420
+                difficulty: 3,
+                blockTime: 10,
+                reward: 420,
+                filepathToState: "local/Blockchain/ZRD.json"
             );
+            Blockchain.SaveJsonStateToFile(blockchain.ToJsonString(), @"local/Blockchain/ZRD.json");
+            */
 
-            // Add new blocks to chain
-            List<Transaction> testBlockTransactions;
+            // Create initial nodes
+            LightweightNode lightweightNode = LightweightNode.ConfigureNode();
+            FullNode fullNode = FullNode.ConfigureNode();
+            MinerNode minerNode = MinerNode.ConfigureNode();
 
-            testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5);
-            Block testBlock1 = new Block(testBlockTransactions, blockchain.chain.Last.Value.hash, blockchain.chain.Last.Value.index + 1);
-            blockchain.AddBlock(testBlock1);
-
-            testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5);
-            Block testBlock2 = new Block(testBlockTransactions, blockchain.chain.Last.Value.hash, blockchain.chain.Last.Value.index + 1);
-            blockchain.AddBlock(testBlock2);
-
-            testBlockTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 5);
-            Block testBlock3 = new Block(testBlockTransactions, blockchain.chain.Last.Value.hash, blockchain.chain.Last.Value.index + 1);
-            blockchain.AddBlock(testBlock3);
-
-            // Visualise blockchain
-            blockchain.ViewChain();
-            Console.WriteLine($"\nBlockchain is {(blockchain.IsValid() ? "VALID" : "COMPROMISED")}\n");
-
-            // Mutate Block -> Blockchain is compromised
-            // blockchain.chain.Last.Value.data[0].Amount += 150;
-            // Console.WriteLine($"\nBlockchain is {(blockchain.IsValid() ? "VALID" : "COMPROMISED")}\n");
-
-            // Look for balance for AntonioPublicKey
-            int balance = blockchain.GetBalance(antonioWallet.GetPublicKeyStringBase64());
-            Console.WriteLine($"Amount for key {antonioWallet.GetPublicKeyStringBase64()} : {balance}");
-
+            // CmdUIGateway - Entry Point to Terminal Blockchain Clients
+            CmdUIGateway.Run(lightweightNode, fullNode, minerNode);
+            
         }
     }
 }

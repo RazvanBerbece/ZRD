@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
 
@@ -9,7 +9,7 @@
     <PackageReference Include="BouncyCastle.NetCore" Version="1.9.0" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,15 +25,14 @@
     <None Remove="tests\MerkleTree.UnitTests\Merkle-Tree\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="tests\Transaction.UnitTests\" />
-    <Folder Include="tests\Transaction.UnitTests\Transaction\" />
+    <Folder Include="assets" />
+    <Folder Include="local\Wallet\MinerWallet\Params" />
+    <Folder Include="src\Peer2Peer\TcpServerClient\LightweightNode" />
+    <Folder Include="src\Peer2Peer\TcpServerClient\MinerNode" />
+    <Folder Include="tests\Accceptance" />
+    <Folder Include="tests\Integration" />
     <Folder Include="src\Wallet\" />
-    <Folder Include="tests\Wallet.UnitTests\" />
-    <Folder Include="tests\Wallet.UnitTests\Wallet\" />
-    <Folder Include="tests\Block.UnitTests\" />
-    <Folder Include="tests\Block.UnitTests\Block\" />
+    <Folder Include="tests\Unit" />
     <Folder Include="src\Merkle-Tree\" />
-    <Folder Include="tests\MerkleTree.UnitTests\" />
-    <Folder Include="tests\MerkleTree.UnitTests\Merkle-Tree\" />
   </ItemGroup>
 </Project>
