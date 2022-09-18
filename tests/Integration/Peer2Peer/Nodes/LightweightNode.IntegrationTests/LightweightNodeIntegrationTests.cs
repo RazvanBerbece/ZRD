@@ -36,8 +36,8 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS.IntegrationTestsNS
             
             // Setup wallet - login
             Wallet testWallet = Wallet.DeserializeWalletFromJsonFile(
-                "../../../tests/Peer2Peer/Nodes/LightweightNode.IntegrationTests/Wallet.json", 
-                "../../../tests/Peer2Peer/Nodes/LightweightNode.IntegrationTests/Params/RSAConfig.xml"
+                "../../../tests/Integration/Peer2Peer/Nodes/LightweightNode.IntegrationTests/Wallet.json", 
+                "../../../tests/Integration/Peer2Peer/Nodes/LightweightNode.IntegrationTests/Params/RSAConfig.xml"
                 );
             node.SetWallet(testWallet);
 

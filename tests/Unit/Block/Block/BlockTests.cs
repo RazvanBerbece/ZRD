@@ -169,7 +169,7 @@ namespace BlockTestsNS
         {
             string genericBlockJsonSerializerJsonString = this.genericBlockToJsonSerialize.ToJsonString();
 
-            string expectedOutput = File.ReadAllText("../../../tests/Block.UnitTests/Block/ExpectedJsonString.txt");
+            string expectedOutput = File.ReadAllText("../../../tests/Unit/Block/Block/ExpectedJsonString.txt");
             
             Assert.AreEqual(expectedOutput, genericBlockJsonSerializerJsonString);
         }

@@ -262,7 +262,7 @@ namespace TransactionTestsNS
             expectedTransaction.SignTransaction(this.walletA);
             
             // Get JSON transaction string from file and deserialize
-            string jsonString = File.ReadAllText("../../../tests/Transaction/Transaction.UnitTests/ExpectedJsonString.txt");
+            string jsonString = File.ReadAllText("../../../tests/Unit/Transaction/Transaction.UnitTests/ExpectedJsonString.txt");
             Transaction actualTransaction = Transaction.JsonStringToTransactionInstance(jsonString);
             
             // Assert that fields match

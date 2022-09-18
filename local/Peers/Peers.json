@@ -13,5 +13,10 @@
     "ExtIp": "188.240.175.98",
     "Port": 425,
     "PeerType": "MINER"
+  },
+  {
+    "ExtIp": "86.16.161.164",
+    "Port": 420,
+    "PeerType": "MINER"
   }
 ]

@@ -70,7 +70,7 @@ namespace WalletTestsNS
         public void Wallet_CanConstruct_WithBase64String_AndXml()
         {
             // Test constructor from deserialization
-            Wallet testWallet = Wallet.DeserializeWalletFromJsonFile("../../../tests/Wallet.UnitTests/Wallet/Wallet.json", "../../../tests/Wallet.UnitTests/Wallet/Params/RSAConfig.xml");
+            Wallet testWallet = Wallet.DeserializeWalletFromJsonFile("../../../tests/Unit/Wallet/Wallet/Wallet.json", "../../../tests/Unit/Wallet/Wallet/Params/RSAConfig.xml");
             Assert.IsNotEmpty(testWallet.PublicKey);
             Assert.IsNotEmpty(testWallet.GetPrivateKeyStringBase64());
             

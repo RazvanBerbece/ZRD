@@ -24,7 +24,7 @@ namespace TransactionIntegrationTestsNS
         {
             
             // Read Transaction string example
-            string transactionString = System.IO.File.ReadAllText("../../../tests/Transaction/Transaction.IntegrationTests/Transaction.json");
+            string transactionString = System.IO.File.ReadAllText("../../../tests/Integration/Transaction/Transaction.json");
             
             // Check deserialization
             if (Transaction.JsonStringToTransactionInstance(transactionString) is Transaction transaction)
