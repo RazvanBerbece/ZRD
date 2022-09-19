@@ -167,32 +167,6 @@ namespace StaticsNS
             return localAddress;
         }
 
-        public static bool RunsOnVm()
-        {
-            // Check whether app is running on a Windows OS
-            // this is so app can use System.Management.ManagementObjectSearcher
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                using (var searcher = new System.Management.ManagementObjectSearcher("Select * from Win32_ComputerSystem"))
-                {
-                    using (var items = searcher.Get())
-                    {
-                        foreach (var item in items)
-                        {
-                            string manufacturer = item["Manufacturer"].ToString().ToLower();
-                            if ((manufacturer == "microsoft corporation" && item["Model"].ToString().ToUpperInvariant().Contains("VIRTUAL"))
-                                || manufacturer.Contains("vmware")
-                                || item["Model"].ToString() == "VirtualBox")
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-
     }
     
 }
