@@ -8,11 +8,12 @@ using System.Text.Json;
 using System.Collections.Generic;
 using TransactionNS;
 using System;
+using System.Management;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto.Parameters;
 
@@ -63,14 +64,12 @@ namespace StaticsNS
 
             using (var sha256 = SHA256.Create())
             {
-                // Get RSA params from base64 encoded public key
-
                 // Get bytes array of publicKeyBase64String
-                byte[] publicKeyBytes = Convert.FromBase64String(publicKeyBase64String);
+                var publicKeyBytes = Convert.FromBase64String(publicKeyBase64String);
 
                 // Use BouncyCastle 3rd party lib to create a RsaKeyParameters (c# std) from asymmetricKeyParameter (BouncyCastle)
-                AsymmetricKeyParameter asymmetricKeyParameter = PublicKeyFactory.CreateKey(publicKeyBytes);
-                RsaKeyParameters rsaKeyParameters = (RsaKeyParameters)asymmetricKeyParameter;
+                var asymmetricKeyParameter = PublicKeyFactory.CreateKey(publicKeyBytes);
+                var rsaKeyParameters = (RsaKeyParameters)asymmetricKeyParameter;
 
                 RSAParameters rsaParameters = new()
                 {
@@ -99,19 +98,19 @@ namespace StaticsNS
 
         public static IPAddress GetExternalPublicIpAddress()
         {
-            string externalIpString = new WebClient().DownloadString("http://icanhazip.com").Replace("\\r\\n", "").Replace("\\n", "").Trim();
+            var externalIpString = new WebClient().DownloadString("http://icanhazip.com").Replace("\\r\\n", "").Replace("\\n", "").Trim();
             return IPAddress.Parse(externalIpString);
         }
         
         public static IPAddress GetLocalIpAddress()
         {
-            IPHostEntry ipEntry = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress[] addr = ipEntry.AddressList;
+            var ipEntry = Dns.GetHostEntry(Dns.GetHostName());
+            var addr = ipEntry.AddressList;
 
-            for (int i = 0; i < addr.Length; i++)
+            for (var i = 0; i < addr.Length; i++)
             {
                 // Get IPv4 IP here and return it: a.b.c.d, excluding 127.0.0.1
-                Regex expression = new Regex(
+                var expression = new Regex(
                     @"^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$", 
                     RegexOptions.Compiled
                     );
@@ -138,7 +137,7 @@ namespace StaticsNS
             if (host == "") throw new ArgumentException("Error in CanPingHost: host param cannot be empty");
             if (timeoutInMs <= 0) throw new ArgumentOutOfRangeException(nameof(timeoutInMs));
             
-            Ping myPing = new Ping();
+            var myPing = new Ping();
             PingReply reply;
             try
             {
@@ -166,6 +165,34 @@ namespace StaticsNS
             var peerEndpoint = peer.Client.RemoteEndPoint as IPEndPoint;
             var localAddress = peerEndpoint!.Address.ToString();
             return localAddress;
+        }
+
+        public static bool RunsOnVm()
+        {
+            // Check whether app is running on a Windows OS
+            // this is so app can use System.Management.ManagementObjectSearcher
+            var isWindows = System.Runtime.InteropServices.RuntimeInformation
+                .IsOSPlatform(OSPlatform.Windows);
+            if (isWindows)
+            {
+                using (var searcher = new System.Management.ManagementObjectSearcher("Select * from Win32_ComputerSystem"))
+                {
+                    using (var items = searcher.Get())
+                    {
+                        foreach (var item in items)
+                        {
+                            string manufacturer = item["Manufacturer"].ToString().ToLower();
+                            if ((manufacturer == "microsoft corporation" && item["Model"].ToString().ToUpperInvariant().Contains("VIRTUAL"))
+                                || manufacturer.Contains("vmware")
+                                || item["Model"].ToString() == "VirtualBox")
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
     }

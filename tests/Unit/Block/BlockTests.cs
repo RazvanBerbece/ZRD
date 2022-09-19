@@ -6,23 +6,23 @@ using BlockchainNS;
 using NUnit.Framework;
 using WalletNS.BlockchainWalletNS;
 
-namespace ZRD.tests.Unit.Block.Block
+namespace ZRD.tests.Unit.Block
 {
 
     public class BlockUnitTests
     {
 
         // Generic values which are Setup for every test
-        private List<TransactionNS.Transaction> randomUnsignedTransactions;
-        private List<TransactionNS.Transaction> randomSignedTransactions;
-        private List<TransactionNS.Transaction> emptyList;
-        private BlockNS.Block genericUnvalidatedBlock;
-        private BlockNS.Block genericValidatedBlock;
-        private BlockNS.Block genericBlockToJsonSerialize;
-        private Blockchain chain;
+        private List<TransactionNS.Transaction> _randomUnsignedTransactions;
+        private List<TransactionNS.Transaction> _randomSignedTransactions;
+        private List<TransactionNS.Transaction> _emptyList;
+        private BlockNS.Block _genericUnvalidatedBlock;
+        private BlockNS.Block _genericValidatedBlock;
+        private BlockNS.Block _genericBlockToJsonSerialize;
+        private Blockchain _chain;
         
-        private BlockchainWallet networkWallet; // used for rewards, first mint, etc.
-        private WalletNS.Wallet walletA; // main wallet
+        private BlockchainWallet _networkWallet; // used for rewards, first mint, etc.
+        private WalletNS.Wallet _walletA; // main wallet
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -35,19 +35,19 @@ namespace ZRD.tests.Unit.Block.Block
         {
             
             // Setup wallets
-            networkWallet = new BlockchainWallet(1024, "NETWORK_WALLET_PARAMS.xml");
-            walletA = new WalletNS.Wallet(1024, "USER_WALLET_PARAMS_1.xml");
+            _networkWallet = new BlockchainWallet(1024, "NETWORK_WALLET_PARAMS.xml");
+            _walletA = new WalletNS.Wallet(1024, "USER_WALLET_PARAMS_1.xml");
 
-            randomUnsignedTransactions = TransactionNS.Transaction.GenerateRandomTransactions(numberOfTransactions: 10, false);
-            emptyList = new List<TransactionNS.Transaction> { };
+            _randomUnsignedTransactions = TransactionNS.Transaction.GenerateRandomTransactions(numberOfTransactions: 10, false);
+            _emptyList = new List<TransactionNS.Transaction> { };
 
             // Setup a generic unvalidated block
-            genericUnvalidatedBlock = new BlockNS.Block(
-                this.randomUnsignedTransactions,
+            _genericUnvalidatedBlock = new BlockNS.Block(
+                this._randomUnsignedTransactions,
                 "previousHash",
                 1
             );
-            genericUnvalidatedBlock.CalculateHash();
+            _genericUnvalidatedBlock.CalculateHash();
             
             // Setup generic block to JSON serialize
             // Force keys, ids and timestamps to be the same across multiple test runs
@@ -61,7 +61,7 @@ namespace ZRD.tests.Unit.Block.Block
                     id: "id123"
                     )
                 );
-            this.genericBlockToJsonSerialize = new BlockNS.Block(
+            this._genericBlockToJsonSerialize = new BlockNS.Block(
                 transactionsToSerialize,
                 "previousHash",
                 99
@@ -70,19 +70,19 @@ namespace ZRD.tests.Unit.Block.Block
             // to the one provided due to CultureInfo system settings
             // Adjusting to Universal with no culture info to have matching behaviour on different machines solved the issue
             // We force a timestamp that we can hardcode in ExpectedJsonString.json for testing
-            genericBlockToJsonSerialize.Timestamp = DateTime.Parse("2022-06-01T17:49:36.823434+01:00", null, System.Globalization.DateTimeStyles.AdjustToUniversal);
+            _genericBlockToJsonSerialize.Timestamp = DateTime.Parse("2022-06-01T17:49:36.823434+01:00", null, System.Globalization.DateTimeStyles.AdjustToUniversal);
             
             const int firstAmount = 1000000;
             List<TransactionNS.Transaction> initialCoinOfferings = new List<TransactionNS.Transaction>()
             {
-                new TransactionNS.Transaction(networkWallet.GetPublicKeyStringBase64(), walletA.GetPublicKeyStringBase64(),
+                new TransactionNS.Transaction(_networkWallet.GetPublicKeyStringBase64(), _walletA.GetPublicKeyStringBase64(),
                     firstAmount),
             };
             // Setup test blockchain
             // Setup testing Blockchain
-            chain = Blockchain.CreateBlockchain(
+            _chain = Blockchain.CreateBlockchain(
                 initialCoinOfferings: initialCoinOfferings,
-                blockchainWallet: this.networkWallet,
+                blockchainWallet: this._networkWallet,
                 difficulty: 2,
                 blockTime: 5,
                 reward: 420,
@@ -90,22 +90,22 @@ namespace ZRD.tests.Unit.Block.Block
             );
             
             // Sign transactions for validations
-            randomSignedTransactions = new List<TransactionNS.Transaction> { };
-            randomSignedTransactions.Add(new TransactionNS.Transaction(walletA.GetPublicKeyStringBase64(), networkWallet.GetPublicKeyStringBase64(), 2000));
-            randomSignedTransactions.Add(new TransactionNS.Transaction(walletA.GetPublicKeyStringBase64(), networkWallet.GetPublicKeyStringBase64(), 1500));
-            randomSignedTransactions.Add(new TransactionNS.Transaction(walletA.GetPublicKeyStringBase64(), networkWallet.GetPublicKeyStringBase64(), 20));
-            foreach (TransactionNS.Transaction transaction in randomSignedTransactions)
+            _randomSignedTransactions = new List<TransactionNS.Transaction> { };
+            _randomSignedTransactions.Add(new TransactionNS.Transaction(_walletA.GetPublicKeyStringBase64(), _networkWallet.GetPublicKeyStringBase64(), 2000));
+            _randomSignedTransactions.Add(new TransactionNS.Transaction(_walletA.GetPublicKeyStringBase64(), _networkWallet.GetPublicKeyStringBase64(), 1500));
+            _randomSignedTransactions.Add(new TransactionNS.Transaction(_walletA.GetPublicKeyStringBase64(), _networkWallet.GetPublicKeyStringBase64(), 20));
+            foreach (TransactionNS.Transaction transaction in _randomSignedTransactions)
             {
-                transaction.SignTransaction(walletA);
+                transaction.SignTransaction(_walletA);
             }
             
             // Setup a generic validated block
-            genericValidatedBlock = new BlockNS.Block(
-                this.randomSignedTransactions,
+            _genericValidatedBlock = new BlockNS.Block(
+                this._randomSignedTransactions,
                 "previousHash",
                 2
             );
-            genericValidatedBlock.CalculateHash();
+            _genericValidatedBlock.CalculateHash();
 
         }
 
@@ -126,14 +126,14 @@ namespace ZRD.tests.Unit.Block.Block
         public void Block_CanCalculateHash()
         {
             // Calculate hash with random transaction list and index=0
-            BlockNS.Block blockWithTransactions = new BlockNS.Block(this.randomUnsignedTransactions, "publicKey123", 0);
+            BlockNS.Block blockWithTransactions = new BlockNS.Block(this._randomUnsignedTransactions, "publicKey123", 0);
             blockWithTransactions.Hash = blockWithTransactions.CalculateHash();
             Assert.IsNotEmpty(blockWithTransactions.Hash);
 
             // Calculate hash with empty transaction list and index=0
             try
             {
-                BlockNS.Block blockEmptyTransactions = new BlockNS.Block(this.emptyList, "publicKey123", 0);
+                BlockNS.Block blockEmptyTransactions = new BlockNS.Block(this._emptyList, "publicKey123", 0);
                 Assert.Fail("It should not be possible to create a Block with a null MerkleTree representation");
             }
             catch (Exception)
@@ -151,12 +151,12 @@ namespace ZRD.tests.Unit.Block.Block
         public void Block_CanBeMined(int difficulty)
         {
             // Mine new block
-            this.genericUnvalidatedBlock.Mine(difficulty);
+            this._genericUnvalidatedBlock.Mine(difficulty);
 
             // Setup expected regex patern
             string regexHashPattern = $"^(0){{{difficulty}}}.*";
             Regex hashExpression = new Regex(regexHashPattern, RegexOptions.Compiled);
-            MatchCollection hashMatches = hashExpression.Matches(this.genericUnvalidatedBlock.Hash);
+            MatchCollection hashMatches = hashExpression.Matches(this._genericUnvalidatedBlock.Hash);
 
             Assert.Greater(hashMatches.Count, 0);
         }
@@ -164,9 +164,9 @@ namespace ZRD.tests.Unit.Block.Block
         [Test]
         public void Block_Converts_ToJsonString()
         {
-            string genericBlockJsonSerializerJsonString = this.genericBlockToJsonSerialize.ToJsonString();
+            string genericBlockJsonSerializerJsonString = this._genericBlockToJsonSerialize.ToJsonString();
 
-            string expectedOutput = File.ReadAllText("../../../tests/Unit/Block/Block/ExpectedJsonString.txt");
+            string expectedOutput = File.ReadAllText("../../../tests/Unit/Block/ExpectedJsonString.txt");
             
             Assert.AreEqual(expectedOutput, genericBlockJsonSerializerJsonString);
         }
@@ -178,12 +178,12 @@ namespace ZRD.tests.Unit.Block.Block
             switch (expectedResult)
             {
                 case true:
-                    Assert.That(this.genericValidatedBlock.HasAllValidTransactions(this.chain), Is.True);
+                    Assert.That(this._genericValidatedBlock.HasAllValidTransactions(this._chain), Is.True);
                     break;
                 case false:
                     // The transactions in the genericUnvalidatedBlock are all unsigned
                     // so HasAllValidTransactions() should return false
-                    Assert.That(this.genericUnvalidatedBlock.HasAllValidTransactions(this.chain), Is.Not.True);
+                    Assert.That(this._genericUnvalidatedBlock.HasAllValidTransactions(this._chain), Is.Not.True);
                     break;
             }
         }

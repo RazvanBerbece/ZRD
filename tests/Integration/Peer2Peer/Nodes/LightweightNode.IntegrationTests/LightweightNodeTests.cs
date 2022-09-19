@@ -4,7 +4,7 @@ using NUnit.Framework;
 using StaticsNS;
 using WalletNS;
 
-namespace ZRD.tests.Integration.Peer2Peer.Nodes.LightweightNode.UnitTests
+namespace ZRD.tests.Integration.Peer2Peer.Nodes.LightweightNode.IntegrationTests
 {
     [TestFixture]
     public class LightweightNodeTests
@@ -17,7 +17,7 @@ namespace ZRD.tests.Integration.Peer2Peer.Nodes.LightweightNode.UnitTests
         }
 
         [TearDown]
-        public void TeadDown()
+        public void TearDown()
         {
             if (File.Exists("TEST_WALLET_PARAMS.xml"))
             {

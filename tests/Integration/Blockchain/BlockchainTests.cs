@@ -6,7 +6,7 @@ using NUnit.Framework;
 using WalletNS;
 using WalletNS.BlockchainWalletNS;
 
-namespace ZRD.tests.Integration.Blockchain.Blockchain
+namespace ZRD.tests.Integration.Blockchain
 {
     [TestFixture]
     public class BlockchainTests
@@ -353,8 +353,8 @@ namespace ZRD.tests.Integration.Blockchain.Blockchain
             );
             
             // Add unconfirmed transactions to Blockchain
-            List<TransactionNS.Transaction> transactions = TransactionNS.Transaction.GenerateRandomTransactions(10, false);
-            int transactionsToAdd = 10;
+            var transactions = new List<TransactionNS.Transaction>();
+            const int transactionsToAdd = 10;
             for (int i = 0; i < transactionsToAdd + 1; i++)
             {
                 transactions.Add(new TransactionNS.Transaction(

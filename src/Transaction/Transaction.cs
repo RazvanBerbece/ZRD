@@ -84,6 +84,10 @@ namespace TransactionNS
                     return;
                 }
             }
+            else
+            {
+                throw new ArgumentException("Error in SignTransaction: Wallet param does not match transaction origin");
+            }
         }
 
         public bool IsValid(Blockchain chain)
@@ -108,8 +112,8 @@ namespace TransactionNS
             }
 
             // Get bytes arrays for hash and signature
-            byte[] bytesHash = Convert.FromBase64String(this.Hash);
-            byte[] signatureHash = Convert.FromBase64String(this.Signature);
+            var bytesHash = Convert.FromBase64String(this.Hash);
+            var signatureHash = Convert.FromBase64String(this.Signature);
             if (!Statics.SignatureIsValid(bytesHash, signatureHash, this.Sender))
             {
                 return false;

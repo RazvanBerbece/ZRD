@@ -6,7 +6,7 @@ using BlockchainNS;
 using NUnit.Framework;
 using WalletNS.BlockchainWalletNS;
 
-namespace ZRD.tests.Unit.Transaction.Transaction.UnitTests
+namespace ZRD.tests.Unit.Transaction
 {
 
     public class TransactionUnitTests
@@ -260,7 +260,7 @@ namespace ZRD.tests.Unit.Transaction.Transaction.UnitTests
             expectedTransaction.SignTransaction(this.walletA);
             
             // Get JSON transaction string from file and deserialize
-            string jsonString = File.ReadAllText("../../../tests/Unit/Transaction/Transaction.UnitTests/ExpectedJsonString.txt");
+            string jsonString = File.ReadAllText("../../../tests/Unit/Transaction/ExpectedJsonString.txt");
             TransactionNS.Transaction actualTransaction = TransactionNS.Transaction.JsonStringToTransactionInstance(jsonString);
             
             // Assert that fields match

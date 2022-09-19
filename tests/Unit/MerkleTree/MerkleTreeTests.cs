@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using MerkleTreeNS.MerkleNodeNS;
 using NUnit.Framework;
-using TransactionNS;
 
-namespace ZRD.tests.Unit.MerkleTree.Merkle_Tree
+namespace ZRD.tests.Unit.MerkleTree
 {
     public class MerkleTreeTests
     {

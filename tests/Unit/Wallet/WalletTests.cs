@@ -6,7 +6,7 @@ using BlockchainNS;
 using NUnit.Framework;
 using WalletNS.BlockchainWalletNS;
 
-namespace ZRD.tests.Unit.Wallet.Wallet
+namespace ZRD.tests.Unit.Wallet
 {
 
     public class WalletUnitTests
@@ -68,7 +68,7 @@ namespace ZRD.tests.Unit.Wallet.Wallet
         public void Wallet_CanConstruct_WithBase64String_AndXml()
         {
             // Test constructor from deserialization
-            WalletNS.Wallet testWallet = WalletNS.Wallet.DeserializeWalletFromJsonFile("../../../tests/Unit/Wallet/Wallet/Wallet.json", "../../../tests/Unit/Wallet/Wallet/Params/RSAConfig.xml");
+            WalletNS.Wallet testWallet = WalletNS.Wallet.DeserializeWalletFromJsonFile("../../../tests/Unit/Wallet/Wallet.json", "../../../tests/Unit/Wallet/Params/RSAConfig.xml");
             Assert.IsNotEmpty(testWallet.PublicKey);
             Assert.IsNotEmpty(testWallet.GetPrivateKeyStringBase64());
             
