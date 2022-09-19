@@ -44,7 +44,11 @@ namespace StaticsNS
 
         public static string CreateHashSha256FromTransaction(Transaction transaction)
         {
-            string dataString =
+            
+            // Guards
+            ArgumentNullException.ThrowIfNull(transaction);
+            
+            var dataString =
                 transaction.Id +
                 transaction.Hash +
                 transaction.Sender +
@@ -86,6 +90,10 @@ namespace StaticsNS
          */ 
         public static string TransactionsToJsonString(List<Transaction> transactions)
         {
+            
+            // Guards
+            ArgumentNullException.ThrowIfNull(transactions);
+
             return JsonSerializer.Serialize(transactions);
         }
 
@@ -124,6 +132,12 @@ namespace StaticsNS
 
         public static bool CanPingHost(string host, int timeoutInMs)
         {
+            
+            // Guards
+            ArgumentNullException.ThrowIfNull(host);
+            if (host == "") throw new ArgumentException("Error in CanPingHost: host param cannot be empty");
+            if (timeoutInMs <= 0) throw new ArgumentOutOfRangeException(nameof(timeoutInMs));
+            
             Ping myPing = new Ping();
             PingReply reply;
             try
@@ -145,6 +159,10 @@ namespace StaticsNS
         
         public static string GetPeerPublicIp(TcpClient peer)
         {
+            
+            // Guards
+            ArgumentNullException.ThrowIfNull(peer);
+            
             var peerEndpoint = peer.Client.RemoteEndPoint as IPEndPoint;
             var localAddress = peerEndpoint!.Address.ToString();
             return localAddress;
