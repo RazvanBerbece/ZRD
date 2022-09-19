@@ -171,9 +171,7 @@ namespace StaticsNS
         {
             // Check whether app is running on a Windows OS
             // this is so app can use System.Management.ManagementObjectSearcher
-            var isWindows = System.Runtime.InteropServices.RuntimeInformation
-                .IsOSPlatform(OSPlatform.Windows);
-            if (isWindows)
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 using (var searcher = new System.Management.ManagementObjectSearcher("Select * from Win32_ComputerSystem"))
                 {

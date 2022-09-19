@@ -30,7 +30,7 @@ namespace ZRD.tests.Integration.Peer2Peer.Nodes.LightweightNode.IntegrationTests
         {
             Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode node = Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode.ConfigureNode();
             Assert.That(node, Is.InstanceOf(typeof(Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode)));
-            Assert.That(node.GetPublicNatIpAddressString().Equals(Statics.GetExternalPublicIpAddress().ToString()), Is.True);
+            Assert.That(node.GetPublicNatIpAddressString().Equals(StaticsNS.Statics.GetExternalPublicIpAddress().ToString()), Is.True);
         }
         
         [Test]
@@ -89,7 +89,7 @@ namespace ZRD.tests.Integration.Peer2Peer.Nodes.LightweightNode.IntegrationTests
             }
             else
             {
-                node.SetPublicNatIpAddress(Statics.GetExternalPublicIpAddress());
+                node.SetPublicNatIpAddress(StaticsNS.Statics.GetExternalPublicIpAddress());
                 Assert.That(string.IsNullOrEmpty(node.GetPublicNatIpAddressString()), Is.Not.True);
             }
         }
@@ -98,7 +98,7 @@ namespace ZRD.tests.Integration.Peer2Peer.Nodes.LightweightNode.IntegrationTests
         public void LightweightNode_CanGetPublicIpAddressString()
         {
             Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode node = Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode.ConfigureNode();
-            Assert.That(node.GetPublicNatIpAddressString().Equals(Statics.GetExternalPublicIpAddress().ToString()), Is.True);
+            Assert.That(node.GetPublicNatIpAddressString().Equals(StaticsNS.Statics.GetExternalPublicIpAddress().ToString()), Is.True);
         }
         
         [TestCase(true, TestName = "Test case #1, Testing by passing null IPAddress to setter")]
@@ -120,7 +120,7 @@ namespace ZRD.tests.Integration.Peer2Peer.Nodes.LightweightNode.IntegrationTests
             }
             else
             {
-                node.SetPrivateIpAddress(Statics.GetLocalIpAddress());
+                node.SetPrivateIpAddress(StaticsNS.Statics.GetLocalIpAddress());
                 Assert.That(string.IsNullOrEmpty(node.GetPrivateIpAddressString()), Is.Not.True);
             }
         }
@@ -128,8 +128,8 @@ namespace ZRD.tests.Integration.Peer2Peer.Nodes.LightweightNode.IntegrationTests
         [Test]
         public void LightweightNode_CanGetPrivateIpAddressString()
         {
-            Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode node = Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode.ConfigureNode();
-            Assert.That(node.GetPrivateIpAddressString().Equals(Statics.GetLocalIpAddress().ToString()), Is.True);
+            var node = Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode.ConfigureNode();
+            Assert.That(node.GetPrivateIpAddressString().Equals(StaticsNS.Statics.GetLocalIpAddress().ToString()), Is.True);
         }
         
     }

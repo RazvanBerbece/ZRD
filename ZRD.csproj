@@ -31,7 +31,6 @@
     <Folder Include="src\Peer2Peer\TcpConnectivity\LightweightNode" />
     <Folder Include="src\Peer2Peer\TcpConnectivity\Utils" />
     <Folder Include="tests\Accceptance" />
-    <Folder Include="tests\Integration" />
     <Folder Include="src\Wallet\" />
     <Folder Include="src\Merkle-Tree\" />
   </ItemGroup>
