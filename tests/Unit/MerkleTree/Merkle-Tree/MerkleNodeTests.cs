@@ -1,7 +1,8 @@
 ﻿using System;
+using MerkleTreeNS.MerkleNodeNS;
 using NUnit.Framework;
 
-namespace MerkleTreeNS.MerkleNodeNS
+namespace ZRD.tests.Unit.MerkleTree.Merkle_Tree
 {
     public class MerkleNodeTests
     {

@@ -6,7 +6,7 @@ using NUnit.Framework;
 using Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS;
 using Peer2PeerNS.DiscoveryNS.PeerDetailsNS;
 
-namespace Peer2PeerNS.DiscoveryNS.Discovery.UnitTests.DiscoveryManagerTestsNS
+namespace ZRD.tests.Integration.Peer2Peer.Discovery.Discovery.UnitTests
 {
     public class DiscoveryManagerTests
     {

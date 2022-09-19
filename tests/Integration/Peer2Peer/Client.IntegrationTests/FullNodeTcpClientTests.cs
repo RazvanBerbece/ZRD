@@ -6,7 +6,7 @@ using Peer2PeerNS.FullNodeTcpServerNS;
 using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
 using Peer2PeerNS.TcpServerClientNS.FullNodeNS.EnumsNS.DataOutTypeNS;
 
-namespace Peer2PeerNS.ClientNS.FullNodeTcpClientTestsNS
+namespace ZRD.tests.Integration.Peer2Peer.Client.IntegrationTests
 {
     [TestFixture]
     public class FullNodeTcpClientTests

@@ -1,36 +1,34 @@
-using BlockchainNS;
-using NUnit.Framework;
-using TransactionNS;
-using System.Collections.Generic;
 using System;
-using WalletNS;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using BlockchainNS;
+using NUnit.Framework;
 using WalletNS.BlockchainWalletNS;
 
-namespace TransactionTestsNS
+namespace ZRD.tests.Unit.Transaction.Transaction.UnitTests
 {
 
     public class TransactionUnitTests
     {
 
         // Generic values which are Setup for every test
-        private List<Transaction> list;
+        private List<TransactionNS.Transaction> list;
         private System.Diagnostics.Stopwatch watch;
 
         private BlockchainWallet networkWallet; // used for rewards, first mint, etc.
-        private Wallet walletA; // main wallet
-        private Wallet walletB; // secondary wallet
+        private WalletNS.Wallet walletA; // main wallet
+        private WalletNS.Wallet walletB; // secondary wallet
 
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
             TestContext.Progress.WriteLine("-- Testing Transaction --\n");
-            this.list = new List<Transaction> { };
+            this.list = new List<TransactionNS.Transaction> { };
             this.watch = new System.Diagnostics.Stopwatch();
             this.networkWallet = new BlockchainWallet(1024, "NETWORK_WALLET_PARAMS.xml");
-            this.walletA = new Wallet(1024, "TEST_WALLET_A_PARAMS.xml");
-            this.walletB = new Wallet(1024, "TEST_WALLET_B_PARAMS.xml");
+            this.walletA = new WalletNS.Wallet(1024, "TEST_WALLET_A_PARAMS.xml");
+            this.walletB = new WalletNS.Wallet(1024, "TEST_WALLET_B_PARAMS.xml");
         }
 
         [TearDown]
@@ -63,7 +61,7 @@ namespace TransactionTestsNS
             {
                 try
                 {
-                    Transaction _ = new Transaction(senderKey, receiverKey, amount);
+                    TransactionNS.Transaction _ = new TransactionNS.Transaction(senderKey, receiverKey, amount);
                     Assert.Fail("Transaction constructor should throw ArgumentException for empty keys");
                 }
                 catch (Exception e)
@@ -80,7 +78,7 @@ namespace TransactionTestsNS
             {
                 try
                 {
-                    Transaction _ = new Transaction(senderKey, receiverKey, amount);
+                    TransactionNS.Transaction _ = new TransactionNS.Transaction(senderKey, receiverKey, amount);
                     Assert.Fail("Transaction constructor should throw ArgumentOutOfRangeException for equal or smaller than 0 transaction amounts");
                 }
                 catch (Exception e)
@@ -111,7 +109,7 @@ namespace TransactionTestsNS
                 try
                 {
                     // Generate 
-                    list = Transaction.GenerateRandomTransactions(numberOfTransactions, false);
+                    list = TransactionNS.Transaction.GenerateRandomTransactions(numberOfTransactions, false);
                     Assert.Fail("GenerateRandomTransactions() should throw ArgumentOutOfRangeException if asked to generate a list of 0 or less Transactions");
                 }
                 catch (Exception e)
@@ -134,7 +132,7 @@ namespace TransactionTestsNS
                     // numberOfTransactions = 7 => 1548ms = 1.548s
                     // numberOfTransactions = 99 => 20584ms = 20.584s
                     this.watch.Start();
-                    list = Transaction.GenerateRandomTransactions(numberOfTransactions, false);
+                    list = TransactionNS.Transaction.GenerateRandomTransactions(numberOfTransactions, false);
                     this.watch.Stop();
 
                     Console.WriteLine($"GenerateRandomTransactions({numberOfTransactions}) finished after {this.watch.ElapsedMilliseconds}ms\n");
@@ -143,7 +141,7 @@ namespace TransactionTestsNS
                     Assert.That(list.Count == numberOfTransactions);
 
                     // Guard - List items have populated data
-                    foreach (Transaction transaction in list)
+                    foreach (TransactionNS.Transaction transaction in list)
                     {
                         Assert.IsNotEmpty(transaction.Id);
                         Assert.IsNotEmpty(transaction.Hash);
@@ -165,10 +163,10 @@ namespace TransactionTestsNS
         public void Transaction_CanBeSigned(int signatureSize)
         {
             // Setup test wallet
-            Wallet wallet = new Wallet(signatureSize, "TEST_WALLET_PARAMS.xml");
+            WalletNS.Wallet wallet = new WalletNS.Wallet(signatureSize, "TEST_WALLET_PARAMS.xml");
 
             // Setup transaction to be signed
-            Transaction transaction = new Transaction(wallet.GetPublicKeyStringBase64(), "receiverPublicKey", 9999);
+            TransactionNS.Transaction transaction = new TransactionNS.Transaction(wallet.GetPublicKeyStringBase64(), "receiverPublicKey", 9999);
 
             // Sign transaction
             transaction.SignTransaction(wallet);
@@ -189,9 +187,9 @@ namespace TransactionTestsNS
             try
             {
                 const int firstAmount = 1000000;
-                List<Transaction> initialCoinOfferings = new List<Transaction>()
+                List<TransactionNS.Transaction> initialCoinOfferings = new List<TransactionNS.Transaction>()
                 {
-                    new Transaction(networkWallet.GetPublicKeyStringBase64(), walletA.GetPublicKeyStringBase64(),
+                    new TransactionNS.Transaction(networkWallet.GetPublicKeyStringBase64(), walletA.GetPublicKeyStringBase64(),
                         firstAmount),
                 };
                 // Setup test blockchain
@@ -206,10 +204,10 @@ namespace TransactionTestsNS
                     );
 
                 // Transaction instatiation to be caught  
-                Transaction _ = new Transaction(senderKey, receiverKey, amount);
+                TransactionNS.Transaction _ = new TransactionNS.Transaction(senderKey, receiverKey, amount);
 
                 // Actual transaction to validate with correct format public keys
-                Transaction transactionToValidate = new Transaction(this.walletA.GetPublicKeyStringBase64(), this.walletB.GetPublicKeyStringBase64(), amount);
+                TransactionNS.Transaction transactionToValidate = new TransactionNS.Transaction(this.walletA.GetPublicKeyStringBase64(), this.walletB.GetPublicKeyStringBase64(), amount);
                 transactionToValidate.SignTransaction(this.walletA);
                 
                 switch (expectedValidation)
@@ -248,7 +246,7 @@ namespace TransactionTestsNS
         [Test]
         public void Transaction_CanSerializeToJsonString()
         {
-            Transaction transaction = new Transaction(this.walletA.GetPublicKeyStringBase64(), "receiverPublicKey", 9999);
+            TransactionNS.Transaction transaction = new TransactionNS.Transaction(this.walletA.GetPublicKeyStringBase64(), "receiverPublicKey", 9999);
             transaction.SignTransaction(this.walletA);
             Assert.That(string.IsNullOrEmpty(transaction.ToJsonString()), Is.False);
         }
@@ -257,18 +255,18 @@ namespace TransactionTestsNS
         public void Transaction_CanDeserializeFromJsonString()
         {
             // Generate expected transaction to compare output with
-            Transaction expectedTransaction = new Transaction(this.walletA.GetPublicKeyStringBase64(), "receiverPublicKey", 9999);
+            TransactionNS.Transaction expectedTransaction = new TransactionNS.Transaction(this.walletA.GetPublicKeyStringBase64(), "receiverPublicKey", 9999);
             expectedTransaction.Id = "2ce4d267-0709-4372-8415-971663529079";
             expectedTransaction.SignTransaction(this.walletA);
             
             // Get JSON transaction string from file and deserialize
             string jsonString = File.ReadAllText("../../../tests/Unit/Transaction/Transaction.UnitTests/ExpectedJsonString.txt");
-            Transaction actualTransaction = Transaction.JsonStringToTransactionInstance(jsonString);
+            TransactionNS.Transaction actualTransaction = TransactionNS.Transaction.JsonStringToTransactionInstance(jsonString);
             
             // Assert that fields match
             // Note: Signature won't match due to it using the current timestamp
             // TODO: Maybe dynamic ExpectedJsonString.txt file ? 
-            Assert.That(actualTransaction, Is.InstanceOf(typeof(Transaction)));
+            Assert.That(actualTransaction, Is.InstanceOf(typeof(TransactionNS.Transaction)));
             Assert.That(actualTransaction.Id == expectedTransaction.Id, Is.True);
             Assert.That(actualTransaction.Amount == expectedTransaction.Amount, Is.True);
         }

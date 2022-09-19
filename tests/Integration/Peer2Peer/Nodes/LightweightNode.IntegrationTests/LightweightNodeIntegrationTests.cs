@@ -1,9 +1,8 @@
 using System.IO;
-using TransactionNS;
 using NUnit.Framework;
 using WalletNS;
 
-namespace Peer2PeerNS.NodesNS.LightweightNodeNS.IntegrationTestsNS
+namespace ZRD.tests.Integration.Peer2Peer.Nodes.LightweightNode.IntegrationTests
 {
     public class LightweightNodeIntegrationTests
     {
@@ -28,7 +27,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS.IntegrationTestsNS
         {
             
             // Setup node
-            LightweightNode node = LightweightNode.ConfigureNode();
+            Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode node = Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode.ConfigureNode();
             
             // Setup ext wallet & other transaction data
             Wallet remoteWallet = new Wallet(1024, "REMOTE_WALLET_PARAMS.xml");
@@ -42,7 +41,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeNS.IntegrationTestsNS
             node.SetWallet(testWallet);
 
             // Setup Transaction to send to full node
-            Transaction transaction = new Transaction(
+            TransactionNS.Transaction transaction = new TransactionNS.Transaction(
                 node.Wallet.GetPublicKeyStringBase64(),
                 remoteWallet.GetPublicKeyStringBase64(),
                 transactionAmount

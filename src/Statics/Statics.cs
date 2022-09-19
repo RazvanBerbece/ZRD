@@ -22,6 +22,10 @@ namespace StaticsNS
     {
         public static string CreateHashSha256(string data)
         {
+            
+            // Guards
+            ArgumentNullException.ThrowIfNull(data);
+            
             // Create SHA256
             using (SHA256 sha256Hash = SHA256.Create())
             {

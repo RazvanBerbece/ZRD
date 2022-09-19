@@ -32,7 +32,6 @@
     <Folder Include="tests\Accceptance" />
     <Folder Include="tests\Integration" />
     <Folder Include="src\Wallet\" />
-    <Folder Include="tests\Unit" />
     <Folder Include="src\Merkle-Tree\" />
   </ItemGroup>
 </Project>

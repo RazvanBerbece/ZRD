@@ -1,14 +1,12 @@
-﻿using BlockchainNS;
-using NUnit.Framework;
-using WalletNS;
-using System.Security.Cryptography;
-using TransactionNS;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
+using BlockchainNS;
+using NUnit.Framework;
 using WalletNS.BlockchainWalletNS;
 
-namespace WalletTestsNS
+namespace ZRD.tests.Unit.Wallet.Wallet
 {
 
     public class WalletUnitTests
@@ -16,8 +14,8 @@ namespace WalletTestsNS
 
         // Generic values which are Setup for every test
         private BlockchainWallet networkWallet; // used for rewards, first mint, etc.
-        private Wallet walletA; // main wallet
-        private Wallet walletB; // secondary wallet
+        private WalletNS.Wallet walletA; // main wallet
+        private WalletNS.Wallet walletB; // secondary wallet
         
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -29,8 +27,8 @@ namespace WalletTestsNS
         public void Setup()
         {
             this.networkWallet = new BlockchainWallet(1024, "TEST_NETWORK_WALLET.xml");
-            this.walletA = new Wallet(1024, "TEST_USER_WALLET_1.xml");
-            this.walletB = new Wallet(1024, "TEST_USER_WALLET_2.xml");
+            this.walletA = new WalletNS.Wallet(1024, "TEST_USER_WALLET_1.xml");
+            this.walletB = new WalletNS.Wallet(1024, "TEST_USER_WALLET_2.xml");
         }
 
         [TearDown]
@@ -70,12 +68,12 @@ namespace WalletTestsNS
         public void Wallet_CanConstruct_WithBase64String_AndXml()
         {
             // Test constructor from deserialization
-            Wallet testWallet = Wallet.DeserializeWalletFromJsonFile("../../../tests/Unit/Wallet/Wallet/Wallet.json", "../../../tests/Unit/Wallet/Wallet/Params/RSAConfig.xml");
+            WalletNS.Wallet testWallet = WalletNS.Wallet.DeserializeWalletFromJsonFile("../../../tests/Unit/Wallet/Wallet/Wallet.json", "../../../tests/Unit/Wallet/Wallet/Params/RSAConfig.xml");
             Assert.IsNotEmpty(testWallet.PublicKey);
             Assert.IsNotEmpty(testWallet.GetPrivateKeyStringBase64());
             
             // Test constructor with hardcoded params
-            Wallet testWallet2 = new Wallet(
+            WalletNS.Wallet testWallet2 = new WalletNS.Wallet(
                 "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3EMJeuHfbgDrG0qxWPumhScTLE5oOFQOmV9TJjgncLSyk1CoE/nCUGfVv9RLP7IHCIBM3g19iMu5qFU5016O9/C2qv2kpNetbHQDmC2Fg+XeY2oTqE13SD1VgF9LxLJrnH75WKv9i+GTi6toAFm1bcoP+l7MMwIjSh9Sb06kapQIDAQAB",
                 "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBALcQwl64d9uAOsbSrFY+6aFJxMsTmg4VA6ZX1MmOCdwtLKTUKgT+cJQZ9W/1Es/sgcIgEzeDX2Iy7moVTnTXo738Laq/aSk161sdAOYLYWD5d5jahOoTXdIPVWAX0vEsmucfvlYq/2L4ZOLq2gAWbVtyg/6XswzAiNKH1JvTqRqlAgMBAAECgYBvu4rmxTBiiKFXOL525W8zQhMa35vnfGv92x3E5yyddfUJpXUAF0wfGLj03F/fCDsqgOk5uLU++lcJ6Hc6WWNWSIcQop9j5rS/ggWUfU9llAzadbb1irTpM3gmX0n/2xE8xcAg9cgy9TX462AdrtZ7Jo6NSu8QDXfJEkEvIxRoAQJBAOyTtErLWwqiRD5yhFWmf25qwJVUwntq3/+o3bBIspWynB1RyqwOyioYL0WvHr8vFGVwx9QjAZK9MeLzAy1CjQ0CQQDGGF46JVdYl+XGxE4H1HZpI+TzkPP5KX/vGh3nBpBFsnua0KYvNsmQmQBvwl/Pvc3UFBxi658REsDwLpeZRU35AkAi5H4Y8flRjjFGjJlcEJyG6pPQ8plknpS/HmbkEzTTw24nHOMpkVzb7Ik8W+HLDOSTOZkffrJCtEjhUjpLuJ8ZAkEArmQ/d9LtzVmT+GNTCoOZZsApy979WYmWTglg78SQeDtDo6wx0PjbhAeeIcUtkfZXYG//+XnSxDYNUqTB4zXnCQJBAMG+ID2BiA9zNKDOanIeSF0wOTLreppS32TghnzuH/cQeuqen+Mpa0J+AHl3Wv8ceGnCikIvugUUyi64MY3erec=",
                 "ZRD Wallet",
@@ -122,9 +120,9 @@ namespace WalletTestsNS
         public void Wallet_CanSendCurrency(int amount)
         {
             const int firstAmount = int.MaxValue;
-            List<Transaction> initialCoinOfferings = new List<Transaction>()
+            List<TransactionNS.Transaction> initialCoinOfferings = new List<TransactionNS.Transaction>()
             {
-                new Transaction(networkWallet.GetPublicKeyStringBase64(), walletA.GetPublicKeyStringBase64(),
+                new TransactionNS.Transaction(networkWallet.GetPublicKeyStringBase64(), walletA.GetPublicKeyStringBase64(),
                     firstAmount),
             };
             // Setup test blockchain
@@ -234,7 +232,7 @@ namespace WalletTestsNS
         public void Static_Wallet_CanDeserializeWalletFromJsonFile()
         {
             this.walletA.SaveToJsonFile(@"TEST_WALLET.json", this.walletA.GetJsonString());
-            Wallet importedWallet = Wallet.DeserializeWalletFromJsonFile(@"TEST_WALLET.json", "TEST_USER_WALLET_1.xml");
+            WalletNS.Wallet importedWallet = WalletNS.Wallet.DeserializeWalletFromJsonFile(@"TEST_WALLET.json", "TEST_USER_WALLET_1.xml");
             
             Assert.That(this.walletA.GetJsonString().Equals(importedWallet.GetJsonString()), Is.True);
         }

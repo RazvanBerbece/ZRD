@@ -1,9 +1,6 @@
-using System.IO;
-using TransactionNS;
 using NUnit.Framework;
-using WalletNS;
 
-namespace TransactionIntegrationTestsNS
+namespace ZRD.tests.Integration.Transaction
 {
     public class TransactionIntegrationTests
     {
@@ -27,7 +24,7 @@ namespace TransactionIntegrationTestsNS
             string transactionString = System.IO.File.ReadAllText("../../../tests/Integration/Transaction/Transaction.json");
             
             // Check deserialization
-            if (Transaction.JsonStringToTransactionInstance(transactionString) is Transaction transaction)
+            if (TransactionNS.Transaction.JsonStringToTransactionInstance(transactionString) is TransactionNS.Transaction transaction)
             {
                 Assert.Pass();
             }

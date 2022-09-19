@@ -6,7 +6,7 @@ using Peer2PeerNS.DiscoveryNS.DiscoveryManagerNS;
 using Peer2PeerNS.FullNodeTcpServerNS;
 using Peer2PeerNS.NodesNS.FullNodeNS.FullNodeNS;
 
-namespace Peer2PeerNS.ServerNS.FullNodeTcpServerTestsNS
+namespace ZRD.tests.Integration.Peer2Peer.Server.IntegrationTests
 {
     [TestFixture]
     public class FullNodeTcpServerTests

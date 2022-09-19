@@ -1,11 +1,10 @@
 using System;
 using System.IO;
-using Peer2PeerNS.NodesNS.LightweightNodeNS;
 using NUnit.Framework;
 using StaticsNS;
 using WalletNS;
 
-namespace Peer2PeerNS.NodesNS.LightweightNodeTestsNS
+namespace ZRD.tests.Integration.Peer2Peer.Nodes.LightweightNode.UnitTests
 {
     [TestFixture]
     public class LightweightNodeTests
@@ -29,8 +28,8 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeTestsNS
         [Test]
         public void LightweightNode_CanConstruct()
         {
-            LightweightNode node = LightweightNode.ConfigureNode();
-            Assert.That(node, Is.InstanceOf(typeof(LightweightNode)));
+            Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode node = Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode.ConfigureNode();
+            Assert.That(node, Is.InstanceOf(typeof(Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode)));
             Assert.That(node.GetPublicNatIpAddressString().Equals(Statics.GetExternalPublicIpAddress().ToString()), Is.True);
         }
         
@@ -50,7 +49,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeTestsNS
         [TestCase(false, TestName = "Test case #2, Testing by passing correct Wallet to setter")]
         public void LightweightNode_CanSetWallet(bool isNullWallet)
         {
-            LightweightNode node = LightweightNode.ConfigureNode();
+            Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode node = Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode.ConfigureNode();
             if (isNullWallet)
             {
                 try
@@ -75,7 +74,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeTestsNS
         [TestCase(false, TestName = "Test case #2, Testing by passing correct IPAddress to setter")]
         public void LightweightNode_CanSetPublicIpAddress(bool isNullIpAddress)
         {
-            LightweightNode node = LightweightNode.ConfigureNode();
+            Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode node = Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode.ConfigureNode();
             if (isNullIpAddress)
             {
                 try
@@ -98,7 +97,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeTestsNS
         [Test]
         public void LightweightNode_CanGetPublicIpAddressString()
         {
-            LightweightNode node = LightweightNode.ConfigureNode();
+            Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode node = Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode.ConfigureNode();
             Assert.That(node.GetPublicNatIpAddressString().Equals(Statics.GetExternalPublicIpAddress().ToString()), Is.True);
         }
         
@@ -106,7 +105,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeTestsNS
         [TestCase(false, TestName = "Test case #2, Testing by passing correct IPAddress to setter")]
         public void LightweightNode_CanSetPrivateIpAddress(bool isNullIpAddress)
         {
-            LightweightNode node = LightweightNode.ConfigureNode();
+            Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode node = Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode.ConfigureNode();
             if (isNullIpAddress)
             {
                 try
@@ -129,7 +128,7 @@ namespace Peer2PeerNS.NodesNS.LightweightNodeTestsNS
         [Test]
         public void LightweightNode_CanGetPrivateIpAddressString()
         {
-            LightweightNode node = LightweightNode.ConfigureNode();
+            Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode node = Peer2PeerNS.NodesNS.LightweightNodeNS.LightweightNode.ConfigureNode();
             Assert.That(node.GetPrivateIpAddressString().Equals(Statics.GetLocalIpAddress().ToString()), Is.True);
         }
         

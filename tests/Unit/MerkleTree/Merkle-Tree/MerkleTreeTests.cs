@@ -1,11 +1,10 @@
-﻿using MerkleTreeNS.MerkleNodeNS;
-using MerkleTreeNS.MerkleTreeNS;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using MerkleTreeNS.MerkleNodeNS;
+using NUnit.Framework;
 using TransactionNS;
 
-namespace MerkleTreeNS.MerkleTreeNS
+namespace ZRD.tests.Unit.MerkleTree.Merkle_Tree
 {
     public class MerkleTreeTests
     {
@@ -27,22 +26,22 @@ namespace MerkleTreeNS.MerkleTreeNS
             // Generate transactions to organise in linked list manner -- for tree representation
             if (numberOfTransactions <= 0)
             {
-                List<Transaction> emptyTransactionsList = new List<Transaction>() { };
+                List<TransactionNS.Transaction> emptyTransactionsList = new List<TransactionNS.Transaction>() { };
                 
                 // Use Static MerkleTree function to generate tree
-                MerkleTree tree = MerkleTree.CreateMerkleTree(emptyTransactionsList);
+                MerkleTreeNS.MerkleTree tree = MerkleTreeNS.MerkleTree.CreateMerkleTree(emptyTransactionsList);
                 
                 Assert.That(tree, Is.Null);
             }
             else
             {
-                List<Transaction> transactions = Transaction.GenerateRandomTransactions(numberOfTransactions, false);
+                List<TransactionNS.Transaction> transactions = TransactionNS.Transaction.GenerateRandomTransactions(numberOfTransactions, false);
                 
                 // Use Static MerkleTree function to generate tree
-                MerkleTree tree = MerkleTree.CreateMerkleTree(transactions);
+                MerkleTreeNS.MerkleTree tree = MerkleTreeNS.MerkleTree.CreateMerkleTree(transactions);
 
                 // Check tree status by checking instance type & other data (size, root instance type, etc.)
-                Assert.That(tree, Is.InstanceOf(typeof(MerkleTree)));
+                Assert.That(tree, Is.InstanceOf(typeof(MerkleTreeNS.MerkleTree)));
                 Assert.That(tree.Root, Is.InstanceOf(typeof(MerkleNode)));
                 Assert.That(tree.Size, Is.EqualTo(Math.Ceiling(Math.Log2(transactions.Count)) + 1));
             }
@@ -70,7 +69,7 @@ namespace MerkleTreeNS.MerkleTreeNS
             }
             
             // Organise MerkleNodes -- process hashes based on parent hashes
-            MerkleNode rootNode = MerkleTree.OrganiseTreeFromMerkleNodeList(nodes);
+            MerkleNode rootNode = MerkleTreeNS.MerkleTree.OrganiseTreeFromMerkleNodeList(nodes);
 
             // Assert resulted root node & the tree
             switch (numberOfNodes)

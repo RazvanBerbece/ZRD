@@ -1,31 +1,28 @@
 ﻿using System;
-using BlockchainNS;
-using BlockNS;
-using NUnit.Framework;
-using TransactionNS;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using WalletNS;
+using BlockchainNS;
+using NUnit.Framework;
 using WalletNS.BlockchainWalletNS;
 
-namespace BlockTestsNS
+namespace ZRD.tests.Unit.Block.Block
 {
 
     public class BlockUnitTests
     {
 
         // Generic values which are Setup for every test
-        private List<Transaction> randomUnsignedTransactions;
-        private List<Transaction> randomSignedTransactions;
-        private List<Transaction> emptyList;
-        private Block genericUnvalidatedBlock;
-        private Block genericValidatedBlock;
-        private Block genericBlockToJsonSerialize;
+        private List<TransactionNS.Transaction> randomUnsignedTransactions;
+        private List<TransactionNS.Transaction> randomSignedTransactions;
+        private List<TransactionNS.Transaction> emptyList;
+        private BlockNS.Block genericUnvalidatedBlock;
+        private BlockNS.Block genericValidatedBlock;
+        private BlockNS.Block genericBlockToJsonSerialize;
         private Blockchain chain;
         
         private BlockchainWallet networkWallet; // used for rewards, first mint, etc.
-        private Wallet walletA; // main wallet
+        private WalletNS.Wallet walletA; // main wallet
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -39,13 +36,13 @@ namespace BlockTestsNS
             
             // Setup wallets
             networkWallet = new BlockchainWallet(1024, "NETWORK_WALLET_PARAMS.xml");
-            walletA = new Wallet(1024, "USER_WALLET_PARAMS_1.xml");
+            walletA = new WalletNS.Wallet(1024, "USER_WALLET_PARAMS_1.xml");
 
-            randomUnsignedTransactions = Transaction.GenerateRandomTransactions(numberOfTransactions: 10, false);
-            emptyList = new List<Transaction> { };
+            randomUnsignedTransactions = TransactionNS.Transaction.GenerateRandomTransactions(numberOfTransactions: 10, false);
+            emptyList = new List<TransactionNS.Transaction> { };
 
             // Setup a generic unvalidated block
-            genericUnvalidatedBlock = new Block(
+            genericUnvalidatedBlock = new BlockNS.Block(
                 this.randomUnsignedTransactions,
                 "previousHash",
                 1
@@ -55,16 +52,16 @@ namespace BlockTestsNS
             // Setup generic block to JSON serialize
             // Force keys, ids and timestamps to be the same across multiple test runs
             // so that the hashes remain the same
-            List<Transaction> transactionsToSerialize = new List<Transaction>() { };
+            List<TransactionNS.Transaction> transactionsToSerialize = new List<TransactionNS.Transaction>() { };
             transactionsToSerialize.Add(
-                new Transaction(
+                new TransactionNS.Transaction(
                     "publicKey123",
                     "publicKey456",
                     1000,
                     id: "id123"
                     )
                 );
-            this.genericBlockToJsonSerialize = new Block(
+            this.genericBlockToJsonSerialize = new BlockNS.Block(
                 transactionsToSerialize,
                 "previousHash",
                 99
@@ -76,9 +73,9 @@ namespace BlockTestsNS
             genericBlockToJsonSerialize.Timestamp = DateTime.Parse("2022-06-01T17:49:36.823434+01:00", null, System.Globalization.DateTimeStyles.AdjustToUniversal);
             
             const int firstAmount = 1000000;
-            List<Transaction> initialCoinOfferings = new List<Transaction>()
+            List<TransactionNS.Transaction> initialCoinOfferings = new List<TransactionNS.Transaction>()
             {
-                new Transaction(networkWallet.GetPublicKeyStringBase64(), walletA.GetPublicKeyStringBase64(),
+                new TransactionNS.Transaction(networkWallet.GetPublicKeyStringBase64(), walletA.GetPublicKeyStringBase64(),
                     firstAmount),
             };
             // Setup test blockchain
@@ -93,17 +90,17 @@ namespace BlockTestsNS
             );
             
             // Sign transactions for validations
-            randomSignedTransactions = new List<Transaction> { };
-            randomSignedTransactions.Add(new Transaction(walletA.GetPublicKeyStringBase64(), networkWallet.GetPublicKeyStringBase64(), 2000));
-            randomSignedTransactions.Add(new Transaction(walletA.GetPublicKeyStringBase64(), networkWallet.GetPublicKeyStringBase64(), 1500));
-            randomSignedTransactions.Add(new Transaction(walletA.GetPublicKeyStringBase64(), networkWallet.GetPublicKeyStringBase64(), 20));
-            foreach (Transaction transaction in randomSignedTransactions)
+            randomSignedTransactions = new List<TransactionNS.Transaction> { };
+            randomSignedTransactions.Add(new TransactionNS.Transaction(walletA.GetPublicKeyStringBase64(), networkWallet.GetPublicKeyStringBase64(), 2000));
+            randomSignedTransactions.Add(new TransactionNS.Transaction(walletA.GetPublicKeyStringBase64(), networkWallet.GetPublicKeyStringBase64(), 1500));
+            randomSignedTransactions.Add(new TransactionNS.Transaction(walletA.GetPublicKeyStringBase64(), networkWallet.GetPublicKeyStringBase64(), 20));
+            foreach (TransactionNS.Transaction transaction in randomSignedTransactions)
             {
                 transaction.SignTransaction(walletA);
             }
             
             // Setup a generic validated block
-            genericValidatedBlock = new Block(
+            genericValidatedBlock = new BlockNS.Block(
                 this.randomSignedTransactions,
                 "previousHash",
                 2
@@ -129,14 +126,14 @@ namespace BlockTestsNS
         public void Block_CanCalculateHash()
         {
             // Calculate hash with random transaction list and index=0
-            Block blockWithTransactions = new Block(this.randomUnsignedTransactions, "publicKey123", 0);
+            BlockNS.Block blockWithTransactions = new BlockNS.Block(this.randomUnsignedTransactions, "publicKey123", 0);
             blockWithTransactions.Hash = blockWithTransactions.CalculateHash();
             Assert.IsNotEmpty(blockWithTransactions.Hash);
 
             // Calculate hash with empty transaction list and index=0
             try
             {
-                Block blockEmptyTransactions = new Block(this.emptyList, "publicKey123", 0);
+                BlockNS.Block blockEmptyTransactions = new BlockNS.Block(this.emptyList, "publicKey123", 0);
                 Assert.Fail("It should not be possible to create a Block with a null MerkleTree representation");
             }
             catch (Exception)
