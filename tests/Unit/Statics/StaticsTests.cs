@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
@@ -68,9 +69,13 @@ public class StaticsTests
                         var canPingGoogle = StaticsNS.Statics.CanPingHost(hostname, timeoutInMs);
                         Assert.That(canPingGoogle, Is.True);
                     }
-                    catch (Exception e)
+                    catch (PingException pe)
                     {
-                        TestContext.Progress.WriteLine(e);
+                        TestContext.Progress.WriteLine(pe);
+                        Assert.Inconclusive();
+                    }
+                    catch (Exception)
+                    {
                         Assert.Fail();
                     }
                     break;
