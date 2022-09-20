@@ -150,7 +150,7 @@ namespace StaticsNS
             catch (PingException pe)
             {
                 Console.WriteLine($"Error occured in CanPingHost: {pe}");
-                throw;
+                throw pe.GetBaseException();
             }
             catch (Exception e)
             {
