@@ -69,9 +69,9 @@ public class StaticsTests
                     {
                         canPingGoogle = StaticsNS.Statics.CanPingHost(hostname, timeoutInMs);
                     }
-                    catch (PingException pe)
+                    catch (Exception e)
                     {
-                        TestContext.Progress.WriteLine(pe);
+                        TestContext.Progress.WriteLine(e);
                         Assert.Inconclusive();
                     }
                     Assert.That(canPingGoogle, Is.True);
