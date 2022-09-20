@@ -63,9 +63,16 @@ public class StaticsTests
                 default:
                     // Github Actions machines run on Microsoft VMs
                     // where ICMP is disabled, so this test will fail upstream
-                    var canPingGoogle = StaticsNS.Statics.CanPingHost(hostname, timeoutInMs);
-                    // Assert.That(canPingGoogle, Is.True);
-                    Assert.Pass("Test Can_PingHost passing by default");
+                    try
+                    {
+                        var canPingGoogle = StaticsNS.Statics.CanPingHost(hostname, timeoutInMs);
+                        Assert.That(canPingGoogle, Is.True);
+                    }
+                    catch (Exception e)
+                    {
+                        TestContext.Progress.WriteLine(e);
+                        Assert.Fail();
+                    }
                     break;
             }   
         }
