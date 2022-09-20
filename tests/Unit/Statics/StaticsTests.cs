@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
@@ -63,9 +64,17 @@ public class StaticsTests
                 default:
                     // Github Actions machines run on Microsoft VMs
                     // where ICMP is disabled, so this test will fail upstream
-                    var canPingGoogle = StaticsNS.Statics.CanPingHost(hostname, timeoutInMs);
-                    // Assert.That(canPingGoogle, Is.True);
-                    Assert.Pass("Test Can_PingHost passing by default");
+                    var canPingGoogle = false;
+                    try
+                    {
+                        canPingGoogle = StaticsNS.Statics.CanPingHost(hostname, timeoutInMs);
+                    }
+                    catch (Exception e)
+                    {
+                        TestContext.Progress.WriteLine(e);
+                        Assert.Inconclusive();
+                    }
+                    Assert.That(canPingGoogle, Is.True);
                     break;
             }   
         }

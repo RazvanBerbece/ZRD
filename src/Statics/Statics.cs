@@ -147,10 +147,15 @@ namespace StaticsNS
                     return true;
                 }
             }
+            catch (PingException pe)
+            {
+                Console.WriteLine($"Error occured in CanPingHost: {pe}");
+                throw;
+            }
             catch (Exception e)
             {
-                Console.WriteLine($"Error occured while pinging {host} : {e}");
-                return false;
+                Console.WriteLine($"Error occured in CanPingHost: {e}");
+                throw;
             }
             return false;
         }
