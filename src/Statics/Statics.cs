@@ -150,11 +150,11 @@ namespace StaticsNS
             catch (PingException pe)
             {
                 Console.WriteLine($"Error occured in CanPingHost: {pe}");
-                throw pe;
+                throw;
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error occured in CanPingHost: {e.Message}");
+                Console.WriteLine($"Error occured in CanPingHost: {e}");
                 throw;
             }
             return false;
